@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import * as CryptoJS from "crypto-js";
 import { ThunderType } from "../types/thunder.type";
 
-function useKillua<T>(args: ThunderType): [T, (value: T) => void] {
+function useKillua<T>(args: ThunderType): [T, (value: T | ((value: T) => T)) => void] {
   // genrate uniqe browser id for encrypt key
   function uniqeBrowserId() {
     const browserInfo =
@@ -79,7 +79,18 @@ function useKillua<T>(args: ThunderType): [T, (value: T) => void] {
     };
   }, []);
 
-  return [thunder, setThunder];
+  const setThunderHandler = (value: any) => {
+    if (typeof value === "function") {
+      setThunder((prev: any) => {
+        const updatedThunder = value(prev);
+        return updatedThunder;
+      });
+    } else {
+      setThunder(value);
+    }
+  };
+
+  return [thunder, setThunderHandler];
 }
 
 export default useKillua;
