@@ -4,7 +4,20 @@ import { ThunderType } from "../types/thunder.type";
 
 function useKillua<T>(
   args: ThunderType
-): [T, (value: T | ((value: T) => T)) => void, Boolean] {
+): [T, (value: T | ((value: T) => T)) => void, Boolean, Record<string, Function>] {
+  // assign the actions defined in args.actions to the actions object
+  const actions: Record<string, Function> = {};
+  if (args.actions) {
+    for (const actionName in args.actions) {
+      if (Object.prototype.hasOwnProperty.call(args.actions, actionName)) {
+        const actionFunc = args.actions[actionName];
+        actions[actionName] = (payload: any) => {
+          setThunder((prevState: T) => actionFunc(prevState, payload));
+        };
+      }
+    }
+  }
+
   // for genrate uniqe browser id for encrypt key
   function uniqeBrowserId(): string {
     const browserInfo =
@@ -169,6 +182,7 @@ function useKillua<T>(
       }
     },
     thunder === undefined ? false : true,
+    actions,
   ];
 }
 

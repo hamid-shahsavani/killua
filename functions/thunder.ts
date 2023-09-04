@@ -28,6 +28,13 @@ function thunder(args: ThunderType) {
   if (typeof args.encrypt !== "boolean") {
     throw new Error("`encrypt` is not a boolean for thunder!");
   }
+  if (
+    args.actions !== undefined &&
+    (Object.keys(args.actions).some((key) => typeof key !== "string") ||
+      Object.keys(args.actions).some((key) => typeof args.actions![key] !== "function"))
+  ) {
+    throw new Error("`actions` is not an object with string keys and function values for thunder!");
+  }
   return args;
 }
 

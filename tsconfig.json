@@ -4,6 +4,6 @@
     "module": "CommonJS",
     "jsx": "react",
     "outDir": "./dist",
-    "strict": true
+    "strict": true,
   }
 }
