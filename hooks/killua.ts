@@ -47,7 +47,7 @@ function useKillua<T>(
     }
   }, []);
 
-  // get thunder value from localstorage (call after update thunder state)
+  // get updated thunder value from localstorage and set to thunderState (call after update localstorage value)
   useEffect(() => {
     const getUpdatedThunderFromLocalstorage = () => {
       const localstorageValue = getThunderFromLocalstorage();
@@ -55,11 +55,11 @@ function useKillua<T>(
         setThunder(localstorageValue);
       }
     };
-    window.addEventListener("storage", () => {
+    window.addEventListener("storage", (e: StorageEvent) => {
       getUpdatedThunderFromLocalstorage();
     });
     return () => {
-      window.removeEventListener("storage", () => {
+      window.removeEventListener("storage", (e: StorageEvent) => {
         getUpdatedThunderFromLocalstorage();
       });
     };
