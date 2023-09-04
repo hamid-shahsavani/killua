@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
 import * as CryptoJS from "crypto-js";
+import { useEffect, useState } from "react";
 import { ThunderType } from "../types/thunder.type";
 
-function useKillua<T>(args: ThunderType): [T, (value: T | ((value: T) => T)) => void] {
-  // genrate uniqe browser id for encrypt key
+function useKillua<T>(
+  args: ThunderType
+): [T, (value: T | ((value: T) => T)) => void, Boolean] {
+  // for genrate uniqe browser id for encrypt key
   function uniqeBrowserId() {
     const browserInfo =
       window.navigator.userAgent.match(
@@ -14,18 +16,7 @@ function useKillua<T>(args: ThunderType): [T, (value: T | ((value: T) => T)) => 
     return `${browserName}${browserVersion}${window.navigator.userAgent}`;
   }
 
-  // set thunder value to localstorage
-  function setThunderToLocalstorageHandler(value: any) {
-    localStorage.setItem(
-      args.key,
-      args.encrypt
-        ? CryptoJS.AES.encrypt(JSON.stringify(value), uniqeBrowserId())
-        : thunder
-    );
-    window.dispatchEvent(new Event("storage"));
-  }
-
-  // get thunder value from localstorage
+  // for get thunder value from localstorage
   function getThunderFromLocalstorage() {
     let parsedValue = args.default;
     const localStorageValue = localStorage.getItem(args.key);
@@ -47,19 +38,14 @@ function useKillua<T>(args: ThunderType): [T, (value: T | ((value: T) => T)) => 
   }
 
   // get thunder value from localstorage (initial value)
-  const [thunder, setThunder] = useState<any>(typeof window !== undefined ? undefined : getThunderFromLocalstorage());
+  const [thunder, setThunder] = useState<any>(
+    typeof window !== undefined ? undefined : getThunderFromLocalstorage()
+  );
   useEffect(() => {
-    if(thunder === undefined) {
+    if (thunder === undefined) {
       setThunder(getThunderFromLocalstorage());
     }
   }, []);
-
-  // set thunder value to localstorage (call after update thunder state)
-  useEffect(() => {
-    if (thunder !== undefined) {
-      setThunderToLocalstorageHandler(thunder);
-    }
-  }, [thunder]);
 
   // get thunder value from localstorage (call after update thunder state)
   useEffect(() => {
@@ -79,18 +65,31 @@ function useKillua<T>(args: ThunderType): [T, (value: T | ((value: T) => T)) => 
     };
   }, []);
 
-  const setThunderHandler = (value: any) => {
-    if (typeof value === "function") {
-      setThunder((prev: any) => {
-        const updatedThunder = value(prev);
-        return updatedThunder;
-      });
-    } else {
-      setThunder(value);
+  // set thunder value to localstorage (call after update thunder state)
+  useEffect(() => {
+    if (thunder !== undefined) {
+      localStorage.setItem(
+        args.key,
+        args.encrypt
+          ? CryptoJS.AES.encrypt(JSON.stringify(thunder), uniqeBrowserId())
+          : thunder
+      );
+      window.dispatchEvent(new Event("storage"));
     }
-  };
+  }, [thunder]);
 
-  return [thunder, setThunderHandler];
+  // returned [thunder, setThunder function, thunderStateIsReady]
+  return [
+    thunder,
+    (value: any) => {
+      if (typeof value === "function") {
+        setThunder((prev: any) => value(prev));
+      } else {
+        setThunder(value);
+      }
+    },
+    thunder === undefined ? false : true,
+  ];
 }
 
 export default useKillua;
