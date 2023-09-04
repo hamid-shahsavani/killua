@@ -16,10 +16,16 @@ function useKillua<T>(
     return `${browserName}${browserVersion}${window.navigator.userAgent}`;
   }
 
+  // localstorage key for thunder
+  const thunderKey = `thunder${args.key
+    .charAt(0)
+    .toUpperCase()}${args.key.slice(1)}`;
+
   // for get thunder value from localstorage
   function getThunderFromLocalstorage(): string {
     let parsedValue = args.default;
-    const localStorageValue = localStorage.getItem(args.key);
+    // convert args.key to thunder + first letter uppercase
+    const localStorageValue = localStorage.getItem(thunderKey);
     if (localStorageValue) {
       try {
         parsedValue = JSON.parse(
@@ -31,7 +37,7 @@ function useKillua<T>(
             : localStorageValue
         );
       } catch {
-        localStorage.removeItem(args.key);
+        localStorage.removeItem(thunderKey);
       }
     }
     return parsedValue;
@@ -40,58 +46,72 @@ function useKillua<T>(
   // for set expire time
   useEffect(() => {
     // check if 'thunderExpire' exists in localStorage and decrypt it, or set it to null if decryption fails
-    const thunderExpireLocalstorage = (): null | string => {
+    const getThunderExpireLocalstorage = (): null | string => {
       let parsedValue = null;
-      const localStorageValue = localStorage.getItem('thunderExpire');
+      const localStorageValue = localStorage.getItem("thunderExpire");
       if (localStorageValue) {
         try {
           parsedValue = JSON.parse(
-            args.encrypt
-              ? CryptoJS.AES.decrypt(
-                  localStorageValue,
-                  uniqeBrowserId()
-                ).toString(CryptoJS.enc.Utf8)
-              : localStorageValue
+            CryptoJS.AES.decrypt(localStorageValue, uniqeBrowserId()).toString(
+              CryptoJS.enc.Utf8
+            )
           );
         } catch {
-          localStorage.removeItem(args.key);
+          localStorage.removeItem("thunderExpire");
         }
       }
       return parsedValue;
     };
+    const thunderExpireLocalstorage = getThunderExpireLocalstorage();
 
     // check if 'thunderExpire' in localStorage
-    if (!thunderExpireLocalstorage()) {
+    if (!thunderExpireLocalstorage) {
       // create 'thunderExpire' with an empty object encrypted
       localStorage.setItem(
         "thunderExpire",
         CryptoJS.AES.encrypt(JSON.stringify({}), uniqeBrowserId()).toString()
       );
       // delete all localStorage keys starting with 'thunder'
+      const keysToRemove = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key && key.startsWith("thunder") && key !== "thunderExpire") {
-          localStorage.removeItem(key);
+          keysToRemove.push(key);
         }
       }
+      keysToRemove.forEach((key) => {
+        localStorage.removeItem(key);
+      });
     }
     // check if 'args.key' is not in 'thunderExpireLocalstorage' && push it to 'thunderExpireLocalstorage'
-    if (thunderExpireLocalstorage() && !Object(thunderExpireLocalstorage())[args.key]) {
-      Object(thunderExpireLocalstorage())[args.key] =
+    if (
+      thunderExpireLocalstorage &&
+      !Object(thunderExpireLocalstorage)[thunderKey]
+    ) {
+      Object(thunderExpireLocalstorage)[thunderKey] =
         args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
       localStorage.setItem(
         "thunderExpire",
-        CryptoJS.AES.encrypt(JSON.stringify(thunderExpireLocalstorage()), uniqeBrowserId()).toString()
+        CryptoJS.AES.encrypt(
+          JSON.stringify(thunderExpireLocalstorage),
+          uniqeBrowserId()
+        ).toString()
       );
     }
     // check expire time for 'args.key' and remove it from localStorage and 'thunderExpire' if expired
-    if (thunderExpireLocalstorage() && Object(thunderExpireLocalstorage())[args.key] !== null) {
-      if (Date.now() > Object(thunderExpireLocalstorage())[args.key]) {
-        localStorage.removeItem(args.key);
-        delete Object(thunderExpireLocalstorage())[args.key];
+    if (
+      thunderExpireLocalstorage &&
+      Object(thunderExpireLocalstorage)[thunderKey] !== null
+    ) {
+      if (Date.now() > Object(thunderExpireLocalstorage)[thunderKey]) {
+        localStorage.removeItem(thunderKey);
+        delete Object(thunderExpireLocalstorage)[thunderKey];
         localStorage.setItem(
           "thunderExpire",
-          CryptoJS.AES.encrypt(JSON.stringify(thunderExpireLocalstorage()), uniqeBrowserId()).toString()
+          CryptoJS.AES.encrypt(
+            JSON.stringify(thunderExpireLocalstorage),
+            uniqeBrowserId()
+          ).toString()
         );
       }
     }
@@ -129,7 +149,7 @@ function useKillua<T>(
   useEffect((): void => {
     if (thunder !== undefined) {
       localStorage.setItem(
-        args.key,
+        thunderKey,
         args.encrypt
           ? CryptoJS.AES.encrypt(JSON.stringify(thunder), uniqeBrowserId())
           : thunder

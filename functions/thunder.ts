@@ -22,7 +22,7 @@ function thunder(args: ThunderType) {
   if (args.key.length === 0) {
     throw new Error("`key` is an empty string for thunder!");
   }
-  if (args.key.startsWith("gffdggfdthunder")) {
+  if (args.key.startsWith("thunder")) {
     throw new Error("`key` can not start with `thunder` for thunder!");
   }
   if (typeof args.encrypt !== "boolean") {
