@@ -1,14 +1,19 @@
 {
-  "name": "killua",
-  "version": "0.0.4",
+  "name": "react-killua",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "main": "dist/index.js",
+  "types": "dist/thunder.type.d.ts",
+  "keywords": [
+    "react",
+    "react-localstorage",
+    "manage-localstorage",
+    "localstorage",
+    "management-localstorage",
+    "react-localstorage-management"
+  ],
+  "author": "hamid shahsavani",
+  "license": "MIT",
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
     "@types/react": "^18.2.21",
