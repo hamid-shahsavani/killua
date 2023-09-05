@@ -2,22 +2,12 @@ import * as CryptoJS from "crypto-js";
 import { useEffect, useState } from "react";
 import { ThunderType } from "../types/thunder.type";
 
-function useKillua<T>(
-  args: ThunderType
-): [T, (value: T | ((value: T) => T)) => void, Boolean, Record<string, Function>] {
-  // assign the actions defined in args.actions to the actions object
-  const actions: Record<string, Function> = {};
-  if (args.actions) {
-    for (const actionName in args.actions) {
-      if (Object.prototype.hasOwnProperty.call(args.actions, actionName)) {
-        const actionFunc = args.actions[actionName];
-        actions[actionName] = (payload: any) => {
-          setThunder((prevState: T) => actionFunc(prevState, payload));
-        };
-      }
-    }
-  }
-
+function useKillua<T>(args: ThunderType): {
+  value: T;
+  setValue: (value: T | ((value: T) => T)) => void;
+  isReady: Boolean;
+  actions: Record<string, Function>;
+} {
   // for genrate uniqe browser id for encrypt key
   function uniqeBrowserId(): string {
     const browserInfo =
@@ -171,19 +161,32 @@ function useKillua<T>(
     }
   }, [thunder]);
 
-  // returned [thunder, setThunder function, thunderStateIsReady]
-  return [
-    thunder,
-    (value: any) => {
+  // assign the actions defined in args.actions to the actions object
+  const actions: Record<string, Function> = {};
+  if (args.actions) {
+    for (const actionName in args.actions) {
+      if (Object.prototype.hasOwnProperty.call(args.actions, actionName)) {
+        const actionFunc = args.actions[actionName];
+        actions[actionName] = (payload: any) => {
+          setThunder((prevState: T) => actionFunc(prevState, payload));
+        };
+      }
+    }
+  }
+
+  //change returned from [thunder, setThunder function, thunderStateIsReady] to { thunder: thunderState, setThunder: setThunderFunction, thunderStateIsReady: thunderStateIsReady }
+  return {
+    value: thunder,
+    setValue: (value: any) => {
       if (typeof value === "function") {
         setThunder((prev: any) => value(prev));
       } else {
         setThunder(value);
       }
     },
-    thunder === undefined ? false : true,
+    isReady: thunder === undefined ? false : true,
     actions,
-  ];
+  };
 }
 
 export default useKillua;
