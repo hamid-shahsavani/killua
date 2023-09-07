@@ -3,13 +3,18 @@ import { useEffect, useState } from "react";
 import { ThunderType } from "../types/thunder.type";
 
 function useKillua<T>(args: ThunderType): {
-  value: T;
-  setValue: (value: T | ((value: T) => T)) => void;
+  thunder: T;
+  setThunder: (value: T | ((value: T) => T)) => void;
   isReady: Boolean;
   actions: Record<string, Function>;
 } {
-  // for genrate uniqe browser id for encrypt key
-  function uniqeBrowserId(): string {
+  // current thunder key name in localstorage
+  const thunderKey = `thunder${args.key
+    .charAt(0)
+    .toUpperCase()}${args.key.slice(1)}`;
+
+  // genrate uniqe browser id for encrypt key
+  function getUniqeBrowserId(): string {
     const browserInfo =
       window.navigator.userAgent.match(
         /(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i
@@ -19,12 +24,7 @@ function useKillua<T>(args: ThunderType): {
     return `${browserName}${browserVersion}${window.navigator.userAgent}`;
   }
 
-  // localstorage key for thunder
-  const thunderKey = `thunder${args.key
-    .charAt(0)
-    .toUpperCase()}${args.key.slice(1)}`;
-
-  // for get thunder value from localstorage
+  // get thunder value from localstorage
   function getThunderFromLocalstorage(): string {
     let parsedValue = args.default;
     // convert args.key to thunder + first letter uppercase
@@ -35,7 +35,7 @@ function useKillua<T>(args: ThunderType): {
           args.encrypt
             ? CryptoJS.AES.decrypt(
                 localStorageValue,
-                uniqeBrowserId()
+                getUniqeBrowserId()
               ).toString(CryptoJS.enc.Utf8)
             : localStorageValue
         );
@@ -46,18 +46,19 @@ function useKillua<T>(args: ThunderType): {
     return parsedValue;
   }
 
-  // for set expire time
+  // set expire time and remove expired thunder from localstorage
   useEffect(() => {
-    // check if 'thunderExpire' exists in localStorage and decrypt it, or set it to null if decryption fails
+    // for get 'thunderExpire' exists in localStorage and decrypted ? retruen decrypted value : null
     const getThunderExpireLocalstorage = (): null | string => {
       let parsedValue = null;
       const localStorageValue = localStorage.getItem("thunderExpire");
       if (localStorageValue) {
         try {
           parsedValue = JSON.parse(
-            CryptoJS.AES.decrypt(localStorageValue, uniqeBrowserId()).toString(
-              CryptoJS.enc.Utf8
-            )
+            CryptoJS.AES.decrypt(
+              localStorageValue,
+              getUniqeBrowserId()
+            ).toString(CryptoJS.enc.Utf8)
           );
         } catch {
           localStorage.removeItem("thunderExpire");
@@ -66,13 +67,12 @@ function useKillua<T>(args: ThunderType): {
       return parsedValue;
     };
     const thunderExpireLocalstorage = getThunderExpireLocalstorage();
-
-    // check if 'thunderExpire' in localStorage
+    // check if 'thunderExpire' key in localStorage
     if (!thunderExpireLocalstorage) {
       // create 'thunderExpire' with an empty object encrypted
       localStorage.setItem(
         "thunderExpire",
-        CryptoJS.AES.encrypt(JSON.stringify({}), uniqeBrowserId()).toString()
+        CryptoJS.AES.encrypt(JSON.stringify({}), getUniqeBrowserId()).toString()
       );
       // delete all localStorage keys starting with 'thunder'
       const keysToRemove = [];
@@ -86,7 +86,7 @@ function useKillua<T>(args: ThunderType): {
         localStorage.removeItem(key);
       });
     }
-    // check if 'args.key' is not in 'thunderExpireLocalstorage' && push it to 'thunderExpireLocalstorage'
+    // if 'args.key' is not in 'thunderExpire' object && push it to 'thunderExpire' with expire time
     if (
       thunderExpireLocalstorage &&
       !Object(thunderExpireLocalstorage)[thunderKey]
@@ -97,17 +97,17 @@ function useKillua<T>(args: ThunderType): {
         "thunderExpire",
         CryptoJS.AES.encrypt(
           JSON.stringify(thunderExpireLocalstorage),
-          uniqeBrowserId()
+          getUniqeBrowserId()
         ).toString()
       );
     }
-    // date.now > expire time ? remove from localStorage and 'thunderExpire' : set timeout for remove from localStorage and 'thunderExpire'
+    // if date.now > expire time ? remove thunder expired from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
     if (
       thunderExpireLocalstorage &&
       Object(thunderExpireLocalstorage)[thunderKey] !== null
     ) {
       // function for remove from localStorage and 'thunderExpire'
-      const removeThunder = (): void => {
+      function removeThunder() {
         setThunder(args.default);
         localStorage.setItem(thunderKey, args.default);
         Object(thunderExpireLocalstorage)[thunderKey] =
@@ -116,16 +116,19 @@ function useKillua<T>(args: ThunderType): {
           "thunderExpire",
           CryptoJS.AES.encrypt(
             JSON.stringify(thunderExpireLocalstorage),
-            uniqeBrowserId()
+            getUniqeBrowserId()
           ).toString()
         );
-      };
-      // Check if the expiration time has already passed
+      }
+      // if thunder expire ? remove it from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
       if (Date.now() > Object(thunderExpireLocalstorage)[thunderKey]) {
         removeThunder();
       } else {
         setInterval(() => {
-          console.log(thunderKey, Object(thunderExpireLocalstorage)[thunderKey] - Date.now());
+          console.log(
+            thunderKey,
+            Object(thunderExpireLocalstorage)[thunderKey] - Date.now()
+          );
         }, 1000);
         setInterval(() => {
           removeThunder();
@@ -134,17 +137,15 @@ function useKillua<T>(args: ThunderType): {
     }
   }, []);
 
-  // get thunder value from localstorage (initial value)
-  const [thunder, setThunder] = useState<any>(
-    typeof window !== undefined ? undefined : getThunderFromLocalstorage()
-  );
+  // get thunder value from localstorage for initial value of thunderState
+  const [thunder, setThunder] = useState<any>(undefined);
   useEffect((): void => {
     if (thunder === undefined) {
       setThunder(getThunderFromLocalstorage());
     }
   }, []);
 
-  // get updated thunder value from localstorage and set to thunderState (call after update localstorage value)
+  // setThunder with updated localstorage value (call after update key in localstorage with setStateHandler function)
   useEffect((): (() => void) => {
     const getUpdatedThunderFromLocalstorage = (): void => {
       const localstorageValue = getThunderFromLocalstorage();
@@ -162,20 +163,20 @@ function useKillua<T>(args: ThunderType): {
     };
   }, []);
 
-  // set thunder value to localstorage (call after update thunder state)
+  // set thunder value to localstorage (call after update thunder state in first set thunder initial value and after update thunder state with setThunder function)
   useEffect((): void => {
     if (thunder !== undefined) {
       localStorage.setItem(
         thunderKey,
         args.encrypt
-          ? CryptoJS.AES.encrypt(JSON.stringify(thunder), uniqeBrowserId())
+          ? CryptoJS.AES.encrypt(JSON.stringify(thunder), getUniqeBrowserId())
           : thunder
       );
       window.dispatchEvent(new Event("storage"));
     }
   }, [thunder]);
 
-  // assign the actions defined in args.actions to the actions object
+  // assign thunder actions to actions object
   const actions: Record<string, Function> = {};
   if (args.actions) {
     for (const actionName in args.actions) {
@@ -188,15 +189,18 @@ function useKillua<T>(args: ThunderType): {
     }
   }
 
-  //change returned from [thunder, setThunder function, thunderStateIsReady] to { thunder: thunderState, setThunder: setThunderFunction, thunderStateIsReady: thunderStateIsReady }
+  // return thunder state and setThunder function and isReady state and actions object
+  function setStateHandler(value: any): void {
+    if (typeof value === "function") {
+      setThunder((prev: any) => value(prev));
+    } else {
+      setThunder(value);
+    }
+  }
   return {
-    value: thunder,
-    setValue: (value: any) => {
-      if (typeof value === "function") {
-        setThunder((prev: any) => value(prev));
-      } else {
-        setThunder(value);
-      }
+    thunder: thunder,
+    setThunder: (value: any) => {
+      setStateHandler(value);
     },
     isReady: thunder === undefined ? false : true,
     actions,
