@@ -101,15 +101,16 @@ function useKillua<T>(args: ThunderType): {
         ).toString()
       );
     }
-    // check expire time for 'args.key' and remove it from localStorage and 'thunderExpire' if expired
+    // date.now > expire time ? remove from localStorage and 'thunderExpire' : set timeout for remove from localStorage and 'thunderExpire'
     if (
       thunderExpireLocalstorage &&
       Object(thunderExpireLocalstorage)[thunderKey] !== null
     ) {
-      // date.now > expire time ? remove from localStorage and 'thunderExpire' : set timeout for remove from localStorage and 'thunderExpire'
-      if (Date.now() > Object(thunderExpireLocalstorage)[thunderKey]) {
-        localStorage.removeItem(thunderKey);
-        delete Object(thunderExpireLocalstorage)[thunderKey];
+      // function for remove from localStorage and 'thunderExpire'
+      const removeThunder = (): void => {
+        setThunder(args.default);
+        localStorage.setItem(thunderKey, args.default);
+        Object(thunderExpireLocalstorage)[thunderKey] = Date.now() + Number(args.expire) * 60 * 1000;
         localStorage.setItem(
           "thunderExpire",
           CryptoJS.AES.encrypt(
@@ -117,9 +118,20 @@ function useKillua<T>(args: ThunderType): {
             uniqeBrowserId()
           ).toString()
         );
+      };
+      // Check if the expiration time has already passed
+      if (Date.now() > Object(thunderExpireLocalstorage)[thunderKey]) {
+        removeThunder();
+      } else {
+        setInterval(() => {
+          console.log(thunderKey, Object(thunderExpireLocalstorage)[thunderKey] - Date.now());
+        }, 1000);
+        setInterval(() => {
+          removeThunder();
+        }, Object(thunderExpireLocalstorage)[thunderKey] - Date.now());
       }
     }
-  }, [args.key]);
+  }, []);
 
   // get thunder value from localstorage (initial value)
   const [thunder, setThunder] = useState<any>(
@@ -132,21 +144,11 @@ function useKillua<T>(args: ThunderType): {
   }, []);
 
   // get updated thunder value from localstorage and set to thunderState (call after update localstorage value)
-  useEffect((): (() => void) => {
-    const getUpdatedThunderFromLocalstorage = (): void => {
-      const localstorageValue = getThunderFromLocalstorage();
-      if (localstorageValue !== thunder) {
-        setThunder(localstorageValue);
-      }
-    };
-    window.addEventListener("storage", () => {
-      getUpdatedThunderFromLocalstorage();
-    });
-    return (): void => {
-      window.removeEventListener("storage", () => {
-        getUpdatedThunderFromLocalstorage();
-      });
-    };
+  useEffect((): void => {
+    const localstorageValue = getThunderFromLocalstorage();
+    if (localstorageValue !== thunder) {
+      setThunder(localstorageValue);
+    }
   }, []);
 
   // set thunder value to localstorage (call after update thunder state)
