@@ -106,6 +106,7 @@ function useKillua<T>(args: ThunderType): {
       thunderExpireLocalstorage &&
       Object(thunderExpireLocalstorage)[thunderKey] !== null
     ) {
+      // date.now > expire time ? remove from localStorage and 'thunderExpire' : set timeout for remove from localStorage and 'thunderExpire'
       if (Date.now() > Object(thunderExpireLocalstorage)[thunderKey]) {
         localStorage.removeItem(thunderKey);
         delete Object(thunderExpireLocalstorage)[thunderKey];
@@ -138,11 +139,11 @@ function useKillua<T>(args: ThunderType): {
         setThunder(localstorageValue);
       }
     };
-    window.addEventListener("storage", (e: StorageEvent) => {
+    window.addEventListener("storage", () => {
       getUpdatedThunderFromLocalstorage();
     });
     return (): void => {
-      window.removeEventListener("storage", (e: StorageEvent) => {
+      window.removeEventListener("storage", () => {
         getUpdatedThunderFromLocalstorage();
       });
     };

@@ -1,9 +1,9 @@
 {
   "name": "react-killua",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/thunder.type.d.ts",
+  "main": "index.js",
+  "types": "thunder.type.d.ts",
   "keywords": [
     "react",
     "react-localstorage",
