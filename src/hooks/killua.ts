@@ -110,7 +110,8 @@ function useKillua<T>(args: ThunderType): {
       const removeThunder = (): void => {
         setThunder(args.default);
         localStorage.setItem(thunderKey, args.default);
-        Object(thunderExpireLocalstorage)[thunderKey] = Date.now() + Number(args.expire) * 60 * 1000;
+        Object(thunderExpireLocalstorage)[thunderKey] =
+          Date.now() + Number(args.expire) * 60 * 1000;
         localStorage.setItem(
           "thunderExpire",
           CryptoJS.AES.encrypt(
@@ -144,11 +145,21 @@ function useKillua<T>(args: ThunderType): {
   }, []);
 
   // get updated thunder value from localstorage and set to thunderState (call after update localstorage value)
-  useEffect((): void => {
-    const localstorageValue = getThunderFromLocalstorage();
-    if (localstorageValue !== thunder) {
-      setThunder(localstorageValue);
-    }
+  useEffect((): (() => void) => {
+    const getUpdatedThunderFromLocalstorage = (): void => {
+      const localstorageValue = getThunderFromLocalstorage();
+      if (localstorageValue !== thunder) {
+        setThunder(localstorageValue);
+      }
+    };
+    window.addEventListener("storage", () => {
+      getUpdatedThunderFromLocalstorage();
+    });
+    return (): void => {
+      window.removeEventListener("storage", () => {
+        getUpdatedThunderFromLocalstorage();
+      });
+    };
   }, []);
 
   // set thunder value to localstorage (call after update thunder state)
