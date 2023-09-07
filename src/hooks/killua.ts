@@ -107,7 +107,7 @@ function useKillua<T>(args: ThunderType): {
       Object(thunderExpireLocalstorage)[thunderKey] !== null
     ) {
       // function for remove from localStorage and 'thunderExpire'
-      function removeThunder() {
+      function removeThunderExpiredThunder() {
         setThunder(args.default);
         localStorage.setItem(thunderKey, args.default);
         Object(thunderExpireLocalstorage)[thunderKey] =
@@ -122,16 +122,10 @@ function useKillua<T>(args: ThunderType): {
       }
       // if thunder expire ? remove it from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
       if (Date.now() > Object(thunderExpireLocalstorage)[thunderKey]) {
-        removeThunder();
+        removeThunderExpiredThunder();
       } else {
         setInterval(() => {
-          console.log(
-            thunderKey,
-            Object(thunderExpireLocalstorage)[thunderKey] - Date.now()
-          );
-        }, 1000);
-        setInterval(() => {
-          removeThunder();
+          removeThunderExpiredThunder();
         }, Object(thunderExpireLocalstorage)[thunderKey] - Date.now());
       }
     }
