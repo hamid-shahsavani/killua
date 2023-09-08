@@ -94,7 +94,7 @@ function useKillua(args) {
         }
     }, []);
     // get thunder value from localstorage for initial value of thunderState
-    const [thunder, setThunder] = (0, react_1.useState)(undefined);
+    const [thunder, setThunder] = (0, react_1.useState)(typeof window === "undefined" ? undefined : getThunderFromLocalstorage());
     (0, react_1.useEffect)(() => {
         if (thunder === undefined) {
             setThunder(getThunderFromLocalstorage());
