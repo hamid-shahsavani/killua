@@ -14,9 +14,9 @@ function getUniqeBrowserId(): string {
 }
 
 //* set to localstorage
-function setToLocalstorage<T>(args: {
+function setToLocalstorage(args: {
   key: string;
-  data: T;
+  data: any;
   encrypt: boolean;
 }): void {
   localStorage.setItem(
@@ -31,11 +31,11 @@ function setToLocalstorage<T>(args: {
 }
 
 //* get from localstorage
-function getFromLocalstorage<T>(args: {
+function getFromLocalstorage(args: {
   key: string;
-  default: T;
+  default: any;
   encrypt: boolean;
-}): T {
+}): any {
   let parsedValue = args.default;
   const localStorageValue = localStorage.getItem(args.key);
   if (localStorageValue) {
@@ -49,14 +49,14 @@ function getFromLocalstorage<T>(args: {
           : localStorageValue
       );
     } catch {
-      setToLocalstorage<T>({
+      setToLocalstorage({
         key: args.key,
         data: args.default,
         encrypt: args.encrypt,
       });
     }
   } else {
-    setToLocalstorage<T>({
+    setToLocalstorage({
       key: args.key,
       data: args.default,
       encrypt: args.encrypt,
@@ -106,7 +106,7 @@ function useKillua<T>(args: ThunderType): {
   const [thunderState, setThunderState] = useState<any>((): any =>
     typeof window === "undefined"
       ? undefined
-      : getFromLocalstorage<T>({
+      : getFromLocalstorage({
           key: thunderKeyName,
           default: args.default,
           encrypt: args.encrypt,
@@ -134,14 +134,14 @@ function useKillua<T>(args: ThunderType): {
     data: T;
     encrypt: boolean;
   }): void {
-    setToLocalstorage<T>(args);
+    setToLocalstorage(args);
     setThunderState(args.data);
   }
 
   //* update thunder state in other browser tab with updated localstorage value
   useEffect(() => {
     const getUpdatedThunderFromLocalstorage = (): void => {
-      const localstorageValue = getFromLocalstorage<T>({
+      const localstorageValue = getFromLocalstorage({
         key: thunderKeyName,
         default: args.default,
         encrypt: args.encrypt,
