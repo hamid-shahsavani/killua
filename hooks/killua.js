@@ -96,7 +96,7 @@ function useKillua(args) {
     const isFirstRender = (0, react_1.useRef)(true);
     (0, react_1.useEffect)(() => {
         if (!isFirstRender.current && prevExpireArgRef.current !== args) {
-            detectThunderConfigChangedByDeveloperHandler();
+            setTimeout(detectThunderConfigChangedByDeveloperHandler, 1000);
         }
         prevExpireArgRef.current = args;
         isFirstRender.current = false;

@@ -124,7 +124,7 @@ function useKillua<T>(args: ThunderType): {
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (!isFirstRender.current && prevExpireArgRef.current !== args) {
-      detectThunderConfigChangedByDeveloperHandler();
+      setTimeout(detectThunderConfigChangedByDeveloperHandler, 1000);
     }
     prevExpireArgRef.current = args;
     isFirstRender.current = false;
