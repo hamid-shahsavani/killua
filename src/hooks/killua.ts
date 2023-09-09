@@ -138,9 +138,11 @@ function useKillua<T>(args: ThunderType): {
       setThunder(getThunderFromLocalstorage());
     }
   }, []);
+
+  // set expire time and remove expired thunder from localstorage
   useEffect(() => {
-    let intervalIdOne: any;
-    let intervalIdTwo: any;
+    console.log("thunderExpireLocalstorage", thunderExpireLocalstorage);
+    let intervalId: any;
     // if 'args.key' is not in 'thunderExpire' object && push it to 'thunderExpire' with expire time
     if (
       thunderExpireLocalstorage &&
@@ -163,25 +165,18 @@ function useKillua<T>(args: ThunderType): {
           Date.now() + Number(args.expire) * 60 * 1000;
         setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
       }
-      intervalIdOne = setInterval(() => {
-        console.log(
-          getThunderKeyName(),
-          Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now()
-        );
-      }, 1000);
       // if thunder expire ? remove it from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
       if (Date.now() > Object(thunderExpireLocalstorage)[getThunderKeyName()]) {
         removeThunderExpiredThunder();
       } else {
-        intervalIdTwo = setInterval(() => {
+        intervalId = setInterval(() => {
           removeThunderExpiredThunder();
         }, Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now());
       }
     }
 
     return (): void => {
-      clearInterval(intervalIdOne);
-      clearInterval(intervalIdTwo);
+      clearInterval(intervalId);
     };
   }, [thunder]);
 
