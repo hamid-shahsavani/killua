@@ -47,10 +47,13 @@ function useKillua(args) {
     const thunderKeyName = `thunder${args.key
         .charAt(0)
         .toUpperCase()}${args.key.slice(1)}`;
-    //* detect thunder config changed by developer and create again thunder key in localstorage
+    //* detect changed property ['expire', 'default', 'encrypt'] in thunder config by developer and create again thunder key in localstorage
     function detectThunderConfigChangedByDeveloperHandler() {
-        if (JSON.stringify(prevArgsRef.current) !== JSON.stringify(args)) {
-            console.log(args);
+        var _a, _b, _c;
+        if (((_a = prevArgsRef.current) === null || _a === void 0 ? void 0 : _a.expire) !== args.expire ||
+            ((_b = prevArgsRef.current) === null || _b === void 0 ? void 0 : _b.default) !== args.default ||
+            ((_c = prevArgsRef.current) === null || _c === void 0 ? void 0 : _c.encrypt) !== args.encrypt) {
+            console.log("detectThunderConfigChangedByDeveloperHandler");
             // set current thunder with default value to localstorage and state
             setThunderToLocalstorageAndStateHandler({
                 key: thunderKeyName,

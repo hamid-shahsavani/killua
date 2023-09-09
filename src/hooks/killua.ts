@@ -76,10 +76,14 @@ function useKillua<T>(args: ThunderType): {
     .charAt(0)
     .toUpperCase()}${args.key.slice(1)}`;
 
-  //* detect thunder config changed by developer and create again thunder key in localstorage
+  //* detect changed property ['expire', 'default', 'encrypt'] in thunder config by developer and create again thunder key in localstorage
   function detectThunderConfigChangedByDeveloperHandler(): void {
-    if(JSON.stringify(prevArgsRef.current) !== JSON.stringify(args)) {
-      console.log(args);
+    if (
+      prevArgsRef.current?.expire !== args.expire ||
+      prevArgsRef.current?.default !== args.default ||
+      prevArgsRef.current?.encrypt !== args.encrypt
+    ) {
+      console.log("detectThunderConfigChangedByDeveloperHandler");
       // set current thunder with default value to localstorage and state
       setThunderToLocalstorageAndStateHandler({
         key: thunderKeyName,
