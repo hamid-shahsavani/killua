@@ -41,36 +41,8 @@ function useKillua<T>(args: ThunderType): {
     );
   }
 
-  // get thunder value from localstorage
-  function getThunderFromLocalstorage(): string {
-    let parsedValue = args.default;
-    const localStorageValue = localStorage.getItem(getThunderKeyName());
-    if (localStorageValue) {
-      try {
-        parsedValue = JSON.parse(
-          args.encrypt
-            ? CryptoJS.AES.decrypt(
-                localStorageValue,
-                getUniqeBrowserId()
-              ).toString(CryptoJS.enc.Utf8)
-            : localStorageValue
-        );
-      } catch {
-        setDataToLocalstorage(args.default, getThunderKeyName(), args.encrypt);
-      }
-    } else {
-      // set current thunder expire time to localstorage
-      if (thunderExpireLocalstorage) {
-        Object(thunderExpireLocalstorage)[getThunderKeyName()] =
-          args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
-        setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
-      }
-    }
-    return parsedValue;
-  }
-
   // get 'thunderExpire' from localStorage
-  const getThunderExpireLocalstorage = (): null | Object => {
+  const getThunderExpireLocalstorage = (): Object => {
     let parsedValue = {};
     const localStorageValue = localStorage.getItem("thunderExpire");
     const removeAllThundersFromLocalstorage = () => {
@@ -106,6 +78,33 @@ function useKillua<T>(args: ThunderType): {
     }
     return parsedValue;
   };
+  // set expire time and remove expired thunder from localstorage
+  const thunderExpireLocalstorage = getThunderExpireLocalstorage();
+
+  // get thunder value from localstorage
+  function getThunderFromLocalstorage(): string {
+    let parsedValue = args.default;
+    const localStorageValue = localStorage.getItem(getThunderKeyName());
+    if (localStorageValue) {
+      try {
+        parsedValue = JSON.parse(
+          args.encrypt
+            ? CryptoJS.AES.decrypt(
+                localStorageValue,
+                getUniqeBrowserId()
+              ).toString(CryptoJS.enc.Utf8)
+            : localStorageValue
+        );
+      } catch {
+        setDataToLocalstorage(args.default, getThunderKeyName(), args.encrypt);
+      }
+    } else {
+      Object(thunderExpireLocalstorage)[getThunderKeyName()] =
+        args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
+      setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
+    }
+    return parsedValue;
+  }
 
   // detect thunder config changed by developer and create again thunder key in localstorage
   function detectThunderConfigChangedByDeveloperHandler(): void {
@@ -139,55 +138,52 @@ function useKillua<T>(args: ThunderType): {
       setThunder(getThunderFromLocalstorage());
     }
   }, []);
-
-    // set expire time and remove expired thunder from localstorage
-    const thunderExpireLocalstorage = getThunderExpireLocalstorage();
-    useEffect(() => {
-      let intervalIdOne: any;
-      let intervalIdTwo: any;
-      // if 'args.key' is not in 'thunderExpire' object && push it to 'thunderExpire' with expire time
-      if (
-        thunderExpireLocalstorage &&
-        !Object(thunderExpireLocalstorage)[getThunderKeyName()]
-      ) {
+  useEffect(() => {
+    let intervalIdOne: any;
+    let intervalIdTwo: any;
+    // if 'args.key' is not in 'thunderExpire' object && push it to 'thunderExpire' with expire time
+    if (
+      thunderExpireLocalstorage &&
+      !Object(thunderExpireLocalstorage)[getThunderKeyName()]
+    ) {
+      Object(thunderExpireLocalstorage)[getThunderKeyName()] =
+        args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
+      setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
+    }
+    // if date.now > expire time ? remove thunder expired from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
+    if (
+      thunderExpireLocalstorage &&
+      Object(thunderExpireLocalstorage)[getThunderKeyName()] !== null
+    ) {
+      // function for remove from localStorage and 'thunderExpire'
+      function removeThunderExpiredThunder() {
+        setThunder(args.default);
+        setDataToLocalstorage(args.default, getThunderKeyName(), args.encrypt);
         Object(thunderExpireLocalstorage)[getThunderKeyName()] =
-          args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
+          Date.now() + Number(args.expire) * 60 * 1000;
         setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
       }
-      // if date.now > expire time ? remove thunder expired from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
-      if (
-        thunderExpireLocalstorage &&
-        Object(thunderExpireLocalstorage)[getThunderKeyName()] !== null
-      ) {
-        // function for remove from localStorage and 'thunderExpire'
-        function removeThunderExpiredThunder() {
-          setThunder(args.default);
-          setDataToLocalstorage(args.default, getThunderKeyName(), args.encrypt);
-          Object(thunderExpireLocalstorage)[getThunderKeyName()] =
-            Date.now() + Number(args.expire) * 60 * 1000;
-          setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
-        }
-        intervalIdOne = setInterval(() => {
-          console.log(
-            getThunderKeyName(),
-            Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now()
-          );
-        }, 1000);
-        // if thunder expire ? remove it from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
-        if (Date.now() > Object(thunderExpireLocalstorage)[getThunderKeyName()]) {
+      intervalIdOne = setInterval(() => {
+        console.log(
+          getThunderKeyName(),
+          Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now()
+        );
+      }, 1000);
+      // if thunder expire ? remove it from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
+      if (Date.now() > Object(thunderExpireLocalstorage)[getThunderKeyName()]) {
+        removeThunderExpiredThunder();
+      } else {
+        intervalIdTwo = setInterval(() => {
           removeThunderExpiredThunder();
-        } else {
-          intervalIdTwo = setInterval(() => {
-            removeThunderExpiredThunder();
-          }, Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now());
-        }
+        }, Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now());
       }
+    }
 
-      return (): void => {
-        clearInterval(intervalIdOne);
-        clearInterval(intervalIdTwo);
-      };
-    }, [thunder]);
+    return (): void => {
+      clearInterval(intervalIdOne);
+      clearInterval(intervalIdTwo);
+    };
+  }, [thunder]);
 
   // setThunder with updated localstorage value (call after update key in localstorage with setStateHandler function)
   useEffect((): (() => void) => {
