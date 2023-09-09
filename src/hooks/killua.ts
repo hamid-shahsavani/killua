@@ -143,11 +143,12 @@ function useKillua<T>(args: ThunderType): {
   useEffect(() => {
     console.log("thunderExpireLocalstorage", thunderExpireLocalstorage);
     let intervalId: any;
+    let logIntervalId: any;
     // if 'args.key' is not in 'thunderExpire' object && push it to 'thunderExpire' with expire time
     if (
-      thunderExpireLocalstorage &&
-      !Object(thunderExpireLocalstorage)[getThunderKeyName()]
+      Object(thunderExpireLocalstorage)[getThunderKeyName()] === undefined
     ) {
+      console.log('fgfgfg', thunderExpireLocalstorage);
       Object(thunderExpireLocalstorage)[getThunderKeyName()] =
         args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
       setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
@@ -162,13 +163,16 @@ function useKillua<T>(args: ThunderType): {
         setThunder(args.default);
         setDataToLocalstorage(args.default, getThunderKeyName(), args.encrypt);
         Object(thunderExpireLocalstorage)[getThunderKeyName()] =
-          Date.now() + Number(args.expire) * 60 * 1000;
+        args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
         setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
       }
       // if thunder expire ? remove it from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
       if (Date.now() > Object(thunderExpireLocalstorage)[getThunderKeyName()]) {
         removeThunderExpiredThunder();
       } else {
+        logIntervalId = setInterval(() => {
+            console.log(getThunderKeyName(), Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now());
+        }, 1000);
         intervalId = setInterval(() => {
           removeThunderExpiredThunder();
         }, Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now());
@@ -177,6 +181,7 @@ function useKillua<T>(args: ThunderType): {
 
     return (): void => {
       clearInterval(intervalId);
+      clearInterval(logIntervalId);
     };
   }, [thunder]);
 

@@ -6,4 +6,7 @@ export type ThunderType = {
     actions?: {
         [key: string]: (state: any, payload: any) => any;
     };
+    selector?: {
+        [key: string]: (payload: any) => any;
+    };
 };

@@ -111,9 +111,10 @@ function useKillua(args) {
     (0, react_1.useEffect)(() => {
         console.log("thunderExpireLocalstorage", thunderExpireLocalstorage);
         let intervalId;
+        let logIntervalId;
         // if 'args.key' is not in 'thunderExpire' object && push it to 'thunderExpire' with expire time
-        if (thunderExpireLocalstorage &&
-            !Object(thunderExpireLocalstorage)[getThunderKeyName()]) {
+        if (Object(thunderExpireLocalstorage)[getThunderKeyName()] === undefined) {
+            console.log('fgfgfg', thunderExpireLocalstorage);
             Object(thunderExpireLocalstorage)[getThunderKeyName()] =
                 args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
             setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
@@ -126,7 +127,7 @@ function useKillua(args) {
                 setThunder(args.default);
                 setDataToLocalstorage(args.default, getThunderKeyName(), args.encrypt);
                 Object(thunderExpireLocalstorage)[getThunderKeyName()] =
-                    Date.now() + Number(args.expire) * 60 * 1000;
+                    args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
                 setDataToLocalstorage(thunderExpireLocalstorage, "thunderExpire", true);
             }
             // if thunder expire ? remove it from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
@@ -134,6 +135,9 @@ function useKillua(args) {
                 removeThunderExpiredThunder();
             }
             else {
+                logIntervalId = setInterval(() => {
+                    console.log(getThunderKeyName(), Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now());
+                }, 1000);
                 intervalId = setInterval(() => {
                     removeThunderExpiredThunder();
                 }, Object(thunderExpireLocalstorage)[getThunderKeyName()] - Date.now());
@@ -141,6 +145,7 @@ function useKillua(args) {
         }
         return () => {
             clearInterval(intervalId);
+            clearInterval(logIntervalId);
         };
     }, [thunder]);
     // setThunder with updated localstorage value (call after update key in localstorage with setStateHandler function)
