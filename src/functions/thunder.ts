@@ -29,15 +29,21 @@ function thunder(args: ThunderType) {
     throw new Error("`encrypt` is not a boolean for thunder!");
   }
   if (
-    args.actions !== undefined &&
-    (Object.keys(args.actions).some((key) => typeof key !== "string") ||
-      Object.keys(args.actions).some(
-        (key) => typeof args.actions![key] !== "function"
+    args.reducers !== undefined &&
+    (Object.keys(args.reducers).some((key) => typeof key !== "string") ||
+      Object.keys(args.reducers).some(
+        (key) => typeof args.reducers![key] !== "function"
       ))
   ) {
     throw new Error(
-      "`actions` is not an object with string keys and function values for thunder!"
+      "`reducers` is not an object with string keys and function values for thunder!"
     );
+  }
+  const notDefinedThunderKey = Object.keys(args).filter(
+    (key: string) => !["key", "encrypt", "default", "expire", "reducers"].includes(key)
+  );
+  if (notDefinedThunderKey.length > 0) {
+    throw new Error(`Not defined key \`${notDefinedThunderKey.join(", ")}\` for thunder!`);
   }
   return args;
 }

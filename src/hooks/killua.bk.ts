@@ -6,7 +6,7 @@ function useKillua<T>(args: ThunderType): {
   thunder: T;
   setThunder: (value: T | ((value: T) => T)) => void;
   isReady: Boolean;
-  actions: Record<string, Function>;
+  reducers: Record<string, Function>;
 } {
   // current thunder key name in localstorage
   function getThunderKeyName(): string {
@@ -210,20 +210,20 @@ function useKillua<T>(args: ThunderType): {
     }
   }, [thunder]);
 
-  // assign thunder actions to actions object
-  const actions: Record<string, Function> = {};
-  if (args.actions) {
-    for (const actionName in args.actions) {
-      if (Object.prototype.hasOwnProperty.call(args.actions, actionName)) {
-        const actionFunc = args.actions[actionName];
-        actions[actionName] = (payload: any) => {
+  // assign thunder reducers to reducers object
+  const reducers: Record<string, Function> = {};
+  if (args.reducers) {
+    for (const actionName in args.reducers) {
+      if (Object.prototype.hasOwnProperty.call(args.reducers, actionName)) {
+        const actionFunc = args.reducers[actionName];
+        reducers[actionName] = (payload: any) => {
           setThunder((prevState: T) => actionFunc(prevState, payload));
         };
       }
     }
   }
 
-  // return thunder state and setThunder function and isReady state and actions object
+  // return thunder state and setThunder function and isReady state and reducers object
   function setStateHandler(value: any): void {
     if (typeof value === "function") {
       setThunder((prev: any) => value(prev));
@@ -237,7 +237,7 @@ function useKillua<T>(args: ThunderType): {
       setStateHandler(value);
     },
     isReady: thunder === undefined ? false : true,
-    actions,
+    reducers,
   };
 }
 

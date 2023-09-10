@@ -171,19 +171,19 @@ function useKillua(args) {
             window.dispatchEvent(new Event("storage"));
         }
     }, [thunder]);
-    // assign thunder actions to actions object
-    const actions = {};
-    if (args.actions) {
-        for (const actionName in args.actions) {
-            if (Object.prototype.hasOwnProperty.call(args.actions, actionName)) {
-                const actionFunc = args.actions[actionName];
-                actions[actionName] = (payload) => {
+    // assign thunder reducers to reducers object
+    const reducers = {};
+    if (args.reducers) {
+        for (const actionName in args.reducers) {
+            if (Object.prototype.hasOwnProperty.call(args.reducers, actionName)) {
+                const actionFunc = args.reducers[actionName];
+                reducers[actionName] = (payload) => {
                     setThunder((prevState) => actionFunc(prevState, payload));
                 };
             }
         }
     }
-    // return thunder state and setThunder function and isReady state and actions object
+    // return thunder state and setThunder function and isReady state and reducers object
     function setStateHandler(value) {
         if (typeof value === "function") {
             setThunder((prev) => value(prev));
@@ -198,7 +198,7 @@ function useKillua(args) {
             setStateHandler(value);
         },
         isReady: thunder === undefined ? false : true,
-        actions,
+        reducers,
     };
 }
 exports.default = useKillua;

@@ -3,7 +3,7 @@ export type ThunderType = {
   encrypt: boolean;
   expire: null | number;
   default: any;
-  actions?: {
+  reducers?: {
     [key: string]: (state: any, payload: any) => any;
   };
 };

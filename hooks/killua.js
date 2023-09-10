@@ -16,7 +16,7 @@ function useKillua(args) {
     }
     //* set to localstorage
     function setToLocalstorage(args) {
-        localStorage.setItem(thunderKeyName, args.encrypt
+        localStorage.setItem(args.key, args.encrypt
             ? CryptoJS.AES.encrypt(JSON.stringify(args.data), getUniqeBrowserId()).toString()
             : JSON.stringify(args.data));
     }
@@ -31,50 +31,86 @@ function useKillua(args) {
                     : localStorageValue);
             }
             catch (_a) {
-                setToLocalstorage({
-                    key: args.key,
+                setThunderToLocalstorageAndStateHandler({
+                    key: thunderKeyName,
                     data: args.default,
                     encrypt: args.encrypt,
                 });
             }
         }
         else {
-            setToLocalstorage({
-                key: args.key,
-                data: args.default,
-                encrypt: args.encrypt,
-            });
-        }
-        return parsedValue;
-    }
-    //* detect changed property ['expire', 'default', 'encrypt'] in thunder config by developer and create again thunder key in localstorage
-    function detectThunderConfigChangedByDeveloperHandler() {
-        var _a, _b, _c;
-        if (((_a = prevArgsRef.current) === null || _a === void 0 ? void 0 : _a.expire) !== args.expire ||
-            ((_b = prevArgsRef.current) === null || _b === void 0 ? void 0 : _b.default) !== args.default ||
-            ((_c = prevArgsRef.current) === null || _c === void 0 ? void 0 : _c.encrypt) !== args.encrypt) {
-            console.log("detectThunderConfigChangedByDeveloperHandler");
-            // set current thunder with default value to localstorage and state
             setThunderToLocalstorageAndStateHandler({
                 key: thunderKeyName,
                 data: args.default,
                 encrypt: args.encrypt,
             });
         }
+        return parsedValue;
     }
-    const prevArgsRef = (0, react_1.useRef)(null);
-    const isFirstRender = (0, react_1.useRef)(true);
+    //* detect change thunder config by developer and create again thunder key in localstorage
     (0, react_1.useEffect)(() => {
-        if (!isFirstRender.current) {
-            detectThunderConfigChangedByDeveloperHandler();
+        function detectChangeThunderConfigByDeveloper() {
+            // get key 'thundersChecksum' from localStorage
+            function getThundersChecksumFromLocalstorage() {
+                let parsedValue = {};
+                const localStorageValue = localStorage.getItem("thundersChecksum");
+                if (localStorageValue) {
+                    try {
+                        parsedValue = JSON.parse(CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(CryptoJS.enc.Utf8));
+                    }
+                    catch (_a) {
+                        setToLocalstorage({
+                            key: "thundersChecksum",
+                            data: {},
+                            encrypt: true,
+                        });
+                    }
+                }
+                else {
+                    setToLocalstorage({
+                        key: "thundersChecksum",
+                        data: {},
+                        encrypt: true,
+                    });
+                }
+                return parsedValue;
+            }
+            const thundersChecksumLocalstorage = getThundersChecksumFromLocalstorage();
+            // update thunder checksum in localStorage && reset thunder-key&thunder-state to default value handler
+            const updateThunderChecksumHandler = () => {
+                Object(thundersChecksumLocalstorage)[thunderKeyName] = CryptoJS.MD5(JSON.stringify(args)).toString();
+                setToLocalstorage({
+                    key: "thundersChecksum",
+                    data: thundersChecksumLocalstorage,
+                    encrypt: true,
+                });
+                setThunderToLocalstorageAndStateHandler({
+                    key: thunderKeyName,
+                    data: args.default,
+                    encrypt: args.encrypt,
+                });
+            };
+            // if 'thundersChecksum' is not in localStorage ? (add key to 'thundersChecksum' with checksum && reset thunder-key&thunder-state to default value) : (if changed thunder config by developer && (update checksum && reset thunder-key&thunder-state to default value))
+            if (!thundersChecksumLocalstorage.hasOwnProperty(thunderKeyName)) {
+                updateThunderChecksumHandler();
+            }
+            else {
+                if (Object(thundersChecksumLocalstorage)[thunderKeyName] !==
+                    CryptoJS.MD5(JSON.stringify(args)).toString()) {
+                    console.log('args', CryptoJS.MD5(JSON.stringify(args)).toString());
+                    console.log('thundersChecksumLocalstorage', Object(thundersChecksumLocalstorage)[thunderKeyName]);
+                    updateThunderChecksumHandler();
+                }
+            }
         }
-        prevArgsRef.current = args;
-        isFirstRender.current = false;
-    }, [args]);
+        detectChangeThunderConfigByDeveloper();
+        window.addEventListener("storage", detectChangeThunderConfigByDeveloper);
+        return () => {
+            window.removeEventListener("storage", detectChangeThunderConfigByDeveloper);
+        };
+    }, []);
     //* thunder state with initial-value from localstorage
-    const [thunderState, setThunderState] = (0, react_1.useState)(() => typeof window === "undefined"
-        ? undefined
-        : getThunderFromLocalstorage());
+    const [thunderState, setThunderState] = (0, react_1.useState)(() => typeof window === "undefined" ? undefined : getThunderFromLocalstorage());
     const isMountedRef = (0, react_1.useRef)(false);
     (0, react_1.useEffect)(() => {
         if (!isMountedRef.current) {
@@ -86,7 +122,11 @@ function useKillua(args) {
     }, []);
     //* set thunder to localstorage and state handler
     function setThunderToLocalstorageAndStateHandler(args) {
-        setToLocalstorage(args);
+        setToLocalstorage({
+            key: thunderKeyName,
+            data: args.data,
+            encrypt: args.encrypt,
+        });
         setThunderState(args.data);
     }
     //* update thunder state in other browser tab with updated localstorage value
@@ -102,108 +142,116 @@ function useKillua(args) {
             window.removeEventListener("storage", getUpdatedThunderFromLocalstorage);
         };
     }, []);
-    //* set expire time and remove expired thunder from localstorage
-    // get 'thunderExpire' from localStorage
-    const getThunderExpireFromLocalstorage = () => {
+    /*
+      //* set expire time and remove expired thunder from localstorage
+      // get 'thundersExpire' from localStorage
+      const getThundersExpireFromLocalstorage = (): Object => {
         let parsedValue = {};
-        const localStorageValue = localStorage.getItem("thunderExpire");
+        const localStorageValue = localStorage.getItem("thundersExpire");
         const removeAllThundersFromLocalstorage = () => {
-            const keysToRemove = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith("thunder") && key !== "thunderExpire") {
-                    keysToRemove.push(key);
-                }
+          const keysToRemove = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith("thunder") && key !== "thundersExpire") {
+              keysToRemove.push(key);
             }
-            keysToRemove.forEach((key) => {
-                localStorage.removeItem(key);
-            });
+          }
+          keysToRemove.forEach((key) => {
+            localStorage.removeItem(key);
+          });
         };
         if (localStorageValue) {
-            try {
-                parsedValue = JSON.parse(CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(CryptoJS.enc.Utf8));
-            }
-            catch (_a) {
-                // delete all localStorage keys starting with 'thunder'
-                removeAllThundersFromLocalstorage();
-                // create 'thunderExpire' with an empty object encrypted
-                setToLocalstorage({
-                    key: "thunderExpire",
-                    data: {},
-                    encrypt: true,
-                });
-            }
-        }
-        else {
+          try {
+            parsedValue = JSON.parse(
+              CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(
+                CryptoJS.enc.Utf8
+              )
+            );
+          } catch {
             // delete all localStorage keys starting with 'thunder'
             removeAllThundersFromLocalstorage();
-            // create 'thunderExpire' with an empty object encrypted
+            // create 'thundersExpire' with an empty object encrypted
             setToLocalstorage({
-                key: "thunderExpire",
-                data: {},
-                encrypt: true,
+              key: "thundersExpire",
+              data: {},
+              encrypt: true,
             });
+          }
+        } else {
+          // delete all localStorage keys starting with 'thunder'
+          removeAllThundersFromLocalstorage();
+          // create 'thundersExpire' with an empty object encrypted
+          setToLocalstorage({
+            key: "thundersExpire",
+            data: {},
+            encrypt: true,
+          });
         }
         return parsedValue;
-    };
-    // set expire time and remove expired thunder from localstorage
-    const thunderExpireLocalstorage = getThunderExpireFromLocalstorage();
-    (0, react_1.useEffect)(() => {
+      };
+      // set expire time and remove expired thunder from localstorage
+      const thundersExpireLocalstorage = getThundersExpireFromLocalstorage();
+      useEffect(() => {
         function pushThunderToExpireThunderKeyInLocalstorage() {
-            Object(thunderExpireLocalstorage)[thunderKeyName] =
-                args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
-            setToLocalstorage({
-                key: "thunderExpire",
-                data: thunderExpireLocalstorage,
-                encrypt: true,
-            });
+          Object(thundersExpireLocalstorage)[thunderKeyName] =
+            args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
+          setToLocalstorage({
+            key: "thundersExpire",
+            data: thundersExpireLocalstorage,
+            encrypt: true,
+          });
         }
-        let intervalId;
-        let logIntervalId;
-        if (thunderExpireLocalstorage !== undefined) {
-            // if 'args.key' is not in 'thunderExpire' object && push it to 'thunderExpire' with expire time
-            if (Object(thunderExpireLocalstorage)[thunderKeyName] === undefined) {
-                pushThunderToExpireThunderKeyInLocalstorage();
+        let intervalId: any;
+        let logIntervalId: any;
+        if (thundersExpireLocalstorage !== undefined) {
+          // if 'args.key' is not in 'thundersExpire' object && push it to 'thundersExpire' with expire time
+          if (Object(thundersExpireLocalstorage)[thunderKeyName] === undefined) {
+            pushThunderToExpireThunderKeyInLocalstorage();
+          }
+          // if date.now > expire time ? remove thunder expired from localStorage and 'thundersExpire' object : setInterval for remove from localStorage and 'thundersExpire' object
+          if (
+            thundersExpireLocalstorage &&
+            Object(thundersExpireLocalstorage)[thunderKeyName] !== null
+          ) {
+            // function for remove from localStorage and 'thundersExpire'
+            function removeThundersExpiredThunder() {
+              setThunderToLocalstorageAndStateHandler({
+                key: thunderKeyName,
+                data: args.default,
+                encrypt: args.encrypt,
+              });
+              pushThunderToExpireThunderKeyInLocalstorage();
             }
-            // if date.now > expire time ? remove thunder expired from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
-            if (thunderExpireLocalstorage &&
-                Object(thunderExpireLocalstorage)[thunderKeyName] !== null) {
-                // function for remove from localStorage and 'thunderExpire'
-                function removeThunderExpiredThunder() {
-                    setThunderToLocalstorageAndStateHandler({
-                        key: thunderKeyName,
-                        data: args.default,
-                        encrypt: args.encrypt,
-                    });
-                    pushThunderToExpireThunderKeyInLocalstorage();
-                }
-                // if thunder expire ? remove it from localStorage and 'thunderExpire' object : setInterval for remove from localStorage and 'thunderExpire' object
-                if (Date.now() > Object(thunderExpireLocalstorage)[thunderKeyName]) {
-                    removeThunderExpiredThunder();
-                }
-                else {
-                    logIntervalId = setInterval(() => {
-                        console.log(thunderKeyName, Object(thunderExpireLocalstorage)[thunderKeyName] - Date.now());
-                    }, 1000);
-                    intervalId = setInterval(() => {
-                        removeThunderExpiredThunder();
-                    }, Object(thunderExpireLocalstorage)[thunderKeyName] - Date.now());
-                }
+            // if thunder expire ? remove it from localStorage and 'thundersExpire' object : setInterval for remove from localStorage and 'thundersExpire' object
+            if (Date.now() > Object(thundersExpireLocalstorage)[thunderKeyName]) {
+              removeThundersExpiredThunder();
+            } else {
+              logIntervalId = setInterval(() => {
+                console.log(
+                  thunderKeyName,
+                  Object(thundersExpireLocalstorage)[thunderKeyName] - Date.now()
+                );
+              }, 1000);
+              intervalId = setInterval(() => {
+                removeThundersExpiredThunder();
+              }, Object(thundersExpireLocalstorage)[thunderKeyName] - Date.now());
             }
+          }
         }
-        return () => {
-            clearInterval(intervalId);
-            clearInterval(logIntervalId);
+        return (): void => {
+          clearInterval(intervalId);
+          clearInterval(logIntervalId);
         };
-    }, [thunderState]);
-    //* return thunder state and setThunder state function and detect isReady thunder state and actions object
-    // assign thunder config actions to actions object
-    const actions = {};
-    if (args.actions) {
-        for (const actionName in args.actions) {
-            if (Object.prototype.hasOwnProperty.call(args.actions, actionName)) {
-                const actionFunc = args.actions[actionName];
-                actions[actionName] = (payload) => {
+      }, [thunderState]);
+    */
+    //* return thunder state and setThunder state function and detect isReady thunder state and reducers object
+    // assign thunder config reducers to reducers object
+    const reducers = {};
+    if (args.reducers) {
+        for (const actionName in args.reducers) {
+            if (Object.prototype.hasOwnProperty.call(args.reducers, actionName)) {
+                const actionFunc = args.reducers[actionName];
+                reducers[actionName] = (payload) => {
                     setThunderToLocalstorageAndStateHandler({
                         key: thunderKeyName,
                         data: actionFunc(thunderState, payload),
@@ -234,7 +282,7 @@ function useKillua(args) {
         thunder: thunderState,
         setThunder: setThunderHandler,
         isReady: thunderState === undefined ? false : true,
-        actions,
+        reducers,
     };
 }
 exports.default = useKillua;
