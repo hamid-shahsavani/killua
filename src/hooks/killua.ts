@@ -232,55 +232,42 @@ function useKillua<T>(args: ThunderType): {
   //* set expire time and remove expired thunder from localstorage
   useEffect(() => {
     let intervalId: any;
-    let logIntervalId: any;
-    function setExpireTimeHandlerAndRemoveExpiredThunder(): void {
-      const thundersExpireLocalstorage = getThundersExpireFromLocalstorage();
-      // function for set expire time to 'thundersExpire' object
-      function addThunderToThundersExpireLocalstorageHandler() {
-        Object(thundersExpireLocalstorage)[thunderKeyName] =
-          args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
-        setToLocalstorage({
-          key: "thundersExpire",
-          data: thundersExpireLocalstorage,
-          encrypt: true,
-        });
-      }
-      // function for remove expired thunder from localStorage and 'thundersExpire'
-      function removeExpiredThunderHandler() {
-        setThunderToLocalstorageAndStateHandler({
-          key: thunderKeyName,
-          data: args.default,
-          encrypt: args.encrypt,
-        });
-        addThunderToThundersExpireLocalstorageHandler();
-      }
-      if (thundersExpireLocalstorage) {
-        // if thunder is not in 'thundersExpire' object && push it to 'thundersExpire' with expire time
-        if (!thundersExpireLocalstorage.hasOwnProperty(thunderKeyName)) {
-          addThunderToThundersExpireLocalstorageHandler();
-        }
-        // if thunder is with expired time in 'thundersExpire' object ? (if thunder expired ? remove from localStorage and 'thundersExpire' object) : (setInterval for remove from localStorage and 'thundersExpire' object)
-        if (Object(thundersExpireLocalstorage)[thunderKeyName]) {
-          if (Date.now() > Object(thundersExpireLocalstorage)[thunderKeyName]) {
-            removeExpiredThunderHandler();
-          } else {
-            logIntervalId = setInterval(() => {
-              console.log(
-                thunderKeyName,
-                Object(thundersExpireLocalstorage)[thunderKeyName] - Date.now()
-              );
-            }, 1000);
-            intervalId = setInterval(() => {
-              removeExpiredThunderHandler();
-            }, Object(thundersExpireLocalstorage)[thunderKeyName] - Date.now());
-          }
-        }
+    const thundersExpireLocalstorage = getThundersExpireFromLocalstorage();
+    // function for set expire time to 'thundersExpire' object
+    function addThunderToThundersExpireLocalstorageHandler() {
+      Object(thundersExpireLocalstorage)[thunderKeyName] =
+        args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
+      setToLocalstorage({
+        key: "thundersExpire",
+        data: thundersExpireLocalstorage,
+        encrypt: true,
+      });
+    }
+    // function for remove expired thunder from localStorage and 'thundersExpire'
+    function removeExpiredThunderHandler() {
+      setThunderToLocalstorageAndStateHandler({
+        key: thunderKeyName,
+        data: args.default,
+        encrypt: args.encrypt,
+      });
+      addThunderToThundersExpireLocalstorageHandler();
+    }
+    // if thunder is not in 'thundersExpire' object && push it to 'thundersExpire' with expire time
+    if (!thundersExpireLocalstorage.hasOwnProperty(thunderKeyName)) {
+      addThunderToThundersExpireLocalstorageHandler();
+    }
+    // if thunder is with expired time in 'thundersExpire' object ? (if thunder expired ? remove from localStorage and 'thundersExpire' object) : (setInterval for remove from localStorage and 'thundersExpire' object)
+    if (Object(thundersExpireLocalstorage)[thunderKeyName]) {
+      if (Date.now() > Object(thundersExpireLocalstorage)[thunderKeyName]) {
+        removeExpiredThunderHandler();
+      } else {
+        intervalId = setInterval(() => {
+          removeExpiredThunderHandler();
+        }, Object(thundersExpireLocalstorage)[thunderKeyName] - Date.now());
       }
     }
-    setExpireTimeHandlerAndRemoveExpiredThunder();
     return (): void => {
       clearInterval(intervalId);
-      clearInterval(logIntervalId);
     };
   }, [thunderState]);
 
