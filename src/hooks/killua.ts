@@ -195,7 +195,15 @@ function useKillua<T>(args: ThunderType): {
   useEffect(() => {
     if (!isMountedRef.current) {
       if (thunderState === undefined) {
-        setThunderState(getThunderFromLocalstorage());
+        if(
+          Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
+          CryptoJS.MD5(JSON.stringify(args)).toString()
+        ) {
+          const thunderLocalstorageValue = getThunderFromLocalstorage();
+          if (thunderLocalstorageValue !== thunderState) {
+            setThunderState(getThunderFromLocalstorage());
+          }
+        }
       }
       isMountedRef.current = true;
     }
@@ -218,9 +226,14 @@ function useKillua<T>(args: ThunderType): {
   //* update thunder state in other browser tab with updated localstorage value
   useEffect(() => {
     const getUpdatedThunderFromLocalstorage = (): void => {
-      const localstorageValue = getThunderFromLocalstorage();
-      if (localstorageValue !== thunderState) {
-        setThunderState(localstorageValue);
+      if(
+        Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
+        CryptoJS.MD5(JSON.stringify(args)).toString()
+      ) {
+        const thunderLocalstorageValue = getThunderFromLocalstorage();
+        if (thunderLocalstorageValue !== thunderState) {
+          setThunderState(getThunderFromLocalstorage());
+        }
       }
     };
     window.addEventListener("storage", getUpdatedThunderFromLocalstorage);
