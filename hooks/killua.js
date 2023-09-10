@@ -89,6 +89,7 @@ function useKillua(args) {
                     data: args.default,
                     encrypt: args.encrypt,
                 });
+                window.removeEventListener("storage", detectChangeThunderConfigByDeveloper);
             };
             // if 'thundersChecksum' is not in localStorage ? (add key to 'thundersChecksum' with checksum && reset thunder-key&thunder-state to default value) : (if changed thunder config by developer && (update checksum && reset thunder-key&thunder-state to default value))
             if (!thundersChecksumLocalstorage.hasOwnProperty(thunderKeyName)) {
@@ -97,8 +98,6 @@ function useKillua(args) {
             else {
                 if (Object(thundersChecksumLocalstorage)[thunderKeyName] !==
                     CryptoJS.MD5(JSON.stringify(args)).toString()) {
-                    console.log('args', CryptoJS.MD5(JSON.stringify(args)).toString());
-                    console.log('thundersChecksumLocalstorage', Object(thundersChecksumLocalstorage)[thunderKeyName]);
                     updateThunderChecksumHandler();
                 }
             }
