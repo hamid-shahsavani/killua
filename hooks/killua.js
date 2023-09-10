@@ -253,6 +253,16 @@ function useKillua(args) {
             }
         }
     }
+    // assign thunder config selectors to selectors with object
+    const selectors = {};
+    if (args.selectors) {
+        for (const selectorName in args.selectors) {
+            if (Object.prototype.hasOwnProperty.call(args.selectors, selectorName)) {
+                const selectorFunc = args.selectors[selectorName];
+                selectors[selectorName] = (payload) => selectorFunc(thunderState, payload);
+            }
+        }
+    }
     // handler for update thunder state
     function setThunderHandler(value) {
         if (typeof value === "function") {
@@ -275,6 +285,7 @@ function useKillua(args) {
         setThunder: setThunderHandler,
         isReady: thunderState === undefined ? false : true,
         reducers,
+        selectors
     };
 }
 exports.default = useKillua;

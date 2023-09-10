@@ -7,6 +7,7 @@ function useKillua<T>(args: ThunderType): {
   setThunder: (value: T | ((value: T) => T)) => void;
   isReady: Boolean;
   reducers: Record<string, Function>;
+  selectors: Record<string, Function>;
 } {
   //* current thunder key name in localstorage
   const thunderKeyName = `thunder${args.key
@@ -304,6 +305,17 @@ function useKillua<T>(args: ThunderType): {
       }
     }
   }
+  // assign thunder config selectors to selectors with object
+  const selectors: Record<string, Function> = {};
+  if (args.selectors) {
+    for (const selectorName in args.selectors) {
+      if (Object.prototype.hasOwnProperty.call(args.selectors, selectorName)) {
+        const selectorFunc = args.selectors[selectorName];
+        selectors[selectorName] = (payload: any) =>
+          (selectorFunc as (prev: T, payload: any) => any)(thunderState, payload);
+      }
+    }
+  }
   // handler for update thunder state
   function setThunderHandler(value: T | ((prev: T) => T)): void {
     if (typeof value === "function") {
@@ -325,6 +337,7 @@ function useKillua<T>(args: ThunderType): {
     setThunder: setThunderHandler,
     isReady: thunderState === undefined ? false : true,
     reducers,
+    selectors
   };
 }
 

@@ -39,11 +39,32 @@ function thunder(args: ThunderType) {
       "`reducers` is not an object with string keys and function values for thunder!"
     );
   }
+  if (
+    args.selectors !== undefined &&
+    (Object.keys(args.selectors).some((key) => typeof key !== "string") ||
+      Object.keys(args.selectors).some(
+        (key) => typeof args.selectors![key] !== "function"
+      ))
+  ) {
+    throw new Error(
+      "`selectors` is not an object with string keys and function values for thunder!"
+    );
+  }
   const notDefinedThunderKey = Object.keys(args).filter(
-    (key: string) => !["key", "encrypt", "default", "expire", "reducers"].includes(key)
+    (key: string) =>
+      ![
+        "key",
+        "encrypt",
+        "default",
+        "expire",
+        "reducers",
+        "selectors",
+      ].includes(key)
   );
   if (notDefinedThunderKey.length > 0) {
-    throw new Error(`Not defined key \`${notDefinedThunderKey.join(", ")}\` for thunder!`);
+    throw new Error(
+      `Not defined key \`${notDefinedThunderKey.join(", ")}\` for thunder!`
+    );
   }
   return args;
 }

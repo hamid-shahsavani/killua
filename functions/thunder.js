@@ -33,7 +33,19 @@ function thunder(args) {
             Object.keys(args.reducers).some((key) => typeof args.reducers[key] !== "function"))) {
         throw new Error("`reducers` is not an object with string keys and function values for thunder!");
     }
-    const notDefinedThunderKey = Object.keys(args).filter((key) => !["key", "encrypt", "default", "expire", "reducers"].includes(key));
+    if (args.selectors !== undefined &&
+        (Object.keys(args.selectors).some((key) => typeof key !== "string") ||
+            Object.keys(args.selectors).some((key) => typeof args.selectors[key] !== "function"))) {
+        throw new Error("`selectors` is not an object with string keys and function values for thunder!");
+    }
+    const notDefinedThunderKey = Object.keys(args).filter((key) => ![
+        "key",
+        "encrypt",
+        "default",
+        "expire",
+        "reducers",
+        "selectors",
+    ].includes(key));
     if (notDefinedThunderKey.length > 0) {
         throw new Error(`Not defined key \`${notDefinedThunderKey.join(", ")}\` for thunder!`);
     }
