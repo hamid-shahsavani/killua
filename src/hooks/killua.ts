@@ -45,35 +45,42 @@ function useKillua<T>(args: ThunderType): {
 
   //* get thunder from localstorage
   function getThunderFromLocalstorage(): any {
+    // if ssr and not wrapped with SSRKilluaProvider && throw error
     if (typeof window === "undefined")
       throw new Error(
         "please wrap your app with <SSRKilluaProvider></SSRKilluaProvider> in ssr"
       );
+    // if thunder config not changed by developer && get thunder from localStorage
     let parsedValue = args.default;
-    const localStorageValue = localStorage.getItem(thunderKeyName);
-    if (localStorageValue) {
-      try {
-        parsedValue = JSON.parse(
-          args.encrypt
-            ? CryptoJS.AES.decrypt(
-                localStorageValue,
-                getUniqeBrowserId()
-              ).toString(CryptoJS.enc.Utf8)
-            : localStorageValue
-        );
-      } catch {
+    if (
+      Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
+      CryptoJS.MD5(JSON.stringify(args)).toString()
+    ) {
+      const localStorageValue = localStorage.getItem(thunderKeyName);
+      if (localStorageValue) {
+        try {
+          parsedValue = JSON.parse(
+            args.encrypt
+              ? CryptoJS.AES.decrypt(
+                  localStorageValue,
+                  getUniqeBrowserId()
+                ).toString(CryptoJS.enc.Utf8)
+              : localStorageValue
+          );
+        } catch {
+          setThunderToLocalstorageAndStateHandler({
+            key: thunderKeyName,
+            data: args.default,
+            encrypt: args.encrypt,
+          });
+        }
+      } else {
         setThunderToLocalstorageAndStateHandler({
           key: thunderKeyName,
           data: args.default,
           encrypt: args.encrypt,
         });
       }
-    } else {
-      setThunderToLocalstorageAndStateHandler({
-        key: thunderKeyName,
-        data: args.default,
-        encrypt: args.encrypt,
-      });
     }
     return parsedValue;
   }
@@ -200,14 +207,9 @@ function useKillua<T>(args: ThunderType): {
   );
   useEffect(() => {
     if (thunderState === undefined) {
-      if (
-        Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
-        CryptoJS.MD5(JSON.stringify(args)).toString()
-      ) {
-        const thunderLocalstorageValue = getThunderFromLocalstorage();
-        if (thunderLocalstorageValue !== thunderState) {
-          setThunderState(getThunderFromLocalstorage());
-        }
+      const thunderLocalstorageValue = getThunderFromLocalstorage();
+      if (thunderLocalstorageValue !== thunderState) {
+        setThunderState(getThunderFromLocalstorage());
       }
     }
   }, []);
