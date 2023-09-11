@@ -1,6 +1,6 @@
 {
-  "name": "react-killua",
-  "version": "0.0.4",
+  "name": "killua",
+  "version": "0.0.11",
   "description": "",
   "main": "index.js",
   "types": "thunder.type.d.ts",

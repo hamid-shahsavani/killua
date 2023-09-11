@@ -6,7 +6,7 @@ export type ThunderType = {
     reducers?: {
         [key: string]: (state: any, payload: any) => any;
     };
-    selectors: {
-        [key: string]: (state: any) => any;
+    selectors?: {
+        [key: string]: (state: any, payload: any) => any;
     };
 };
