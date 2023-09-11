@@ -1,13 +1,14 @@
 import * as CryptoJS from "crypto-js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSSRKillua } from "../providers/ssr";
 import { ThunderType } from "../types/thunder.type";
 
 function useKillua<T>(args: ThunderType): {
   thunder: T;
   setThunder: (value: T | ((value: T) => T)) => void;
-  isReady: Boolean;
   reducers: Record<string, Function>;
   selectors: Record<string, Function>;
+  isReadyInSsr?: Boolean;
 } {
   //* current thunder key name in localstorage
   const thunderKeyName = `thunder${args.key
@@ -44,6 +45,10 @@ function useKillua<T>(args: ThunderType): {
 
   //* get thunder from localstorage
   function getThunderFromLocalstorage(): any {
+    if (typeof window === "undefined")
+      throw new Error(
+        "please wrap your app with <SSRKilluaProvider></SSRKilluaProvider> in ssr"
+      );
     let parsedValue = args.default;
     const localStorageValue = localStorage.getItem(thunderKeyName);
     if (localStorageValue) {
@@ -189,24 +194,21 @@ function useKillua<T>(args: ThunderType): {
   }, []);
 
   //* thunder state with initial-value from localstorage
-  const [thunderState, setThunderState] = useState<any>((): any =>
-    typeof window === "undefined" ? undefined : getThunderFromLocalstorage()
+  const isServer = useSSRKillua();
+  const [thunderState, setThunderState] = useState<any>(
+    isServer ? undefined : getThunderFromLocalstorage()
   );
-  const isMountedRef = useRef(false);
   useEffect(() => {
-    if (!isMountedRef.current) {
-      if (thunderState === undefined) {
-        if(
-          Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
-          CryptoJS.MD5(JSON.stringify(args)).toString()
-        ) {
-          const thunderLocalstorageValue = getThunderFromLocalstorage();
-          if (thunderLocalstorageValue !== thunderState) {
-            setThunderState(getThunderFromLocalstorage());
-          }
+    if (thunderState === undefined) {
+      if (
+        Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
+        CryptoJS.MD5(JSON.stringify(args)).toString()
+      ) {
+        const thunderLocalstorageValue = getThunderFromLocalstorage();
+        if (thunderLocalstorageValue !== thunderState) {
+          setThunderState(getThunderFromLocalstorage());
         }
       }
-      isMountedRef.current = true;
     }
   }, []);
 
@@ -227,7 +229,7 @@ function useKillua<T>(args: ThunderType): {
   //* update thunder state in other browser tab with updated localstorage value
   useEffect(() => {
     const getUpdatedThunderFromLocalstorage = (): void => {
-      if(
+      if (
         Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
         CryptoJS.MD5(JSON.stringify(args)).toString()
       ) {
@@ -312,7 +314,10 @@ function useKillua<T>(args: ThunderType): {
       if (Object.prototype.hasOwnProperty.call(args.selectors, selectorName)) {
         const selectorFunc = args.selectors[selectorName];
         selectors[selectorName] = (payload: any) =>
-          (selectorFunc as (prev: T, payload: any) => any)(thunderState, payload);
+          (selectorFunc as (prev: T, payload: any) => any)(
+            thunderState,
+            payload
+          );
       }
     }
   }
@@ -335,9 +340,9 @@ function useKillua<T>(args: ThunderType): {
   return {
     thunder: thunderState,
     setThunder: setThunderHandler,
-    isReady: thunderState === undefined ? false : true,
     reducers,
-    selectors
+    selectors,
+    isReadyInSsr: thunderState !== undefined,
   };
 }
 

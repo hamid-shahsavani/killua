@@ -3,10 +3,12 @@
     "target": "ES6",
     "module": "CommonJS",
     "outDir": "./",
+    "jsx": "react",
+    "esModuleInterop": true,
     "lib": ["es2016", "dom"],
     "strict": true,
     "declaration": true
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "src/providers/ssr.tsx"],
   "exclude": ["node_modules"]
 }
