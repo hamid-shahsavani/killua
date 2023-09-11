@@ -47,7 +47,7 @@ function thunder(args) {
         "selectors",
     ].includes(key));
     if (notDefinedThunderKey.length > 0) {
-        throw new Error(`Not defined key \`${notDefinedThunderKey.join(", ")}\` for thunder!`);
+        throw new Error(`not defined key \`${notDefinedThunderKey.join(", ")}\` for thunder!`);
     }
     return args;
 }

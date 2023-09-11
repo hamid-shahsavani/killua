@@ -63,7 +63,7 @@ function thunder(args: ThunderType) {
   );
   if (notDefinedThunderKey.length > 0) {
     throw new Error(
-      `Not defined key \`${notDefinedThunderKey.join(", ")}\` for thunder!`
+      `not defined key \`${notDefinedThunderKey.join(", ")}\` for thunder!`
     );
   }
   return args;

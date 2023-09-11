@@ -4,9 +4,9 @@ export type ThunderType = {
     expire: null | number;
     default: any;
     reducers?: {
-        [key: string]: (state: any, payload: any) => any;
+        [key: string]: (thunder: any, payload: any) => any;
     };
     selectors?: {
-        [key: string]: (state: any, payload: any) => any;
+        [key: string]: (thunder: any, payload: any) => any;
     };
 };
