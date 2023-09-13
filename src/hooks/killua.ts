@@ -1,7 +1,7 @@
 import * as CryptoJS from "crypto-js";
 import { useEffect, useState } from "react";
-import { useSSRKillua } from "../providers/ssr";
 import { ThunderType } from "../types/thunder.type";
+import { useSSRKillua } from "../providers/ssr";
 
 function useKillua<T>(args: ThunderType): {
   thunder: T;
