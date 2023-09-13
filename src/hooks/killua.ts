@@ -41,6 +41,7 @@ function useKillua<T>(args: ThunderType): {
           ).toString()
         : JSON.stringify(args.data)
     );
+    window.dispatchEvent( new Event('storage') );
   }
 
   //* get thunder from localstorage
@@ -206,7 +207,7 @@ function useKillua<T>(args: ThunderType): {
     isServer ? undefined : getThunderFromLocalstorage()
   );
   useEffect(() => {
-    if (thunderState === undefined) {
+    if (isServer) {
       const thunderLocalstorageValue = getThunderFromLocalstorage();
       if (thunderLocalstorageValue !== thunderState) {
         setThunderState(getThunderFromLocalstorage());
@@ -228,7 +229,7 @@ function useKillua<T>(args: ThunderType): {
     setThunderState(args.data);
   }
 
-  //* update thunder state in other browser tab with updated localstorage value
+  //* update thunder state after updated localstorage value
   useEffect(() => {
     const getUpdatedThunderFromLocalstorage = (): void => {
       if (

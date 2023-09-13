@@ -43,6 +43,7 @@ function useKillua(args) {
         localStorage.setItem(args.key, args.encrypt
             ? CryptoJS.AES.encrypt(JSON.stringify(args.data), getUniqeBrowserId()).toString()
             : JSON.stringify(args.data));
+        window.dispatchEvent(new Event('storage'));
     }
     //* get thunder from localstorage
     function getThunderFromLocalstorage() {
@@ -187,7 +188,7 @@ function useKillua(args) {
     const isServer = (0, ssr_1.useSSRKillua)();
     const [thunderState, setThunderState] = (0, react_1.useState)(isServer ? undefined : getThunderFromLocalstorage());
     (0, react_1.useEffect)(() => {
-        if (thunderState === undefined) {
+        if (isServer) {
             const thunderLocalstorageValue = getThunderFromLocalstorage();
             if (thunderLocalstorageValue !== thunderState) {
                 setThunderState(getThunderFromLocalstorage());
@@ -203,7 +204,7 @@ function useKillua(args) {
         });
         setThunderState(args.data);
     }
-    //* update thunder state in other browser tab with updated localstorage value
+    //* update thunder state after updated localstorage value
     (0, react_1.useEffect)(() => {
         const getUpdatedThunderFromLocalstorage = () => {
             if (Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
