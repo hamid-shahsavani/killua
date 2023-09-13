@@ -1,7 +1,7 @@
 {
   "name": "killua",
-  "version": "0.0.4",
-  "description": "",
+  "version": "0.1.0",
+  "description": "killua is a local-storage management library for React applications.",
   "main": "index.js",
   "types": "thunder.type.d.ts",
   "keywords": [
