@@ -59,7 +59,7 @@ export { thunderCounter };
 type ThunderType = {
   key: string; // Unique key for local storage, without starting with "thunder" (e.g., "thunderCounter")
   encrypt: boolean;
-  expire: null | number; // Null to disable the expiration timer, or a number indicating the expiration time in minutes
+  expire: null | number; // null to disable the expiration timer, or a number indicating the expiration time in minutes
   default: any; // Initial value for the thunder
   reducers?: {
     [key: string]: (thunder: any, payload: any) => any;
@@ -219,7 +219,7 @@ export { thunderCounter };
 type ThunderType = {
   key: string; // Unique key for local storage, without starting with "thunder" (e.g., "thunderCounter")
   encrypt: boolean;
-  expire: null | number; // Null to disable the expiration timer, or a number indicating the expiration time in minutes
+  expire: null | number; // null to disable the expiration timer, or a number indicating the expiration time in minutes
   default: any; // Initial value for the thunder
   reducers?: {
     [key: string]: (thunder: any, payload: any) => any;
