@@ -25,13 +25,13 @@ npm install killua
 - [reactjs vite - javascript](https://codesandbox.io/p/github/sys113/killua-example-react-vite-javascript/)
 
 ## Typescript usage
-:warning: This readme is written for Typescript users. If you are a Java script user, be sure to check out our [Javascript Usage section](#javascript-usage).
+:warning: This readme is written for TypeScript users. If you are a JavaScript user, be sure to check out our [Javascript usage section](#javascript-usage).
 <br />
-:warning: This readme is written for csr. If you need usage in ssr, be sure to check out our [SSR Usage section](#ssr-usage)
-* tip : localstorage key is thunder and need create config for 
-1. create 'thunders' directory for thunder config
-2. create thunder config file, simple: counter.ts
-3. set config ...
+:warning: This readme is written for client-side rendering (CSR). If you need usage in server-side rendering (SSR), be sure to check out our [SSR usage section](#ssr-usage).
+
+1. Create a "thunders" directory for the thunder configuration.
+2. Create the thunder configuration file, for example: "counter.ts".
+3. Set up the configuration:
 ```ts
 import { thunder } from "killua";
 import { ThunderType } from "killua/types/thunder.type";
@@ -54,13 +54,13 @@ const thunderCounter: ThunderType = thunder({
 
 export { thunderCounter };
 ```
-4. thunder type ...
+4. Thunder type definition:
 ```ts
 type ThunderType = {
-  key: string; // uniqe key for local storage, without start with thunder, simple: 'thunderCounter'
+  key: string; // Unique key for local storage, without starting with "thunder" (e.g., "thunderCounter")
   encrypt: boolean;
-  expire: null | number; // null for disable expire timer and set number for minuate for expire
-  default: any; // initial value for thunder
+  expire: null | number; // Null to disable the expiration timer, or a number indicating the expiration time in minutes
+  default: any; // Initial value for the thunder
   reducers?: {
     [key: string]: (thunder: any, payload: any) => any;
   };
@@ -69,7 +69,7 @@ type ThunderType = {
   }
 };
 ```
-5. use thunder config in component
+5. Use the thunder configuration in your component:
 ```tsx
 import { thunderCounter } from "../thunders/counter";
 import { useKillua } from "killua";
@@ -79,28 +79,27 @@ const Counter = () => {
   const {
     thunder: thunderCounterState,
     setThunder: thunderCounterSetState,
-    isReadyInSsr: thunderCounterIsReadyInSsr,
     reducers: thunderCounterReducers,
     selectors: thunderCounterSelectors,
   } = useKillua<number>(thunderCounter);
 
   return (
     <>
-      <h2> === thunder === </h2>
-      <h2>counter one : {thunderCounterState}</h2>
+      <h2> === Thunder === </h2>
+      <h2>Counter: {thunderCounterState}</h2>
       <hr />
-      <h2> === set thunder === </h2>
-      <button onClick={() => thunderCounterSetState((prev: number) => prev + 1)}>set thunder with callback</button>
-      <button onClick={() => thunderCounterSetState(12)}>set thunder without callback</button>
+      <h2> === Set Thunder === </h2>
+      <button onClick={() => thunderCounterSetState((prev: number) => prev + 1)}>Set Thunder with callback</button>
+      <button onClick={() => thunderCounterSetState(12)}>Set Thunder without callback</button>
       <hr />
-      <h2> === reducers === </h2>
-      <button onClick={() => thunderCounterReducers.increment()}>increment</button>
-      <button onClick={() => thunderCounterReducers.incrementWithPayload(5)}>increment with payload</button>
-      <button onClick={() => thunderCounterReducers.reset()}>reset</button>
+      <h2> === Reducers === </h2>
+      <button onClick={() => thunderCounterReducers.increment()}>Increment</button>
+      <button onClick={() => thunderCounterReducers.incrementWithPayload(5)}>Increment with payload</button>
+      <button onClick={() => thunderCounterReducers.reset()}>Reset</button>
       <hr />
-      <h2> === selectors === </h2>
-      <button onClick={() => console.log(thunderCounterSelectors.getCounterPlusOne())}>get counter with plus one</button>
-      <button onClick={() => console.log(thunderCounterSelectors.getCounterPlusPayload(10))}>get counter with plus payload</button>
+      <h2> === Selectors === </h2>
+      <button onClick={() => console.log(thunderCounterSelectors.getCounterPlusOne())}>Get counter with plus one</button>
+      <button onClick={() => console.log(thunderCounterSelectors.getCounterPlusPayload(10))}>Get counter with plus payload</button>
     </>
   )
 };
