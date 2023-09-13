@@ -10,7 +10,7 @@ npm install killua
 ## Examples
 - [nextjs app directory - typescript](https://codesandbox.io/p/github/sys113/killua-example-nextjs-appdir-typescript/)
 - [reactjs vite - javascript](https://codesandbox.io/p/github/sys113/killua-example-react-vite-javascript/)
-- 
+
 ## Features
 - Get data from local storage: Retrieve data from local storage easily.
 - Set data to local storage: Store data in local storage conveniently.
