@@ -108,6 +108,6 @@ const Counter = () => {
 export default Counter;
 ```
 
-#Javascript usage
+## Javascript usage
 
-#SSR usage
+## SSR usage
