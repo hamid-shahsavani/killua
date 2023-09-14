@@ -4,6 +4,6 @@ declare function useKillua<T>(args: ThunderType): {
     setThunder: (value: T | ((value: T) => T)) => void;
     reducers: Record<string, Function>;
     selectors: Record<string, Function>;
-    isReadyInSsr?: Boolean;
+    isReadyInSsr: Boolean;
 };
 export default useKillua;
