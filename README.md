@@ -1,6 +1,8 @@
+<img src="https://raw.githubusercontent.com/sys113/killua/master/logo-type.png">
+
 # killua &middot; ![](https://img.shields.io/npm/v/killua.svg) ![](https://img.shields.io/npm/dw/killua) ![](https://img.shields.io/github/stars/sys113/killua.svg) ![](https://img.shields.io/github/issues/sys113/killua.svg) ![](https://img.shields.io/badge/language-typescript-blue.svg) ![](https://img.shields.io/badge/license-MIT-informational.svg)
  killua is a local-storage management library for React applications.
-
+---
  ## Installation
 To install the latest stable version, run the following command:
 ```shell
