@@ -1,14 +1,14 @@
-import * as CryptoJS from "crypto-js";
-import { useEffect, useState } from "react";
-import { ThunderType } from "../types/thunder.type";
-import { useSSRKillua } from "../providers/ssr";
+import * as CryptoJS from 'crypto-js';
+import { useEffect, useState } from 'react';
+import { ThunderType } from '../types/thunder.type';
+import { useSSRKillua } from '../providers/ssr';
 
 function useKillua<T>(args: ThunderType): {
   thunder: T;
   setThunder: (value: T | ((value: T) => T)) => void;
   reducers: Record<string, Function>;
   selectors: Record<string, Function>;
-  isReadyInSsr: Boolean;
+  isReadyInSsr: boolean;
 } {
   //* current thunder key name in localstorage
   const thunderKeyName = `thunder${args.key
@@ -19,7 +19,7 @@ function useKillua<T>(args: ThunderType): {
   function getUniqeBrowserId(): string {
     const browserInfo =
       window.navigator.userAgent.match(
-        /(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i
+        /(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i,
       ) || [];
     const browserName = browserInfo[1].toLowerCase();
     const browserVersion = browserInfo[2];
@@ -37,19 +37,19 @@ function useKillua<T>(args: ThunderType): {
       args.encrypt
         ? CryptoJS.AES.encrypt(
             JSON.stringify(args.data),
-            getUniqeBrowserId()
+            getUniqeBrowserId(),
           ).toString()
-        : JSON.stringify(args.data)
+        : JSON.stringify(args.data),
     );
-    window.dispatchEvent( new Event('storage') );
+    window.dispatchEvent(new Event('storage'));
   }
 
   //* get thunder from localstorage
   function getThunderFromLocalstorage(): any {
     // if ssr and not wrapped with SSRKilluaProvider && throw error
-    if (typeof window === "undefined")
+    if (typeof window === 'undefined')
       throw new Error(
-        "please wrap your app with <SSRKilluaProvider></SSRKilluaProvider> in ssr"
+        'please wrap your app with <SSRKilluaProvider></SSRKilluaProvider> in ssr',
       );
     // if thunder config not changed by developer && get thunder from localStorage
     let parsedValue = args.default;
@@ -64,9 +64,9 @@ function useKillua<T>(args: ThunderType): {
             args.encrypt
               ? CryptoJS.AES.decrypt(
                   localStorageValue,
-                  getUniqeBrowserId()
+                  getUniqeBrowserId(),
                 ).toString(CryptoJS.enc.Utf8)
-              : localStorageValue
+              : localStorageValue,
           );
         } catch {
           setThunderToLocalstorageAndStateHandler({
@@ -92,7 +92,7 @@ function useKillua<T>(args: ThunderType): {
       const keysToRemove = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key && key.startsWith("thunder") && key !== "thunderExpire") {
+        if (key && key.startsWith('thunder') && key !== 'thunderExpire') {
           keysToRemove.push(key);
         }
       }
@@ -101,17 +101,17 @@ function useKillua<T>(args: ThunderType): {
       });
     };
     let parsedValue = {};
-    const localStorageValue = localStorage.getItem("thundersExpire");
+    const localStorageValue = localStorage.getItem('thundersExpire');
     if (localStorageValue) {
       try {
         parsedValue = JSON.parse(
           CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(
-            CryptoJS.enc.Utf8
-          )
+            CryptoJS.enc.Utf8,
+          ),
         );
       } catch {
         setToLocalstorage({
-          key: "thundersExpire",
+          key: 'thundersExpire',
           data: {},
           encrypt: true,
         });
@@ -119,7 +119,7 @@ function useKillua<T>(args: ThunderType): {
       }
     } else {
       setToLocalstorage({
-        key: "thundersExpire",
+        key: 'thundersExpire',
         data: {},
         encrypt: true,
       });
@@ -131,24 +131,24 @@ function useKillua<T>(args: ThunderType): {
   //* get 'thundersChecksum' from localStorage
   function getThundersChecksumFromLocalstorage(): Object {
     let parsedValue = {};
-    const localStorageValue = localStorage.getItem("thundersChecksum");
+    const localStorageValue = localStorage.getItem('thundersChecksum');
     if (localStorageValue) {
       try {
         parsedValue = JSON.parse(
           CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(
-            CryptoJS.enc.Utf8
-          )
+            CryptoJS.enc.Utf8,
+          ),
         );
       } catch {
         setToLocalstorage({
-          key: "thundersChecksum",
+          key: 'thundersChecksum',
           data: {},
           encrypt: true,
         });
       }
     } else {
       setToLocalstorage({
-        key: "thundersChecksum",
+        key: 'thundersChecksum',
         data: {},
         encrypt: true,
       });
@@ -162,10 +162,10 @@ function useKillua<T>(args: ThunderType): {
     // update thunder checksum in localStorage && reset thunder-key&thunder-state to default value handler
     const updateThunderChecksumHandler = (): void => {
       Object(thundersChecksumLocalstorage)[thunderKeyName] = CryptoJS.MD5(
-        JSON.stringify(args)
+        JSON.stringify(args),
       ).toString();
       setToLocalstorage({
-        key: "thundersChecksum",
+        key: 'thundersChecksum',
         data: thundersChecksumLocalstorage,
         encrypt: true,
       });
@@ -181,7 +181,7 @@ function useKillua<T>(args: ThunderType): {
       Object(thundersExpireLocalstorage)[thunderKeyName] =
         args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
       setToLocalstorage({
-        key: "thundersExpire",
+        key: 'thundersExpire',
         data: thundersExpireLocalstorage,
         encrypt: true,
       });
@@ -204,7 +204,7 @@ function useKillua<T>(args: ThunderType): {
   //* thunder state with initial-value from localstorage
   const isServer = useSSRKillua();
   const [thunderState, setThunderState] = useState<any>(
-    isServer ? undefined : getThunderFromLocalstorage()
+    isServer ? undefined : getThunderFromLocalstorage(),
   );
   useEffect(() => {
     if (isServer) {
@@ -242,9 +242,9 @@ function useKillua<T>(args: ThunderType): {
         }
       }
     };
-    window.addEventListener("storage", getUpdatedThunderFromLocalstorage);
+    window.addEventListener('storage', getUpdatedThunderFromLocalstorage);
     return (): void => {
-      window.removeEventListener("storage", getUpdatedThunderFromLocalstorage);
+      window.removeEventListener('storage', getUpdatedThunderFromLocalstorage);
     };
   }, []);
 
@@ -257,7 +257,7 @@ function useKillua<T>(args: ThunderType): {
       Object(thundersExpireLocalstorage)[thunderKeyName] =
         args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
       setToLocalstorage({
-        key: "thundersExpire",
+        key: 'thundersExpire',
         data: thundersExpireLocalstorage,
         encrypt: true,
       });
@@ -302,7 +302,7 @@ function useKillua<T>(args: ThunderType): {
             key: thunderKeyName,
             data: (actionFunc as (prev: T, payload: any) => T)(
               thunderState,
-              payload
+              payload,
             ),
             encrypt: args.encrypt,
           });
@@ -319,14 +319,14 @@ function useKillua<T>(args: ThunderType): {
         selectors[selectorName] = (payload: any) =>
           (selectorFunc as (prev: T, payload: any) => any)(
             thunderState,
-            payload
+            payload,
           );
       }
     }
   }
   // handler for update thunder state
   function setThunderHandler(value: T | ((prev: T) => T)): void {
-    if (typeof value === "function") {
+    if (typeof value === 'function') {
       setThunderToLocalstorageAndStateHandler({
         key: thunderKeyName,
         data: (value as (prev: T) => T)(thunderState),

@@ -8,5 +8,5 @@ export type ThunderType = {
   };
   selectors?: {
     [key: string]: (thunder: any, payload: any) => any;
-  }
+  };
 };

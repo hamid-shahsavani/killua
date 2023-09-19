@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 import React from 'react';
 declare const SSRKilluaProvider: ({ children }: {
     children: ReactNode;

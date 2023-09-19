@@ -48,8 +48,8 @@ function useKillua(args) {
     //* get thunder from localstorage
     function getThunderFromLocalstorage() {
         // if ssr and not wrapped with SSRKilluaProvider && throw error
-        if (typeof window === "undefined")
-            throw new Error("please wrap your app with <SSRKilluaProvider></SSRKilluaProvider> in ssr");
+        if (typeof window === 'undefined')
+            throw new Error('please wrap your app with <SSRKilluaProvider></SSRKilluaProvider> in ssr');
         // if thunder config not changed by developer && get thunder from localStorage
         let parsedValue = args.default;
         if (Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
@@ -85,7 +85,7 @@ function useKillua(args) {
             const keysToRemove = [];
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
-                if (key && key.startsWith("thunder") && key !== "thunderExpire") {
+                if (key && key.startsWith('thunder') && key !== 'thunderExpire') {
                     keysToRemove.push(key);
                 }
             }
@@ -94,14 +94,14 @@ function useKillua(args) {
             });
         };
         let parsedValue = {};
-        const localStorageValue = localStorage.getItem("thundersExpire");
+        const localStorageValue = localStorage.getItem('thundersExpire');
         if (localStorageValue) {
             try {
                 parsedValue = JSON.parse(CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(CryptoJS.enc.Utf8));
             }
             catch (_a) {
                 setToLocalstorage({
-                    key: "thundersExpire",
+                    key: 'thundersExpire',
                     data: {},
                     encrypt: true,
                 });
@@ -110,7 +110,7 @@ function useKillua(args) {
         }
         else {
             setToLocalstorage({
-                key: "thundersExpire",
+                key: 'thundersExpire',
                 data: {},
                 encrypt: true,
             });
@@ -121,14 +121,14 @@ function useKillua(args) {
     //* get 'thundersChecksum' from localStorage
     function getThundersChecksumFromLocalstorage() {
         let parsedValue = {};
-        const localStorageValue = localStorage.getItem("thundersChecksum");
+        const localStorageValue = localStorage.getItem('thundersChecksum');
         if (localStorageValue) {
             try {
                 parsedValue = JSON.parse(CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(CryptoJS.enc.Utf8));
             }
             catch (_a) {
                 setToLocalstorage({
-                    key: "thundersChecksum",
+                    key: 'thundersChecksum',
                     data: {},
                     encrypt: true,
                 });
@@ -136,7 +136,7 @@ function useKillua(args) {
         }
         else {
             setToLocalstorage({
-                key: "thundersChecksum",
+                key: 'thundersChecksum',
                 data: {},
                 encrypt: true,
             });
@@ -150,7 +150,7 @@ function useKillua(args) {
         const updateThunderChecksumHandler = () => {
             Object(thundersChecksumLocalstorage)[thunderKeyName] = CryptoJS.MD5(JSON.stringify(args)).toString();
             setToLocalstorage({
-                key: "thundersChecksum",
+                key: 'thundersChecksum',
                 data: thundersChecksumLocalstorage,
                 encrypt: true,
             });
@@ -166,7 +166,7 @@ function useKillua(args) {
             Object(thundersExpireLocalstorage)[thunderKeyName] =
                 args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
             setToLocalstorage({
-                key: "thundersExpire",
+                key: 'thundersExpire',
                 data: thundersExpireLocalstorage,
                 encrypt: true,
             });
@@ -215,9 +215,9 @@ function useKillua(args) {
                 }
             }
         };
-        window.addEventListener("storage", getUpdatedThunderFromLocalstorage);
+        window.addEventListener('storage', getUpdatedThunderFromLocalstorage);
         return () => {
-            window.removeEventListener("storage", getUpdatedThunderFromLocalstorage);
+            window.removeEventListener('storage', getUpdatedThunderFromLocalstorage);
         };
     }, []);
     //* set expire time and remove expired thunder from localstorage
@@ -229,7 +229,7 @@ function useKillua(args) {
             Object(thundersExpireLocalstorage)[thunderKeyName] =
                 args.expire === null ? null : Date.now() + args.expire * 60 * 1000;
             setToLocalstorage({
-                key: "thundersExpire",
+                key: 'thundersExpire',
                 data: thundersExpireLocalstorage,
                 encrypt: true,
             });
@@ -291,7 +291,7 @@ function useKillua(args) {
     }
     // handler for update thunder state
     function setThunderHandler(value) {
-        if (typeof value === "function") {
+        if (typeof value === 'function') {
             setThunderToLocalstorageAndStateHandler({
                 key: thunderKeyName,
                 data: value(thunderState),

@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "lib": ["es2016", "dom"],
     "strict": true,
-    "declaration": true
+    "declaration": true,
   },
   "include": ["./src/**/*.ts", "src/providers/ssr.tsx"],
   "exclude": ["node_modules"]

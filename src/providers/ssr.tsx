@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from 'react';
 import React from 'react';
 
 const SSRKilluaContext = createContext<boolean>(false);
