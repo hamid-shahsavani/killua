@@ -13,33 +13,37 @@
     "management-localstorage",
     "react-localstorage-management"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
-  },
   "author": "hamid shahsavani",
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
     "@types/crypto-js": "^4.1.2",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
     "eslint": "^8.49.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^14.0.1",
+    "husky": "^8.0.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "crypto-js": "^4.1.1",
     "react": "^18.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "scripts": {
+    "prepare": "husky install"
   }
 }

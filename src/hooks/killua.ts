@@ -280,9 +280,12 @@ function useKillua<T>(args: ThunderType): {
       if (Date.now() > Object(thundersExpireLocalstorage)[thunderKeyName]) {
         removeExpiredThunderHandler();
       } else {
-        intervalId = setInterval(() => {
-          removeExpiredThunderHandler();
-        }, Object(thundersExpireLocalstorage)[thunderKeyName] - Date.now());
+        intervalId = setInterval(
+          () => {
+            removeExpiredThunderHandler();
+          },
+          Object(thundersExpireLocalstorage)[thunderKeyName] - Date.now(),
+        );
       }
     }
     return (): void => {
