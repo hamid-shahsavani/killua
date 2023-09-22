@@ -1,7 +1,7 @@
 import * as CryptoJS from 'crypto-js';
 import { useEffect, useState } from 'react';
-import { ThunderType } from '../types/thunder.type';
 import { useSSRKillua } from '../providers/ssr';
+import { ThunderType } from '../types/thunder.type';
 
 function useKillua<T>(args: ThunderType): {
   thunder: T;
@@ -15,15 +15,30 @@ function useKillua<T>(args: ThunderType): {
     .charAt(0)
     .toUpperCase()}${args.key.slice(1)}`;
 
-  //* generate uniqe browser id for salt key
-  function getUniqeBrowserId(): string {
-    const browserInfo =
-      window.navigator.userAgent.match(
-        /(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i,
-      ) || [];
-    const browserName = browserInfo[1].toLowerCase();
-    const browserVersion = browserInfo[2];
-    return `${browserName}${browserVersion}${window.navigator.userAgent}`;
+  //* get uniqe user id for salt key
+  function getUniqeUserId(): string {
+    let parsedValue = '';
+    function setSaltKeyToLocalstorage(): void {
+      parsedValue = Math.floor(Math.random() * Date.now()).toString(36);
+      localStorage.setItem(
+        'thunderSaltKey',
+        CryptoJS.AES.encrypt(parsedValue, 'thunder').toString(),
+      );
+    }
+    const localStorageValue = localStorage.getItem('thunderSaltKey');
+    if (localStorageValue) {
+      try {
+        parsedValue = CryptoJS.AES.decrypt(
+          localStorageValue,
+          'thunder',
+        ).toString(CryptoJS.enc.Utf8);
+      } catch {
+        setSaltKeyToLocalstorage();
+      }
+    } else {
+      setSaltKeyToLocalstorage();
+    }
+    return parsedValue;
   }
 
   //* set to localstorage
@@ -37,7 +52,7 @@ function useKillua<T>(args: ThunderType): {
       args.encrypt
         ? CryptoJS.AES.encrypt(
             JSON.stringify(args.data),
-            getUniqeBrowserId(),
+            getUniqeUserId(),
           ).toString()
         : JSON.stringify(args.data),
     );
@@ -64,7 +79,7 @@ function useKillua<T>(args: ThunderType): {
             args.encrypt
               ? CryptoJS.AES.decrypt(
                   localStorageValue,
-                  getUniqeBrowserId(),
+                  getUniqeUserId(),
                 ).toString(CryptoJS.enc.Utf8)
               : localStorageValue,
           );
@@ -87,7 +102,7 @@ function useKillua<T>(args: ThunderType): {
   }
 
   //* get 'thundersExpire' from localStorage
-  const getThundersExpireFromLocalstorage = (): Object => {
+  function getThundersExpireFromLocalstorage(): Object {
     const removeAllThundersFromLocalstorage = () => {
       const keysToRemove = [];
       for (let i = 0; i < localStorage.length; i++) {
@@ -105,7 +120,7 @@ function useKillua<T>(args: ThunderType): {
     if (localStorageValue) {
       try {
         parsedValue = JSON.parse(
-          CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(
+          CryptoJS.AES.decrypt(localStorageValue, getUniqeUserId()).toString(
             CryptoJS.enc.Utf8,
           ),
         );
@@ -126,7 +141,7 @@ function useKillua<T>(args: ThunderType): {
       removeAllThundersFromLocalstorage();
     }
     return parsedValue;
-  };
+  }
 
   //* get 'thundersChecksum' from localStorage
   function getThundersChecksumFromLocalstorage(): Object {
@@ -135,7 +150,7 @@ function useKillua<T>(args: ThunderType): {
     if (localStorageValue) {
       try {
         parsedValue = JSON.parse(
-          CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(
+          CryptoJS.AES.decrypt(localStorageValue, getUniqeUserId()).toString(
             CryptoJS.enc.Utf8,
           ),
         );

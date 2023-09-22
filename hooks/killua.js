@@ -31,17 +31,31 @@ function useKillua(args) {
     const thunderKeyName = `thunder${args.key
         .charAt(0)
         .toUpperCase()}${args.key.slice(1)}`;
-    //* generate uniqe browser id for salt key
-    function getUniqeBrowserId() {
-        const browserInfo = window.navigator.userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-        const browserName = browserInfo[1].toLowerCase();
-        const browserVersion = browserInfo[2];
-        return `${browserName}${browserVersion}${window.navigator.userAgent}`;
+    //* get uniqe user id for salt key
+    function getUniqeUserId() {
+        let parsedValue = '';
+        function setSaltKeyToLocalstorage() {
+            parsedValue = Math.floor(Math.random() * Date.now()).toString(36);
+            localStorage.setItem('thunderSaltKey', CryptoJS.AES.encrypt(parsedValue, 'thunder').toString());
+        }
+        const localStorageValue = localStorage.getItem('thunderSaltKey');
+        if (localStorageValue) {
+            try {
+                parsedValue = CryptoJS.AES.decrypt(localStorageValue, 'thunder').toString(CryptoJS.enc.Utf8);
+            }
+            catch (_a) {
+                setSaltKeyToLocalstorage();
+            }
+        }
+        else {
+            setSaltKeyToLocalstorage();
+        }
+        return parsedValue;
     }
     //* set to localstorage
     function setToLocalstorage(args) {
         localStorage.setItem(args.key, args.encrypt
-            ? CryptoJS.AES.encrypt(JSON.stringify(args.data), getUniqeBrowserId()).toString()
+            ? CryptoJS.AES.encrypt(JSON.stringify(args.data), getUniqeUserId()).toString()
             : JSON.stringify(args.data));
         window.dispatchEvent(new Event('storage'));
     }
@@ -58,7 +72,7 @@ function useKillua(args) {
             if (localStorageValue) {
                 try {
                     parsedValue = JSON.parse(args.encrypt
-                        ? CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(CryptoJS.enc.Utf8)
+                        ? CryptoJS.AES.decrypt(localStorageValue, getUniqeUserId()).toString(CryptoJS.enc.Utf8)
                         : localStorageValue);
                 }
                 catch (_a) {
@@ -80,7 +94,7 @@ function useKillua(args) {
         return parsedValue;
     }
     //* get 'thundersExpire' from localStorage
-    const getThundersExpireFromLocalstorage = () => {
+    function getThundersExpireFromLocalstorage() {
         const removeAllThundersFromLocalstorage = () => {
             const keysToRemove = [];
             for (let i = 0; i < localStorage.length; i++) {
@@ -97,7 +111,7 @@ function useKillua(args) {
         const localStorageValue = localStorage.getItem('thundersExpire');
         if (localStorageValue) {
             try {
-                parsedValue = JSON.parse(CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(CryptoJS.enc.Utf8));
+                parsedValue = JSON.parse(CryptoJS.AES.decrypt(localStorageValue, getUniqeUserId()).toString(CryptoJS.enc.Utf8));
             }
             catch (_a) {
                 setToLocalstorage({
@@ -117,14 +131,14 @@ function useKillua(args) {
             removeAllThundersFromLocalstorage();
         }
         return parsedValue;
-    };
+    }
     //* get 'thundersChecksum' from localStorage
     function getThundersChecksumFromLocalstorage() {
         let parsedValue = {};
         const localStorageValue = localStorage.getItem('thundersChecksum');
         if (localStorageValue) {
             try {
-                parsedValue = JSON.parse(CryptoJS.AES.decrypt(localStorageValue, getUniqeBrowserId()).toString(CryptoJS.enc.Utf8));
+                parsedValue = JSON.parse(CryptoJS.AES.decrypt(localStorageValue, getUniqeUserId()).toString(CryptoJS.enc.Utf8));
             }
             catch (_a) {
                 setToLocalstorage({
