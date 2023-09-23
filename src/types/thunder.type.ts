@@ -1,12 +1,17 @@
-export type ThunderType = {
+export type ThunderType<
+  TDefault,
+  TReducers extends {
+    [key: string]: (thunder: TDefault, payload?: any) => TDefault;
+  },
+  TSelectors extends {
+    [key: string]: (thunder: TDefault, payload?: any) => any;
+  },
+  TExpire extends null | number,
+> = {
   key: string;
   encrypt: boolean;
-  expire: null | number;
-  default: any;
-  reducers?: {
-    [key: string]: (thunder: any, payload: any) => any;
-  };
-  selectors?: {
-    [key: string]: (thunder: any, payload: any) => any;
-  };
+  expire: TExpire;
+  default: TDefault;
+  reducers?: TReducers;
+  selectors?: TSelectors;
 };

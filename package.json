@@ -33,7 +33,8 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "crypto-js": "^4.1.1"
+    "crypto-js": "^4.1.1",
+    "zod": "^3.22.2"
   },
   "husky": {
     "hooks": {

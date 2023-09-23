@@ -3,11 +3,34 @@ import { useEffect, useState } from 'react';
 import { useSSRKillua } from '../providers/ssr';
 import { ThunderType } from '../types/thunder.type';
 
-function useKillua<T>(args: ThunderType): {
-  thunder: T;
-  setThunder: (value: T | ((value: T) => T)) => void;
-  reducers: Record<string, Function>;
-  selectors: Record<string, Function>;
+type RemoveFirstArg<T> = T extends (thunder: any, payload?: any) => any
+  ? (payload?: any) => any
+  : T;
+
+function useKillua<
+  TDefault,
+  TReducers extends {
+    [key: string]: (thunder: TDefault, payload?: any) => TDefault;
+  } = {
+    [key: string]: (thunder: TDefault, payload?: any) => TDefault;
+  },
+  TSelectors extends {
+    [key: string]: (thunder: TDefault, payload?: any) => any;
+  } = {
+    [key: string]: (thunder: TDefault, payload?: any) => any;
+  },
+  TExpire extends null | number = null | number,
+>(
+  args: ThunderType<TDefault, TReducers, TSelectors, TExpire>,
+): {
+  thunder: TDefault;
+  setThunder: (value: TDefault | ((value: TDefault) => TDefault)) => void;
+  reducers: {
+    [K in keyof TReducers]: RemoveFirstArg<TReducers[K]>;
+  };
+  selectors: {
+    [K in keyof TSelectors]: RemoveFirstArg<TSelectors[K]>;
+  };
   isReadyInSsr: boolean;
 } {
   //* current thunder key name in localstorage
@@ -233,7 +256,7 @@ function useKillua<T>(args: ThunderType): {
   //* set thunder to localstorage and state handler
   function setThunderToLocalstorageAndStateHandler(args: {
     key: string;
-    data: T;
+    data: TDefault;
     encrypt: boolean;
   }): void {
     setToLocalstorage({
@@ -318,7 +341,7 @@ function useKillua<T>(args: ThunderType): {
         reducers[actionName] = (payload: any) => {
           setThunderToLocalstorageAndStateHandler({
             key: thunderKeyName,
-            data: (actionFunc as (prev: T, payload: any) => T)(
+            data: (actionFunc as (prev: TDefault, payload: any) => TDefault)(
               thunderState,
               payload,
             ),
@@ -329,13 +352,13 @@ function useKillua<T>(args: ThunderType): {
     }
   }
   // assign thunder config selectors to selectors with object
-  const selectors: Record<string, Function> = {};
+  const selectors: Record<string, (payload?: any) => any> = {};
   if (args.selectors) {
     for (const selectorName in args.selectors) {
       if (Object.prototype.hasOwnProperty.call(args.selectors, selectorName)) {
         const selectorFunc = args.selectors[selectorName];
         selectors[selectorName] = (payload: any) =>
-          (selectorFunc as (prev: T, payload: any) => any)(
+          (selectorFunc as (prev: TDefault, payload: any) => any)(
             thunderState,
             payload,
           );
@@ -343,11 +366,13 @@ function useKillua<T>(args: ThunderType): {
     }
   }
   // handler for update thunder state
-  function setThunderHandler(value: T | ((prev: T) => T)): void {
+  function setThunderHandler(
+    value: TDefault | ((prev: TDefault) => TDefault),
+  ): void {
     if (typeof value === 'function') {
       setThunderToLocalstorageAndStateHandler({
         key: thunderKeyName,
-        data: (value as (prev: T) => T)(thunderState),
+        data: (value as (prev: TDefault) => TDefault)(thunderState),
         encrypt: args.encrypt,
       });
     } else {
@@ -361,8 +386,8 @@ function useKillua<T>(args: ThunderType): {
   return {
     thunder: thunderState,
     setThunder: setThunderHandler,
-    reducers,
-    selectors,
+    reducers: reducers as any,
+    selectors: selectors as any,
     isReadyInSsr: thunderState !== undefined,
   };
 }
