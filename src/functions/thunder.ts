@@ -1,6 +1,19 @@
 import { ThunderType } from '../types/thunder.type';
 
-function thunder(args: ThunderType) {
+function thunder<
+  TDefault,
+  TReducers extends {
+    [key: string]: (thunder: TDefault, payload?: any) => TDefault;
+  } = {
+    [key: string]: (thunder: TDefault, payload?: any) => TDefault;
+  },
+  TSelectors extends {
+    [key: string]: (thunder: TDefault, payload?: any) => any;
+  } = {
+    [key: string]: (thunder: TDefault, payload?: any) => any;
+  },
+  TExpire extends null | number = null | number,
+>(args: ThunderType<TDefault, TReducers, TSelectors, TExpire>) {
   if (args.default === undefined) {
     throw new Error('required `default` value for thunder!');
   }
