@@ -3,8 +3,6 @@
   "version": "0.1.5",
   "description": "killua is a local-storage management library for React applications.",
   "repository": "https://github.com/sys113/killua.git",
-  "main": "index.js",
-  "types": "thunder.type.d.ts",
   "keywords": [
     "react",
     "react-localstorage",
@@ -15,9 +13,13 @@
   ],
   "author": "hamid shahsavani",
   "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
+    "@rollup/plugin-typescript": "^11.1.3",
     "@types/crypto-js": "^4.1.2",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
@@ -26,11 +28,12 @@
     "eslint": "^8.49.0",
     "husky": "^8.0.0",
     "prettier": "^3.0.3",
+    "rollup": "^3.29.2",
+    "tslib": "^2.6.2",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "crypto-js": "^4.1.1",
-    "react": "^18.2.0"
+    "crypto-js": "^4.1.1"
   },
   "husky": {
     "hooks": {
@@ -44,6 +47,29 @@
     ]
   },
   "scripts": {
-    "prepare": "husky install"
-  }
+    "prepare": "husky install",
+    "prettier:check": "prettier --check src/**/*.ts src/**/*.tsx *.md --no-error-on-unmatched-pattern",
+    "prettier:fix": "prettier --write src/**/*.ts src/**/*.tsx *.md --ignore-unknown --no-error-on-unmatched-pattern",
+    "lint:check": "eslint --cache --ext .ts,.tsx ./src",
+    "lint:fix": "eslint --cache --fix --ext .ts,.tsx ./src",
+    "check": "yarn lint:check && yarn prettier:check",
+    "fix": "yarn lint:fix && yarn prettier:fix",
+    "clean": "rm -rf lib/* ",
+    "build": "yarn run clean && npm run build:cjs && npm run build:esm",
+    "build:esm": "rollup --config ./configs/rollup.config.mjs",
+    "build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
+    "prepublishOnly": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs"
+    },
+    "./package.json": "./package.json",
+    "./locales/*": "./lib/locales/*"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./index.d.ts"
 }
