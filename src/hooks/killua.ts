@@ -385,6 +385,7 @@ function useKillua<
       });
     }
   }
+
   return {
     thunder: thunderState,
     setThunder: setThunderHandler,
