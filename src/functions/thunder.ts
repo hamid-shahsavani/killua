@@ -1,18 +1,19 @@
 import { ThunderType } from '../types/thunder.type';
+import { RemoveNeverProperties } from '../utills';
 
 function thunder<
   TDefault,
-  TReducers extends {
-    [key: string]: (thunder: TDefault, payload?: any) => TDefault;
-  } = {
-    [key: string]: (thunder: TDefault, payload?: any) => TDefault;
-  },
-  TSelectors extends {
-    [key: string]: (thunder: TDefault, payload?: any) => any;
-  } = {
-    [key: string]: (thunder: TDefault, payload?: any) => any;
-  },
-  TExpire extends null | number = null | number,
+  TReducers extends
+    | {
+        [key: string]: (thunder: TDefault, payload?: any) => TDefault;
+      }
+    | undefined = undefined,
+  TSelectors extends
+    | {
+        [key: string]: (thunder: TDefault, payload?: any) => any;
+      }
+    | undefined = undefined,
+  TExpire extends null | number = null,
 >(args: ThunderType<TDefault, TReducers, TSelectors, TExpire>) {
   if (args.default === undefined) {
     throw new Error('required `default` value for thunder!');
@@ -79,7 +80,9 @@ function thunder<
       `not defined key \`${notDefinedThunderKey.join(', ')}\` for thunder!`,
     );
   }
-  return args;
+
+  const r = { ...args, reducers: args.reducers!, selectors: args.selectors! };
+  return r as RemoveNeverProperties<typeof r>;
 }
 
 export default thunder;
