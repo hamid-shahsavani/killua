@@ -27,10 +27,10 @@ npm install killua
 - [reactjs vite - javascript](https://codesandbox.io/p/github/sys113/killua-example-react-vite-javascript/)
 
 ## Typescript usage
-:warning: Note that "thunder" refers to a key within local storage.
-:warning: Certainly, sensitive data should not be stored on local storage. The purpose of encrypting local storage in this method is to prevent regular users from having direct access to the data stored in local storage and also to prevent them from modifying it directly.
-:warning: This readme is written for TypeScript users. If you are a JavaScript user, be sure to check out our [Javascript usage section](#javascript-usage).
-:warning: This readme is written for client-side rendering (CSR). If you need usage in server-side rendering (SSR), be sure to check out our [SSR usage section](#ssr-usage).
+:warning: Note that "thunder" refers to a key within local storage.<br />
+:warning: Certainly, sensitive data should not be stored on local storage. The purpose of encrypting local storage in this method is to prevent regular users from having direct access to the data stored in local storage and also to prevent them from modifying it directly.<br />
+:warning: This readme is written for TypeScript users. If you are a JavaScript user, be sure to check out our [Javascript usage section](#javascript-usage).<br />
+:warning: This readme is written for client-side rendering (CSR). If you need usage in server-side rendering (SSR), be sure to check out our [SSR usage section](#ssr-usage).<br />
 
 1. Create a "thunders" directory for the thunder configuration.
 2. Create the thunder configuration file, for example: "counter.ts".
@@ -95,8 +95,8 @@ export default Counter;
 ```
 
 ## Javascript usage
-:warning: note that "thunder" refers to a key within local storage.
-:warning: Certainly, sensitive data should not be stored on local storage. The purpose of encrypting local storage in this method is to prevent regular users from having direct access to the data stored in local storage and also to prevent them from modifying it directly.
+:warning: note that "thunder" refers to a key within local storage.<br />
+:warning: Certainly, sensitive data should not be stored on local storage. The purpose of encrypting local storage in this method is to prevent regular users from having direct access to the data stored in local storage and also to prevent them from modifying it directly.<br />
 
 1. Create a "thunders" directory for the thunder configuration.
 2. Create the thunder configuration file, for example: "counter.js".
@@ -105,10 +105,10 @@ export default Counter;
 import { thunder } from "killua";
 
 const thunderCounter = thunder({
-  key: "counter",
+  key: "counter", // unique key for local storage, without starting with "thunder"
   encrypt: false,
-  default: 1,
-  expire: 1,
+  default: 1, // initial value for the thunder
+  expire: 1, // // null to disable the expiration timer, or a number indicating the expiration time in minutes
   reducers: {
     increment: (thunder) => thunder + 1,
     incrementWithPayload: (thunder, payload) => thunder + payload,
@@ -161,9 +161,9 @@ export default Counter;
 ```
 
 ## SSR usage
-:warning: note that "thunder" refers to a key within local storage.
-:warning: Certainly, sensitive data should not be stored on local storage. The purpose of encrypting local storage in this method is to prevent regular users from having direct access to the data stored in local storage and also to prevent them from modifying it directly.
-⚠️ The 'thunder' and the return values of methods on the 'selectors' object may be undefined during the first render in SSR. If you want to use their return values, check if 'isReadyInSsr' is true before accessing them.
+:warning: Note that "thunder" refers to a key within local storage.<br />
+:warning: Certainly, sensitive data should not be stored on local storage. The purpose of encrypting local storage in this method is to prevent regular users from having direct access to the data stored in local storage and also to prevent them from modifying it directly.<br />
+⚠️ The 'thunder' and the return values of methods on the 'selectors' object may be undefined during the first render in SSR. If you want to use their return values, check if 'isReadyInSsr' is true before accessing them.<br />
 
 1. Create app/providers.tsx and wrap the Component with the SSRKilluaProvider:
 ```tsx
