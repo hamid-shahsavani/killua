@@ -2,37 +2,43 @@ import * as CryptoJS from 'crypto-js';
 import { useEffect, useState } from 'react';
 import { useSSRKillua } from '../providers/ssr';
 import { ThunderType } from '../types/thunder.type';
+import { RemoveNeverProperties } from '../utills';
 
-type RemoveFirstArg<T> = T extends (thunder: any, payload?: any) => any
-  ? (payload?: any) => any
+type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never;
+type RemoveFirstArg<T> = T extends (...args: infer Args) => infer R
+  ? (...args: Tail<Args>) => R
   : T;
 
 function useKillua<
   TDefault,
-  TReducers extends {
-    [key: string]: (thunder: TDefault, payload?: any) => TDefault;
-  } = {
-    [key: string]: (thunder: TDefault, payload?: any) => TDefault;
-  },
-  TSelectors extends {
-    [key: string]: (thunder: TDefault, payload?: any) => any;
-  } = {
-    [key: string]: (thunder: TDefault, payload?: any) => any;
-  },
-  TExpire extends null | number = null | number,
+  TReducers extends
+    | {
+        [key: string]: (thunder: TDefault, payload?: any) => TDefault;
+      }
+    | undefined = undefined,
+  TSelectors extends
+    | {
+        [key: string]: (thunder: TDefault, payload?: any) => any;
+      }
+    | undefined = undefined,
+  TExpire extends null | number = null,
 >(
   args: ThunderType<TDefault, TReducers, TSelectors, TExpire>,
-): {
+): RemoveNeverProperties<{
   thunder: TDefault;
   setThunder: (value: TDefault | ((value: TDefault) => TDefault)) => void;
-  reducers: {
-    [K in keyof TReducers]: RemoveFirstArg<TReducers[K]>;
-  };
-  selectors: {
-    [K in keyof TSelectors]: RemoveFirstArg<TSelectors[K]>;
-  };
+  reducers: [TReducers] extends [undefined]
+    ? never
+    : {
+        [K in keyof TReducers]: RemoveFirstArg<TReducers[K]>;
+      };
+  selectors: [TSelectors] extends [undefined]
+    ? never
+    : {
+        [K in keyof TSelectors]: RemoveFirstArg<TSelectors[K]>;
+      };
   isReadyInSsr: boolean;
-} {
+}> {
   //* current thunder key name in localstorage
   const thunderKeyName = `thunder${args.key
     .charAt(0)
@@ -386,10 +392,10 @@ function useKillua<
   return {
     thunder: thunderState,
     setThunder: setThunderHandler,
-    reducers: reducers as any,
-    selectors: selectors as any,
+    reducers,
+    selectors,
     isReadyInSsr: thunderState !== undefined,
-  };
+  } as any;
 }
 
 export default useKillua;
