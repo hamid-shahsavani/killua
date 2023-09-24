@@ -27,22 +27,22 @@ npm install killua
 - [reactjs vite - javascript](https://codesandbox.io/p/github/sys113/killua-example-react-vite-javascript/)
 
 ## Typescript usage
-:warning: This readme is written for TypeScript users. If you are a JavaScript user, be sure to check out our [Javascript usage section](#javascript-usage).
-<br />
-:warning: This readme is written for client-side rendering (CSR). If you need usage in server-side rendering (SSR), be sure to check out our [SSR usage section](#ssr-usage).
+:warning: Note that "thunder" refers to a key within local storage.<br />
+:warning: Certainly, sensitive data should not be stored on local storage. The purpose of encrypting local storage in this method is to prevent regular users from having direct access to the data stored in local storage and also to prevent them from modifying it directly.<br />
+:warning: This readme is written for TypeScript users. If you are a JavaScript user, be sure to check out our [Javascript usage section](#javascript-usage).<br />
+:warning: This readme is written for client-side rendering (CSR). If you need usage in server-side rendering (SSR), be sure to check out our [SSR usage section](#ssr-usage).<br />
 
 1. Create a "thunders" directory for the thunder configuration.
 2. Create the thunder configuration file, for example: "counter.ts".
 3. Set up the configuration:
 ```ts
 import { thunder } from "killua";
-import { ThunderType } from "killua/types/thunder.type";
 
-const thunderCounter: ThunderType = thunder({
-  key: "counter",
+const thunderCounter = thunder({
+  key: "counter", // unique key for local storage, without starting with "thunder"
   encrypt: false,
-  default: 1,
-  expire: 1,
+  default: 1 as number, // initial value for the thunder
+  expire: 1, // // null to disable the expiration timer, or a number indicating the expiration time in minutes
   reducers: {
     increment: (thunder: number) => thunder + 1,
     incrementWithPayload: (thunder: number, payload: number) => thunder + payload,
@@ -56,22 +56,7 @@ const thunderCounter: ThunderType = thunder({
 
 export { thunderCounter };
 ```
-4. Thunder type definition:
-```ts
-type ThunderType = {
-  key: string; // Unique key for local storage, without starting with "thunder" (e.g., "thunderCounter")
-  encrypt: boolean;
-  expire: null | number; // null to disable the expiration timer, or a number indicating the expiration time in minutes
-  default: any; // Initial value for the thunder
-  reducers?: {
-    [key: string]: (thunder: any, payload: any) => any;
-  };
-  selectors?: {
-    [key: string]: (thunder: any, payload: any) => any;
-  }
-};
-```
-5. Use the thunder configuration in your component:
+4. Use the thunder configuration in your component:
 ```tsx
 import { thunderCounter } from "../thunders/counter";
 import { useKillua } from "killua";
@@ -83,7 +68,7 @@ const Counter = () => {
     setThunder: thunderCounterSetState,
     reducers: thunderCounterReducers,
     selectors: thunderCounterSelectors,
-  } = useKillua<number>(thunderCounter);
+  } = useKillua(thunderCounter);
 
   return (
     <>
@@ -110,6 +95,8 @@ export default Counter;
 ```
 
 ## Javascript usage
+:warning: note that "thunder" refers to a key within local storage.<br />
+:warning: Certainly, sensitive data should not be stored on local storage. The purpose of encrypting local storage in this method is to prevent regular users from having direct access to the data stored in local storage and also to prevent them from modifying it directly.<br />
 
 1. Create a "thunders" directory for the thunder configuration.
 2. Create the thunder configuration file, for example: "counter.js".
@@ -118,10 +105,10 @@ export default Counter;
 import { thunder } from "killua";
 
 const thunderCounter = thunder({
-  key: "counter",
+  key: "counter", // unique key for local storage, without starting with "thunder"
   encrypt: false,
-  default: 1,
-  expire: 1,
+  default: 1, // initial value for the thunder
+  expire: 1, // // null to disable the expiration timer, or a number indicating the expiration time in minutes
   reducers: {
     increment: (thunder) => thunder + 1,
     incrementWithPayload: (thunder, payload) => thunder + payload,
@@ -174,8 +161,9 @@ export default Counter;
 ```
 
 ## SSR usage
-
-⚠️ The 'thunder' and the return values of methods on the 'selectors' object may be undefined during the first render in SSR. If you want to use their return values, check if 'isReadyInSsr' is true before accessing them.
+:warning: Note that "thunder" refers to a key within local storage.<br />
+:warning: Certainly, sensitive data should not be stored on local storage. The purpose of encrypting local storage in this method is to prevent regular users from having direct access to the data stored in local storage and also to prevent them from modifying it directly.<br />
+⚠️ The 'thunder' and the return values of methods on the 'selectors' object may be undefined during the first render in SSR. If you want to use their return values, check if 'isReadyInSsr' is true before accessing them.<br />
 
 1. Create app/providers.tsx and wrap the Component with the SSRKilluaProvider:
 ```tsx
@@ -196,13 +184,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
 4. Set up the configuration:
 ```ts
 import { thunder } from "killua";
-import { ThunderType } from "killua/types/thunder.type";
 
-const thunderCounter: ThunderType = thunder({
-  key: "counter",
+const thunderCounter = thunder({
+  key: "counter", // unique key for local storage, without starting with "thunder"
   encrypt: false,
-  default: 1,
-  expire: 1,
+  default: 1 as number, // initial value for the thunder
+  expire: 1, // // null to disable the expiration timer, or a number indicating the expiration time in minutes
   reducers: {
     increment: (thunder: number) => thunder + 1,
     incrementWithPayload: (thunder: number, payload: number) => thunder + payload,
@@ -216,22 +203,7 @@ const thunderCounter: ThunderType = thunder({
 
 export { thunderCounter };
 ```
-5. Thunder type definition:
-```ts
-type ThunderType = {
-  key: string; // Unique key for local storage, without starting with "thunder" (e.g., "thunderCounter")
-  encrypt: boolean;
-  expire: null | number; // null to disable the expiration timer, or a number indicating the expiration time in minutes
-  default: any; // Initial value for the thunder
-  reducers?: {
-    [key: string]: (thunder: any, payload: any) => any;
-  };
-  selectors?: {
-    [key: string]: (thunder: any, payload: any) => any;
-  }
-};
-```
-6. Use the thunder configuration in your component:
+5. Use the thunder configuration in your component:
 ```tsx
 import { thunderCounter } from "../thunders/counter";
 import { useKillua } from "killua";
@@ -244,7 +216,7 @@ const Counter = () => {
     isReadyInSsr: thunderCounterIsReadyInSsr,
     reducers: thunderCounterReducers,
     selectors: thunderCounterSelectors,
-  } = useKillua<number>(thunderCounter);
+  } = useKillua(thunderCounter);
 
   return (
     <>
