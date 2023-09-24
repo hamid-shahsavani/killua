@@ -9,6 +9,31 @@ type RemoveFirstArg<T> = T extends (...args: infer Args) => infer R
   ? (...args: Tail<Args>) => R
   : T;
 
+//* get uniqe user id for salt key
+function getUniqeUserId(): string {
+  let parsedValue = '';
+  function setSaltKeyToLocalstorage(): void {
+    parsedValue = Math.floor(Math.random() * Date.now()).toString(36);
+    localStorage.setItem(
+      'thunderSaltKey',
+      CryptoJS.AES.encrypt(parsedValue, 'thunder').toString(),
+    );
+  }
+  const localStorageValue = localStorage.getItem('thunderSaltKey');
+  if (localStorageValue) {
+    try {
+      parsedValue = CryptoJS.AES.decrypt(localStorageValue, 'thunder').toString(
+        CryptoJS.enc.Utf8,
+      );
+    } catch {
+      setSaltKeyToLocalstorage();
+    }
+  } else {
+    setSaltKeyToLocalstorage();
+  }
+  return parsedValue;
+}
+
 function useKillua<
   TDefault,
   TReducers extends
@@ -40,32 +65,6 @@ function useKillua<
     .charAt(0)
     .toUpperCase()}${args.key.slice(1)}`;
 
-  //* get uniqe user id for salt key
-  function getUniqeUserId(): string {
-    let parsedValue = '';
-    function setSaltKeyToLocalstorage(): void {
-      parsedValue = Math.floor(Math.random() * Date.now()).toString(36);
-      localStorage.setItem(
-        'thunderSaltKey',
-        CryptoJS.AES.encrypt(parsedValue, 'thunder').toString(),
-      );
-    }
-    const localStorageValue = localStorage.getItem('thunderSaltKey');
-    if (localStorageValue) {
-      try {
-        parsedValue = CryptoJS.AES.decrypt(
-          localStorageValue,
-          'thunder',
-        ).toString(CryptoJS.enc.Utf8);
-      } catch {
-        setSaltKeyToLocalstorage();
-      }
-    } else {
-      setSaltKeyToLocalstorage();
-    }
-    return parsedValue;
-  }
-
   //* set to localstorage
   function setToLocalstorage(args: {
     key: string;
@@ -91,11 +90,17 @@ function useKillua<
       throw new Error(
         'please wrap your app with <SSRKilluaProvider></SSRKilluaProvider> in ssr',
       );
-    // if thunder config not changed by developer && get thunder from localStorage
+    // if thunder config property 'encrypt' and 'default' and 'expire' not changed by developer && get thunder from localStorage
     let parsedValue = args.default;
     if (
       Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
-      CryptoJS.MD5(JSON.stringify(args)).toString()
+      CryptoJS.MD5(
+        JSON.stringify({
+          default: args.default,
+          encrypt: args.encrypt,
+          expire: args.expire,
+        }),
+      ).toString()
     ) {
       const localStorageValue = localStorage.getItem(thunderKeyName);
       if (localStorageValue) {
@@ -199,10 +204,14 @@ function useKillua<
   //* detect change thunder config by developer and create again thunder key in localstorage
   useEffect(() => {
     const thundersChecksumLocalstorage = getThundersChecksumFromLocalstorage();
-    // update thunder checksum in localStorage && reset thunder-key&thunder-state to default value handler
+    // update thunder checksum property 'encrypt' and 'default' and 'expire' in localStorage && reset thunder-key&thunder-state to default value handler
     const updateThunderChecksumHandler = (): void => {
       Object(thundersChecksumLocalstorage)[thunderKeyName] = CryptoJS.MD5(
-        JSON.stringify(args),
+        JSON.stringify({
+          default: args.default,
+          encrypt: args.encrypt,
+          expire: args.expire,
+        }),
       ).toString();
       setToLocalstorage({
         key: 'thundersChecksum',
@@ -226,14 +235,20 @@ function useKillua<
         encrypt: true,
       });
     }
-    // if 'thundersChecksum' is not in localStorage ? (add key to 'thundersChecksum' with checksum && update thunder expire with args.expire && reset thunder-key&thunder-state to default value) : (if changed thunder config by developer && (update checksum && reset thunder-key&thunder-state to default value))
+    // if 'thundersChecksum' is not in localStorage ? (add key to 'thundersChecksum' with checksum property 'encrypt' and 'default' and 'expire' && update thunder expire with args.expire && reset thunder-key&thunder-state to default value) : (if changed thunder config by developer && (update checksum && reset thunder-key&thunder-state to default value))
     if (!thundersChecksumLocalstorage.hasOwnProperty(thunderKeyName)) {
       updateThunderChecksumHandler();
       updateExpireTimeHandler();
     } else {
       if (
         Object(thundersChecksumLocalstorage)[thunderKeyName] !==
-        CryptoJS.MD5(JSON.stringify(args)).toString()
+        CryptoJS.MD5(
+          JSON.stringify({
+            default: args.default,
+            encrypt: args.encrypt,
+            expire: args.expire,
+          }),
+        ).toString()
       ) {
         updateThunderChecksumHandler();
         updateExpireTimeHandler();
@@ -274,7 +289,13 @@ function useKillua<
     const getUpdatedThunderFromLocalstorage = (): void => {
       if (
         Object(getThundersChecksumFromLocalstorage())[thunderKeyName] ===
-        CryptoJS.MD5(JSON.stringify(args)).toString()
+        CryptoJS.MD5(
+          JSON.stringify({
+            default: args.default,
+            encrypt: args.encrypt,
+            expire: args.expire,
+          }),
+        ).toString()
       ) {
         const thunderLocalstorageValue = getThunderFromLocalstorage();
         if (thunderLocalstorageValue !== thunderState) {
