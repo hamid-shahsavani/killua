@@ -1,6 +1,6 @@
 {
   "name": "killua",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "killua is a local-storage management library for React applications.",
   "repository": "https://github.com/sys113/killua.git",
   "keywords": [

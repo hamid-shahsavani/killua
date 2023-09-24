@@ -1,14 +1,10 @@
 export type ThunderType<
   TDefault,
   TReducers extends
-    | {
-        [key: string]: (thunder: TDefault, payload?: any) => TDefault;
-      }
+    | Record<string, (state: TDefault, payload?: any) => TDefault>
     | undefined,
   TSelectors extends
-    | {
-        [key: string]: (thunder: TDefault, payload?: any) => any;
-      }
+    | Record<string, (state: TDefault, payload?: any) => any>
     | undefined,
   TExpire extends null | number,
 > = Readonly<{

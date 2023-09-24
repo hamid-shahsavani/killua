@@ -4,14 +4,10 @@ import { RemoveNeverProperties } from '../utills';
 function thunder<
   TDefault,
   TReducers extends
-    | {
-        [key: string]: (thunder: TDefault, payload?: any) => TDefault;
-      }
+    | Record<string, (thunder: TDefault, payload?: any) => TDefault>
     | undefined = undefined,
   TSelectors extends
-    | {
-        [key: string]: (thunder: TDefault, payload?: any) => any;
-      }
+    | Record<string, (thunder: TDefault, payload?: any) => any>
     | undefined = undefined,
   TExpire extends null | number = null,
 >(args: ThunderType<TDefault, TReducers, TSelectors, TExpire>) {
