@@ -1,6 +1,6 @@
 {
   "name": "killua",
-  "version": "0.2.2",
+  "version": "0.2.14",
   "description": "killua is a local-storage management library for React applications.",
   "repository": "https://github.com/sys113/killua.git",
   "keywords": [
@@ -14,8 +14,8 @@
   "author": "hamid shahsavani",
   "license": "MIT",
   "peerDependencies": {
-    "react": ">=17.0.0",
-    "@types/react": ">=17.0.0"
+    "@types/react": ">=17.0.0",
+    "react": ">=17.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
