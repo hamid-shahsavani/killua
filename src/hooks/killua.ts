@@ -334,7 +334,6 @@ function useKillua<
         data: args.default,
         encrypt: args.encrypt,
       });
-      ('5');
       addThunderToThundersExpireLocalstorageHandler();
     }
     // if thunder is not in 'thundersExpire' object && push it to 'thundersExpire' with expire time
