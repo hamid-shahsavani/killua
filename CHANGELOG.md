@@ -1,4 +1,4 @@
-# 0.2.14 (2023-10-04)
+# 0.2.15 (2023-10-04)
 
 - Fix checksum change in second open website and reset all thunders to default value
 
