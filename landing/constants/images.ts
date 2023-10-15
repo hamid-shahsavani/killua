@@ -1,7 +1,7 @@
-import logo from '@/assets/images/template/logo.png';
-import js from '@/assets/images/landing/js.png';
-import ts from '@/assets/images/landing/ts.png';
-import ssr from '@/assets/images/landing/ssr.png';
+import logo from '@/assets/images/logo.png';
+import js from '@/assets/images/js.png';
+import ts from '@/assets/images/ts.png';
+import ssr from '@/assets/images/ssr.png';
 
 export const imageLogo = logo;
 export const imageJs = js;

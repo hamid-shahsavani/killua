@@ -12,3 +12,4 @@ workspace.code-workspace
 bun.lockb
 out
 .next
+.vercel

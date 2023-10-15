@@ -1,3 +1,7 @@
+# 0.2.16 (2023-10-15)
+
+- add landing page
+
 # 0.2.15 (2023-10-04)
 
 - Fix checksum change in second open website and reset all thunders to default value

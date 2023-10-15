@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function Footer(): JSX.Element {
   return (
-    <footer className="py-8 mt-10 bg-[url('../assets/images/template/footer-bg.png')] bg-cover">
+    <footer className="py-8 mt-10 bg-[url('../assets/images/footer-bg.png')] bg-cover">
       <div
         className={`container flex flex-col gap-6 sm:gap-8 sm:flex-row lg:gap-10`}
       >

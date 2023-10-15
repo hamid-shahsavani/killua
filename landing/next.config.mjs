@@ -2,7 +2,7 @@
 
 const nextConfig = {
   env: {
-    KILLUA_VERSION: '0.2.15',
+    KILLUA_VERSION: '0.2.16',
   },
 };
 
