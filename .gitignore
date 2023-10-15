@@ -10,3 +10,5 @@ coverage
 workspace.code-workspace
 .netlify
 bun.lockb
+out
+.next

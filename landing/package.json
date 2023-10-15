@@ -1,0 +1,35 @@
+{
+  "name": "killua-website",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "highlight.js": "^11.8.0",
+    "killua": "^0.2.12",
+    "next": "^13.5.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-highlight": "^0.15.0",
+    "sass": "^1.68.0",
+    "sharp": "^0.32.6",
+    "swiper": "^10.3.1",
+    "tailwind-merge": "^1.14.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/react-highlight": "^0.12.6",
+    "autoprefixer": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "^13.5.4",
+    "postcss": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest"
+  }
+}

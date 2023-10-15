@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// tailwind apply classes
+.border-c-gradient {
+  @apply bg-gradient-to-r from-[#D931F7] via-[#D931F7] to-[#F3F731] p-[1px];
+}
+.btn-animation {
+  @apply transform transition-all duration-300 active:scale-90;
+}
+
+// disable background blue after click
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+// scroll smoosh
+html {
+  scroll-padding-top: 10rem;
+  scroll-behavior: smooth !important;
+}
+
+// minimal scrollbar
+.minimal-scrollbar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 7px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #b6b6b6;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #333;
+  }
+}
+
+// add hash to heading in doc page
+.hash-link::before {
+  content: '#';
+}
