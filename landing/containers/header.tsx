@@ -13,7 +13,11 @@ export default function Header(): JSX.Element {
         </Link>
         <div className="flex items-center gap-5">
           {/* docs */}
-          <Link href={'https://killua-docs.vercel.app/'} className="text-[17px]">
+          <Link
+            target="_blank"
+            href={'https://killua-docs.vercel.app/'}
+            className="text-[17px]"
+          >
             Docs
           </Link>
           {/* github */}

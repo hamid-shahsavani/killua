@@ -15,7 +15,11 @@ function Card(props: {
   url: string;
 }) {
   return (
-    <Link href={props.url} className="flex justify-center w-full h-full group">
+    <Link
+      target="_blank"
+      href={props.url}
+      className="flex justify-center w-full h-full group"
+    >
       <div className="relative w-full h-full">
         <div className="absolute inset-0 transition-all lg:-mb-[2px] duration-300 opacity-0 border-c-gradient group-hover:opacity-100 rounded-3xl" />
         <div className="relative bg-[#222] h-full flex flex-col items-center p-3 rounded-3xl m-[1px]">

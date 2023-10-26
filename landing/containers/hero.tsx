@@ -95,7 +95,11 @@ export default function Component() {
 };`;
 
   return (
-    <section className={`lg:bg-[url('../assets/images/hero-bg.png')] lg:h-[500px] bg-center bg-cover bg-no-repeat lg:-mb-10 items-center flex ${activedFileTab === 'Component' && 'lg:mt-14 lg:mb-4'}`}>
+    <section
+      className={`lg:bg-[url('../assets/images/hero-bg.png')] lg:h-[500px] bg-center bg-cover bg-no-repeat lg:-mb-10 items-center flex ${
+        activedFileTab === 'Component' && 'lg:mt-14 lg:mb-4'
+      }`}
+    >
       <div className="container flex flex-col items-center lg:flex-row lg:gap-4 lg:items-start space-y-14 lg:space-y-0">
         <div className="sm:w-[500px] gap-3 lg:gap-4 sm:text-center lg:text-start flex flex-col sm:flex-col sm:justify-center sm:items-center lg:items-start lg:w-1/2">
           {/* install command */}
@@ -123,6 +127,7 @@ export default function Component() {
             handling of local storage operations.
           </h2>
           <Link
+            target="_blank"
             href="https://killua-docs.vercel.app/"
             className="flex group p-2.5 gap-1 px-[18px] w-fit rounded-full bg-c-purple"
           >

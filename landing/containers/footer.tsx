@@ -46,28 +46,43 @@ export default function Footer(): JSX.Element {
         </div>
         <div className="space-y-1">
           {/* title */}
-          <p className="text-lg font-semibold lg:font-bold">DOCUMENTATION</p>
+          <p className="text-lg font-semibold lg:font-bold">Usage</p>
           {/* links */}
           <ul className="[&>li]:lg:text-[17px] [&>li]:font-light [&>li]:text-[#dedede] [&>li]:transition-all [&>li]:duration-300 hover:[&>li]:text-white">
             <li>
               <Link
-                href={'https://github.com/sys113/killua/blob/main/CHANGELOG.md'}
+                target="_blank"
+                href={
+                  'https://killua-docs.vercel.app/usage/react.js/javascript'
+                }
               >
-                installation
+                react.js with javascript
               </Link>
             </li>
             <li>
               <Link
+                target="_blank"
                 href={
-                  'https://github.com/sys113/killua/blob/main/CONTRIBUTING.md'
+                  'https://killua-docs.vercel.app/usage/react.js/typescript'
                 }
               >
-                Usage
+                react.js with typescript
               </Link>
             </li>
             <li>
-              <Link href={'https://github.com/sys113/killua/blob/main/LICENSE'}>
-                Features
+              <Link
+                target="_blank"
+                href={'https://killua-docs.vercel.app/usage/next.js/javascript'}
+              >
+                next.js with javascript
+              </Link>
+            </li>
+            <li>
+              <Link
+                target="_blank"
+                href={'https://killua-docs.vercel.app/usage/next.js/typescript'}
+              >
+                next.js with typescript
               </Link>
             </li>
           </ul>
