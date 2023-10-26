@@ -123,7 +123,7 @@ export default function Component() {
             handling of local storage operations.
           </h2>
           <Link
-            href="/docs/get-started"
+            href="https://killua-docs.vercel.app/"
             className="flex group p-2.5 gap-1 px-[18px] w-fit rounded-full bg-c-purple"
           >
             <span>Get Started</span>

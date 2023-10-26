@@ -38,25 +38,25 @@ function Card(props: {
 export default function GuideUsage(): JSX.Element {
   const cardsData = [
     {
-      url: '/',
+      url: 'https://killua-docs.vercel.app/usage/react.js/javascript',
       image: imageJs,
       title: 'JavaScript',
       description:
         'Effortlessly handle and optimize local storage operations to enhance the performance and user experience of your JavaScript projects.',
     },
     {
-      url: '/',
+      url: 'https://killua-docs.vercel.app/usage/react.js/typescript',
       image: imageTs,
       title: 'TypeScript',
       description:
         'Leverage the type safety and enhanced tooling provided by TypeScript to seamlessly manage local storage in your applications, ensuring a robust and error-free development experience.',
     },
     {
-      url: '/',
+      url: 'https://killua-docs.vercel.app/usage/next.js/javascript',
       image: imageSsr,
-      title: 'Server Side Rendering',
+      title: 'Nextjs',
       description:
-        'Experience unparalleled efficiency as Killua effortlessly handles local storage operations in your server-side rendering (SSR) frameworks.',
+        'you can easy seamlessly integrate the "killua" package with Next.js in both the app directory and the page directory.',
     },
   ];
 

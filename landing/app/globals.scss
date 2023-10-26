@@ -42,8 +42,3 @@ html {
     background: #333;
   }
 }
-
-// add hash to heading in doc page
-.hash-link::before {
-  content: '#';
-}

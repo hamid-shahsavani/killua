@@ -14,7 +14,7 @@ npm install killua
 ## Features
 - Get data from local storage
 - Set data to local storage
-- SSR friendly
+- Next.js friendly
 - TypeScript friendly
 - Auto update in other tabs
 - Auto update in other components

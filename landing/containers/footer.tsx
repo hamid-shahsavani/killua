@@ -13,10 +13,6 @@ export default function Footer(): JSX.Element {
             <Link href={'/'} className="flex items-center gap-2">
               {/* logo */}
               <Image src={imageLogo} width={120} height={30} alt="logo" />
-              {/* version */}
-              <span className="text-lg font-medium">
-                {process.env.KILLUA_VERSION}
-              </span>
             </Link>
             {/* description */}
             <p className="font-light text-[#b5b5b5] w-[240px]">

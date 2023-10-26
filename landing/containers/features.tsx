@@ -11,9 +11,9 @@ export default function Features(): JSX.Element {
         'Easily store and preserve important information without any challenges, ensuring convenient future access and utilization.',
     },
     {
-      title: 'SSR friendly',
+      title: 'Nextjs friendly',
       description:
-        'Compatible with Server-Side Rendering (SSR) to ensure proper rendering on both the client and server.',
+        'you can easy seamlessly integrate the "killua" package with Next.js in both the app directory and the page directory.',
     },
     {
       title: 'TypeScript friendly',
