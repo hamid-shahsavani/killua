@@ -1,0 +1,29 @@
+/* hidden footer */
+footer {
+  display: none;
+}
+
+/* hidden toggle theme */
+.nx-sticky.nx-bottom-0.nx-bg-white.dark\:nx-bg-dark.nx-mx-4.nx-py-4.nx-shadow-\[0_-12px_16px_\#fff\].nx-flex.nx-items-center.nx-gap-2.dark\:nx-border-neutral-800.dark\:nx-shadow-\[0_-12px_16px_\#111\].contrast-more\:nx-border-neutral-400.contrast-more\:nx-shadow-none.contrast-more\:dark\:nx-shadow-none.nx-border-t {
+  display: none;
+}
+
+/* hidden last update */
+.nx-mt-12.nx-mb-8.nx-block.nx-text-xs.nx-text-gray-500.ltr\:nx-text-right.rtl\:nx-text-left.dark\:nx-text-gray-400 {
+  display: none;
+}
+
+/* hidden feedback and edit page */
+.nx-text-xs.nx-font-medium.nx-text-gray-500.hover\:nx-text-gray-900.dark\:nx-text-gray-400.dark\:hover\:nx-text-gray-100.contrast-more\:nx-text-gray-800.contrast-more\:dark\:nx-text-gray-50 {
+  display: none;
+}
+
+/* hidden search */
+.nextra-search {
+  display: none !important;
+}
+
+/* hidden next and prev btn */
+.nx-mb-8.nx-flex.nx-items-center.nx-border-t.nx-pt-8.dark\:nx-border-neutral-800.contrast-more\:nx-border-neutral-400.dark\:contrast-more\:nx-border-neutral-400 {
+  display: none !important;
+}

@@ -1,0 +1,95 @@
+import { Callout } from 'nextra-theme-docs';
+
+# Javascript usage
+
+## Installation
+
+The Killua package lives in [npm](https://www.npmjs.com/package/killua). To install the latest stable version, run the following command:
+
+```bash
+# npm
+npm install killua
+
+# yarn
+yarn add killua
+```
+
+## Create thunder
+
+<Callout type="warning" emoji="⚠️">
+  Note that `thunder` refers to a key within local storage.
+</Callout>
+<Callout type="warning" emoji="⚠️">
+  Certainly, sensitive data should not be stored on local storage. The purpose
+  of encrypting local storage in this method is to prevent regular users from
+  having direct access to the data stored in local storage and also to prevent
+  them from modifying it directly.
+</Callout>
+
+1. Create a `thunders` directory for the thunder configuration.
+2. Create the thunder configuration file, for example: `counter.js`.
+3. Set up the configuration:
+
+```js showLineNumbers filename="thunders/counter.js" copy
+import { thunder } from "killua";
+
+const thunderCounter = thunder({
+  key: "counter", // unique key for local storage, without starting with "thunder"
+  encrypt: false, // if true, the data will be encrypted before being stored in local storage
+  default: 1, // initial value for the thunder
+  expire: 1, // // null to disable the expiration timer, or a number indicating the expiration time in minutes
+  reducers: { // optional
+    increment: (thunder) => thunder + 1,
+    incrementWithPayload: (thunder, payload) => thunder + payload,
+    reset: () => 1,
+  },
+  selectors: { // optional
+    getCounterPlusOne: (thunder) => thunder + 1,
+    getCounterPlusPayload: (thunder, payload) => thunder + payload,
+  },
+});
+
+export { thunderCounter };
+```
+
+## Use thunder
+
+<Callout type="warning" emoji="⚠️">
+  all desctructer property from thunder config is optional.
+</Callout>
+
+```jsx showLineNumbers {5-10} filename="component/counter.js" copy
+import { thunderCounter } from "../thunders/counter";
+import { useKillua } from "killua";
+
+const Counter = () => {
+  const {
+    thunder: thunderCounterState,
+    setThunder: thunderCounterSetState,
+    reducers: thunderCounterReducers,
+    selectors: thunderCounterSelectors,
+  } = useKillua(thunderCounter);
+
+  return (
+    <>
+      <h2> Thunder </h2>
+      <h2>Counter: {thunderCounterState}</h2>
+      <hr />
+      <h2> Set Thunder </h2>
+      <button onClick={() => thunderCounterSetState((prev) => prev + 1)}>Set Thunder with callback</button>
+      <button onClick={() => thunderCounterSetState(12)}>Set Thunder without callback</button>
+      <hr />
+      <h2> Reducers </h2>
+      <button onClick={() => thunderCounterReducers.increment()}>Increment</button>
+      <button onClick={() => thunderCounterReducers.incrementWithPayload(5)}>Increment with payload</button>
+      <button onClick={() => thunderCounterReducers.reset()}>Reset</button>
+      <hr />
+      <h2> Selectors </h2>
+      <button onClick={() => console.log(thunderCounterSelectors.getCounterPlusOne())}>Get counter with plus one</button>
+      <button onClick={() => console.log(thunderCounterSelectors.getCounterPlusPayload(10))}>Get counter with plus payload</button>
+    </>
+  )
+};
+
+export default Counter;
+```
