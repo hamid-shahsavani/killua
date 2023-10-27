@@ -58,7 +58,7 @@ import { thunder } from "killua";
 
 const thunderCounter = thunder({
   key: "counter",
-  encrypt: false,
+  encrypt: true,
   default: 1${activedLanguageType === 'ts' ? ' as number' : ''},
   expire: null,
   reducers: {
