@@ -1,6 +1,6 @@
 {
-  "name": "killua",
-  "version": "0.3.4",
+  "name": "killua-dev",
+  "version": "0.0.1",
   "description": "killua is a local-storage management library for React applications.",
   "repository": "https://github.com/sys113/killua.git",
   "homepage": "https://killua-landing.vercel.app",
@@ -23,6 +23,7 @@
     "@commitlint/config-conventional": "^17.7.0",
     "@rollup/plugin-typescript": "^11.1.3",
     "@types/crypto-js": "^4.1.2",
+    "@types/jest": "^29.5.8",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
@@ -31,10 +32,14 @@
     "prettier": "^3.0.3",
     "rollup": "^3.29.2",
     "tslib": "^2.6.2",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
   },
   "dependencies": {
     "crypto-js": "^4.2.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "husky": {
     "hooks": {
@@ -49,18 +54,13 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "prettier:check": "prettier --check src/**/*.ts src/**/*.tsx *.md --no-error-on-unmatched-pattern",
-    "prettier:fix": "prettier --write src/**/*.ts src/**/*.tsx *.md --ignore-unknown --no-error-on-unmatched-pattern",
-    "lint:check": "eslint --cache --ext .ts,.tsx ./src",
-    "lint:fix": "eslint --cache --fix --ext .ts,.tsx ./src",
-    "check": "yarn lint:check && yarn prettier:check",
-    "fix": "yarn lint:fix && yarn prettier:fix",
+    "test": "vitest --run",
+    "test:watch": "vitest",
     "clean": "rm -rf lib/* ",
     "dev": "rollup --config ./configs/rollup.config.mjs --watch",
     "build": "yarn run clean && npm run build:cjs && npm run build:esm",
     "build:esm": "rollup --config ./configs/rollup.config.mjs",
-    "build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
-    "prepublishOnly": "npm run build"
+    "build:cjs": "tsc -p ./configs/tsconfig.cjs.json"
   },
   "exports": {
     ".": {
@@ -68,8 +68,7 @@
       "require": "./lib/index.js",
       "import": "./lib/index.mjs"
     },
-    "./package.json": "./package.json",
-    "./locales/*": "./lib/locales/*"
+    "./package.json": "./package.json"
   },
   "main": "./lib/index.js",
   "module": "./lib/index.mjs",
