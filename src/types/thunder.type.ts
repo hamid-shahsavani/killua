@@ -1,5 +1,11 @@
 export type ThunderType<
   TDefault,
+  TEvents extends
+    | {
+        initialize?: (state: TDefault) => void;
+        update?: (state: TDefault) => void;
+      }
+    | undefined,
   TReducers extends
     | Record<string, (state: TDefault, payload?: any) => TDefault>
     | undefined,
@@ -12,6 +18,7 @@ export type ThunderType<
   encrypt: boolean;
   expire: TExpire;
   default: TDefault;
+  events?: TEvents;
   reducers?: TReducers;
   selectors?: TSelectors;
 }>;

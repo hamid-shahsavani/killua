@@ -1,8 +1,8 @@
 import * as CryptoJS from 'crypto-js';
 import { useEffect, useState } from 'react';
-import { useSSRKillua } from '../providers/ssr';
 import { ThunderType } from '../types/thunder.type';
 import { RemoveNeverProperties } from '../utills';
+import { useSSRKillua } from '../providers/ssr';
 
 type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never;
 type RemoveFirstArg<T> = T extends (...args: infer Args) => infer R
@@ -36,6 +36,12 @@ function getUniqeUserId(): string {
 
 function useKillua<
   TDefault,
+  TEvents extends
+    | {
+        initialize?: (state: TDefault) => void;
+        update?: (state: TDefault) => void;
+      }
+    | undefined,
   TReducers extends
     | Record<string, (thunder: TDefault, payload?: any) => TDefault>
     | undefined = undefined,
@@ -44,7 +50,7 @@ function useKillua<
     | undefined = undefined,
   TExpire extends null | number = null,
 >(
-  args: ThunderType<TDefault, TReducers, TSelectors, TExpire>,
+  args: ThunderType<TDefault, TEvents, TReducers, TSelectors, TExpire>,
 ): RemoveNeverProperties<{
   thunder: TDefault;
   setThunder: (value: TDefault | ((value: TDefault) => TDefault)) => void;
@@ -65,6 +71,22 @@ function useKillua<
     .charAt(0)
     .toUpperCase()}${args.key.slice(1)}`;
 
+  //* broadcast channel
+  const broadcastChannel = new BroadcastChannel('killua');
+
+  //* broadcast channel for run update thunder
+  useEffect(() => {
+    broadcastChannel.onmessage = (e) => {
+      if (e.data === 'updateThunder') {
+        const thunderLocalstorage = getThunderFromLocalstorage();
+        setThunderState(thunderLocalstorage);
+        if (args.events?.update) {
+          args.events.update(thunderLocalstorage);
+        }
+      }
+    };
+  }, []);
+
   //* set to localstorage
   function setToLocalstorage(args: {
     key: string;
@@ -80,7 +102,6 @@ function useKillua<
           ).toString()
         : JSON.stringify(args.data),
     );
-    window.dispatchEvent(new Event('storage'));
   }
 
   //* get thunder from localstorage
@@ -262,8 +283,14 @@ function useKillua<
 
   //* thunder state with initial-value from localstorage
   const isServer = useSSRKillua();
+  const [isInitializedThunderState, setIsInitializedThunderState] =
+    useState<boolean>(false);
   const [thunderState, setThunderState] = useState<any>(
-    isServer ? undefined : getThunderFromLocalstorage(),
+    isServer
+      ? undefined
+      : () => {
+          return getThunderFromLocalstorage();
+        },
   );
   useEffect(() => {
     if (isServer) {
@@ -273,6 +300,16 @@ function useKillua<
       }
     }
   }, []);
+
+  //* initialize thunder event call
+  useEffect(() => {
+    if (thunderState !== undefined && !isInitializedThunderState) {
+      setIsInitializedThunderState(true);
+      if (args.events && args.events.initialize) {
+        args.events.initialize(thunderState);
+      }
+    }
+  }, [thunderState]);
 
   //* set thunder to localstorage and state handler
   function setThunderToLocalstorageAndStateHandler(args: {
@@ -327,6 +364,7 @@ function useKillua<
         encrypt: true,
       });
     }
+
     // function for remove expired thunder from localStorage and 'thundersExpire'
     function removeExpiredThunderHandler() {
       setThunderToLocalstorageAndStateHandler({
@@ -366,7 +404,7 @@ function useKillua<
       if (Object.prototype.hasOwnProperty.call(args.reducers, actionName)) {
         const actionFunc = args.reducers[actionName];
         reducers[actionName] = (payload: any) => {
-          setThunderToLocalstorageAndStateHandler({
+          setToLocalstorage({
             key: thunderKeyName,
             data: (actionFunc as (prev: TDefault, payload: any) => TDefault)(
               thunderState,
@@ -374,6 +412,10 @@ function useKillua<
             ),
             encrypt: args.encrypt,
           });
+          // update thunder event call
+          if (thunderState !== getThunderFromLocalstorage()) {
+            broadcastChannel.postMessage('updateThunder');
+          }
         };
       }
     }
@@ -403,11 +445,15 @@ function useKillua<
         encrypt: args.encrypt,
       });
     } else {
-      setThunderToLocalstorageAndStateHandler({
+      setToLocalstorage({
         key: thunderKeyName,
         data: value,
         encrypt: args.encrypt,
       });
+    }
+    // update thunder event call
+    if (thunderState !== getThunderFromLocalstorage()) {
+      broadcastChannel.postMessage('updateThunder');
     }
   }
 

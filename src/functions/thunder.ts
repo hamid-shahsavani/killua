@@ -3,6 +3,12 @@ import { RemoveNeverProperties } from '../utills';
 
 function thunder<
   TDefault,
+  TEvents extends
+    | {
+        initialize?: (state: TDefault) => void;
+        update?: (state: TDefault) => void;
+      }
+    | undefined,
   TReducers extends
     | Record<string, (thunder: TDefault, payload?: any) => TDefault>
     | undefined = undefined,
@@ -10,7 +16,7 @@ function thunder<
     | Record<string, (thunder: TDefault, payload?: any) => any>
     | undefined = undefined,
   TExpire extends null | number = null,
->(args: ThunderType<TDefault, TReducers, TSelectors, TExpire>) {
+>(args: ThunderType<TDefault, TEvents, TReducers, TSelectors, TExpire>) {
   if (args.default === undefined) {
     throw new Error('required `default` value for thunder!');
   }
@@ -69,15 +75,23 @@ function thunder<
         'expire',
         'reducers',
         'selectors',
+        'events',
       ].includes(key),
   );
   if (notDefinedThunderKey.length > 0) {
     throw new Error(
-      `not defined key \`${notDefinedThunderKey.join(', ')}\` for thunder!`,
+      `not defined key \`${notDefinedThunderKey.join(
+        ', ',
+      )}\` for thunder config!`,
     );
   }
 
-  const r = { ...args, reducers: args.reducers!, selectors: args.selectors! };
+  const r = {
+    ...args,
+    reducers: args.reducers!,
+    selectors: args.selectors!,
+    events: args.events!,
+  };
   return r as RemoveNeverProperties<typeof r>;
 }
 
