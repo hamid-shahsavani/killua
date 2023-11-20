@@ -12,6 +12,7 @@ module.exports = {
         'chore',
         'feat',
         'fix',
+        'test',
         'clean',
         'version',
         'refactor',
