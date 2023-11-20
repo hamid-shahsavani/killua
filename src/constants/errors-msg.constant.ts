@@ -1,4 +1,4 @@
-export const errorsMsg: any = {
+export const errorsMsg = {
   key: {
     required: '`key` is required!',
     invalidType: '`key` is not string!',
@@ -7,6 +7,12 @@ export const errorsMsg: any = {
   },
   default: {
     required: '`default` is required!',
+  },
+  defaultClient: {
+    required: '`defaultClient` is required!',
+  },
+  defaultServer: {
+    required: '`defaultServer` is required!',
   },
   ssr: {
     required: '`ssr` is required!',
@@ -37,8 +43,10 @@ export const errorsMsg: any = {
     invalidType: '`events` is not an object!',
     empty: '`events` keys is an empty object!',
     keysValueIsNotFunction: '`events` keys value is not function!',
-    keysIsNotOnInitializeOrOnChangeOrOnExpire:
-      '`events` keys is not onInitialize, onChange or onExpire!',
+    keysIsNotValidInSsrFalse:
+      '`events` keys is not `onInitialize`, `onChange` or `onExpire`!',
+    keysIsNotValidInSsrTrue:
+      '`events` keys is not `onInitializeServer`, `onInitializeClient`, `onChange` or `onExpire`!',
   },
   other: {
     notDefined: (keys: string[]): string =>

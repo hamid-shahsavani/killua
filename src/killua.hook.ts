@@ -16,29 +16,17 @@ export default function useKillua<T>(params: TSlice<T>): {
     setisInitializedSliceState(true);
     callSliceEvent({
       slice: sliceState,
-      event: params.events?.onInitialize,
+      event: params.ssr
+        ? params.events?.onInitializeClient
+        : params.events?.onInitialize,
     });
   }, []);
 
   //
-  const sliceConfig = {
-    ssr: true,
-    default: 1,
-  };
-
   const [sliceState, setSliceState] = useState<T>((): T => {
-    let value: number = 1;
-    if (sliceConfig.ssr) {
-      value = 2;
-    }
+    const value: number = 1;
     return value as T;
   });
-
-  useEffect((): void => {
-    if (sliceConfig.ssr) {
-      setSliceState(3 as T);
-    }
-  }, [sliceState]);
 
   return {
     get: sliceState,

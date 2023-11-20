@@ -1,5 +1,6 @@
 export const simpleSliceConfig: any = {
   key: 'counter',
+  ssr: false,
   default: 1,
   encrypt: true,
   expire: null,

@@ -14,9 +14,26 @@ import {
 } from './utils/type-guards.util';
 
 export default function createSlice<T>(params: TSlice<T>): TSlice<T> {
+  // validate `ssr`
+  if (isUndefined(params.ssr)) {
+    errorTemplate(errorsMsg.ssr.required);
+  } else if (!isBoolean(params.ssr)) {
+    errorTemplate(errorsMsg.ssr.invalidType);
+  }
+
   // validate `default`
-  if (isUndefined(params.default)) {
+  if (!params.ssr && isUndefined(params.default)) {
     errorTemplate(errorsMsg.default.required);
+  }
+
+  // validate `defaultClient`
+  if (params.ssr && isUndefined(params.defaultClient)) {
+    errorTemplate(errorsMsg.defaultClient.required);
+  }
+
+  // validate `defaultServer`
+  if (params.ssr && isUndefined(params.defaultServer)) {
+    errorTemplate(errorsMsg.defaultServer.required);
   }
 
   // validate `key`
@@ -81,12 +98,26 @@ export default function createSlice<T>(params: TSlice<T>): TSlice<T> {
     } else if (isEmptyObject(params.events)) {
       errorTemplate(errorsMsg.events.empty);
     } else if (
+      !params.ssr &&
       Object.keys(params.events).some(
         (key): boolean =>
-          !['onExpire', 'onInitialize', 'onChange'].includes(key),
+          !['onExpire', 'onChange', 'onInitialize'].includes(key),
       )
     ) {
-      errorTemplate(errorsMsg.events.keysIsNotOnInitializeOrOnChangeOrOnExpire);
+      errorTemplate(errorsMsg.events.keysIsNotValidInSsrFalse);
+    } else if (
+      params.ssr &&
+      Object.keys(params.events).some(
+        (key): boolean =>
+          ![
+            'onExpire',
+            'onChange',
+            'onInitializeClient',
+            'onInitializeServer',
+          ].includes(key),
+      )
+    ) {
+      errorTemplate(errorsMsg.events.keysIsNotValidInSsrTrue);
     } else if (
       Object.keys(params.events).some(
         (key): boolean =>
@@ -108,6 +139,9 @@ export default function createSlice<T>(params: TSlice<T>): TSlice<T> {
       ![
         'key',
         'default',
+        'defaultClient',
+        'defaultServer',
+        'ssr',
         'encrypt',
         'expire',
         'schema',
