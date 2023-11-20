@@ -134,21 +134,20 @@ export default function createSlice<T>(params: TSlice<T>): TSlice<T> {
   }
 
   // validate other keys
+  const validKeys = new Set([
+    ...(params.ssr ? ['defaultClient', 'defaultServer'] : ['default']),
+    'key',
+    'ssr',
+    'encrypt',
+    'expire',
+    'schema',
+    'reducers',
+    'selectors',
+    'events',
+  ]);
+
   const notDefinedSliceKey = Object.keys(params).filter(
-    (key: string): boolean =>
-      ![
-        'key',
-        'default',
-        'defaultClient',
-        'defaultServer',
-        'ssr',
-        'encrypt',
-        'expire',
-        'schema',
-        'reducers',
-        'selectors',
-        'events',
-      ].includes(key),
+    (key) => !validKeys.has(key),
   );
   if (notDefinedSliceKey.length > 0) {
     errorTemplate(errorsMsg.other.notDefined(notDefinedSliceKey));
