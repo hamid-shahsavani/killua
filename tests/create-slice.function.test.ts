@@ -19,7 +19,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.default.required);
     });
   });
-
   describe('validate `defaultClient`', () => {
     const sliceConfig: any = {
       key: 'test',
@@ -37,7 +36,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.defaultClient.required);
     });
   });
-
   describe('validate `defaultServer`', () => {
     const sliceConfig: any = {
       key: 'test',
@@ -55,7 +53,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.defaultServer.required);
     });
   });
-
   describe('validate `ssr`', () => {
     const sliceConfig: any = {
       key: 'test',
@@ -80,7 +77,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.ssr.invalidType);
     });
   });
-
   describe('validate `key`', () => {
     const sliceConfig: any = {
       ssr: false,
@@ -121,7 +117,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.key.startWithSlice);
     });
   });
-
   describe('validate `encrypt`', () => {
     const sliceConfig: any = {
       key: 'test',
@@ -146,7 +141,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.encrypt.invalidType);
     });
   });
-
   describe('validate `expire`', () => {
     const sliceConfig: any = {
       key: 'test',
@@ -171,7 +165,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.expire.invalidType);
     });
   });
-
   describe('validate `reducers`', () => {
     const sliceConfig: any = {
       key: 'test',
@@ -205,7 +198,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.reducers.keysValueIsNotFunction);
     });
   });
-
   describe('validate `selectors`', () => {
     const sliceConfig: any = {
       key: 'test',
@@ -239,7 +231,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.selectors.keysValueIsNotFunction);
     });
   });
-
   describe('validate `events`', () => {
     const sliceConfig: any = {
       key: 'test',
@@ -289,7 +280,6 @@ describe('create-slice.function.ts', () => {
       ).toThrow(errorsMsg.events.keysValueIsNotFunction);
     });
   });
-
   describe('validate `schema`', () => {
     const sliceConfig: any = {
       key: 'test',

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { callSliceEvent } from '../src/utils/call-slice-event.util';
+import callSliceEvent from '../src/utils/call-slice-event.util';
 
 describe('call-slice-event.util.ts', () => {
   it('should call the event function with the provided slice', () => {

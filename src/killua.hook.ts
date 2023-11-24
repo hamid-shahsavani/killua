@@ -1,37 +1,50 @@
 import { useEffect, useState } from 'react';
-import { TSlice } from './types/slice.type';
-import { callSliceEvent } from './utils/call-slice-event.util';
+import getFromLocalstorage from './utils/get-from-localstorage.util';
+import callSliceEvent from './utils/call-slice-event.util';
+import defaultSliceValue from './utils/default-slice-value.util';
+import { TSliceConfig } from './types/slice-config.type';
 
-export default function useKillua<T>(params: TSlice<T>): {
+export default function useKillua<T>(params: TSliceConfig<T>): {
   get: T;
   set: (value: T | ((value: T) => T)) => void;
   isReady: boolean;
-  reducers: TSlice<T>['reducers'];
-  selectors: TSlice<T>['selectors'];
+  reducers: TSliceConfig<T>['reducers'];
+  selectors: TSliceConfig<T>['selectors'];
 } {
-  //
-  const [isInitializedSliceState, setisInitializedSliceState] =
-    useState<boolean>(false);
-  useEffect((): void => {
-    setisInitializedSliceState(true);
-    callSliceEvent({
-      slice: sliceState,
-      event: params.ssr
-        ? params.events?.onInitializeClient
-        : params.events?.onInitialize,
-    });
-  }, []);
+  // default `isReady` value is `false` and set to `true` in client-side
+  const [isReady, setIsReady] = useState(false);
 
-  //
-  const [sliceState, setSliceState] = useState<T>((): T => {
-    const value: number = 1;
-    return value as T;
+  // slice state : `params.ssr` ? (return `params.defaultServer` / call event onInitialize server) : (get slice from localstorage / call event onInitialize client)
+  const [sliceState, setSliceState] = useState<T>(() => {
+    if (params.ssr) {
+      callSliceEvent<T>({
+        slice: defaultSliceValue<T>({
+          config: params,
+          type: 'server',
+        }),
+        event: params.events?.onInitializeServer,
+      });
+      return defaultSliceValue<T>({
+        config: params,
+        type: 'server',
+      });
+    } else {
+      return getFromLocalstorage<T>({ config: params });
+    }
   });
+
+  // set `isReady` to `true` in client-side / (params.ssr && !isReady) && (get slice from localstorage / call event onInitialize client)
+  useEffect(() => {
+    if (params.ssr && !isReady) {
+      setSliceState(getFromLocalstorage<T>({ config: params }));
+    }
+    setIsReady(true);
+  }, [sliceState]);
 
   return {
     get: sliceState,
     set: (value: T | ((value: T) => T)) => setSliceState(value),
-    isReady: isInitializedSliceState,
+    isReady,
     reducers: undefined,
     selectors: undefined,
   };

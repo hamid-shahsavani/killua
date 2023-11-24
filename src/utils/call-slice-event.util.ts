@@ -1,4 +1,4 @@
-export function callSliceEvent<T>({
+export default function callSliceEvent<T>({
   event,
   slice,
 }: {

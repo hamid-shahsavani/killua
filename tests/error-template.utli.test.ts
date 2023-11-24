@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { errorTemplate } from '../src/utils/error-template.utli';
+import errorTemplate from '../src/utils/error-template.utli';
 
 describe('error-template.utli.ts', () => {
   it('should throw an error with the correct message', () => {
