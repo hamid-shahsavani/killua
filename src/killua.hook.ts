@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import getFromLocalstorage from './utils/get-from-localstorage.util';
+import getSliceFromLocalstorage from './utils/get-slice-from-localstorage.util';
 import callSliceEvent from './utils/call-slice-event.util';
 import defaultSliceValue from './utils/default-slice-value.util';
 import { TSliceConfig } from './types/slice-config.type';
@@ -29,14 +29,14 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
         type: 'server',
       });
     } else {
-      return getFromLocalstorage<T>({ config: params });
+      return getSliceFromLocalstorage<T>({ config: params });
     }
   });
 
   // set `isReady` to `true` in client-side / (params.ssr && !isReady) && (get slice from localstorage / call event onInitialize client)
   useEffect(() => {
     if (params.ssr && !isReady) {
-      setSliceState(getFromLocalstorage<T>({ config: params }));
+      setSliceState(getSliceFromLocalstorage<T>({ config: params }));
     }
     setIsReady(true);
   }, [sliceState]);
