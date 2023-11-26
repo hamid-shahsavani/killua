@@ -3,37 +3,33 @@ import callSliceEvent from './call-slice-event.util';
 import defaultSliceValue from './default-slice-value.util';
 import generateSliceKeyName from './generate-slice-key-name.util';
 
+// TODO : call event onInitialize client before return value.
+
 export default function getSliceFromLocalstorage<T>(params: {
   config: TSliceConfig<T>;
 }): T {
-  // slice key name
-  const sliceKeyName = generateSliceKeyName(params.config.key);
-
-  // default slice value (client)
-  const defaultClientSliceValue: T = defaultSliceValue<T>({
+  // default is `default-client value` (update after get slice value from localstorage)
+  let returnValue: T = defaultSliceValue<T>({
     config: params.config,
     type: 'client',
   });
 
-  // event onInitialize (client)
-  const eventOnInitializeClient = params.config.ssr
-    ? params.config.events?.onInitializeClient
-    : params.config.events?.onInitialize;
-
-  // default is `defaultClientSliceValue` (update after get slice value from localstorage)
-  let returnValue: T = defaultClientSliceValue;
-
   // get slice value from localstorage and update `returnValue`
-  const localstorageSliceValue: string | null =
-    localStorage.getItem(sliceKeyName);
+  const localstorageSliceValue: string | null = localStorage.getItem(
+    generateSliceKeyName(params.config.key),
+  );
   if (localstorageSliceValue) {
     returnValue = JSON.parse(localstorageSliceValue) as T;
   }
 
-  // call event onInitialize client / return value
+  // call event onInitialize client
   callSliceEvent({
     slice: returnValue,
-    event: eventOnInitializeClient,
+    event: params.config.ssr
+      ? params.config.events?.onInitializeClient
+      : params.config.events?.onInitialize,
   });
+
+  // return slice value
   return returnValue;
 }
