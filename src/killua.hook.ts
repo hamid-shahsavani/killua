@@ -36,7 +36,7 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
     }
   });
 
-  // params.ssr && !isReady ===> set `isReady` to `true` in client-side | get slice from localstorage and set to `sliceState`
+  // params.ssr && !isReady ===> set `isReady` to `true` | get slice from localstorage and set to `sliceState`
   useEffect(() => {
     if (params.ssr && !isReady) {
       setIsReady(true);
@@ -44,18 +44,15 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
     }
   }, [sliceState]);
 
-  // set slice to localstorage
-  const setSliceHandler = (value: T | ((value: T) => T)) => {
-    setSliceToLocalstorage<T>({
-      config: params,
-      slice: value instanceof Function ? value(sliceState) : value,
-      setSliceState,
-    });
-  };
-
   return {
     get: sliceState,
-    set: setSliceHandler,
+    set: (value: T | ((value: T) => T)) => {
+      setSliceToLocalstorage<T>({
+        config: params,
+        slice: value instanceof Function ? value(sliceState) : value,
+        setSliceState,
+      });
+    },
     isReady,
     reducers: undefined,
     selectors: undefined,
