@@ -8,7 +8,6 @@ import generateSliceKeyName from './generate-slice-key-name.util';
 export default function getSliceFromLocalstorage<T>(params: {
   config: TSliceConfig<T>;
 }): T {
-  console.log('getSliceFromLocalstorage', params.config.key);
   // default is `default-client value` (update after get slice value from localstorage)
   let returnValue: T = defaultSliceValue<T>({
     config: params.config,
