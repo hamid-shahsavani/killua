@@ -45,8 +45,10 @@ export default function createSlice<T>(
     errorTemplate(errorsMsg.key.invalidType);
   } else if (isEmptyString(params.key)) {
     errorTemplate(errorsMsg.key.empty);
-  } else if ((params.key as string).startsWith('slice')) {
+  } else if ((params.key as string).startsWith('slice-')) {
     errorTemplate(errorsMsg.key.startWithSlice);
+  } else if ((params.key as string).startsWith('slices-')) {
+    errorTemplate(errorsMsg.key.startWithSlices);
   }
 
   // validate `encrypt`

@@ -8,7 +8,7 @@ export function getSaltKey(): string {
   // remove all slices from localstorage | set salt key to localstorage
   function setNewSaltKeyToLocalstorageHandler(): void {
     localStorage.setItem(
-      'slicesSaltKey',
+      'slices-salt-key',
       encrypt({
         data: saltKeyValue,
         key: 'killua',
@@ -18,7 +18,7 @@ export function getSaltKey(): string {
 
   // get salt key value from localstorage and update `saltKeyValue`
   const localStorageValue: string | null =
-    localStorage.getItem('slicesSaltKey');
+    localStorage.getItem('slices-salt-key');
   if (localStorageValue) {
     try {
       const decryptedSaltKeyValue = decrypt({

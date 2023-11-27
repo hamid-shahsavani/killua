@@ -3,7 +3,8 @@ export const errorsMsg = {
     required: '`key` is required!',
     invalidType: '`key` is not string!',
     empty: '`key` is an empty string!',
-    startWithSlice: '`key` cannot start with `slice`!',
+    startWithSlice: '`key` cannot start with `slice-`!',
+    startWithSlices: '`key` cannot start with `slices-`!',
   },
   default: {
     required: '`default` is required!',

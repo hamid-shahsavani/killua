@@ -108,13 +108,21 @@ describe('create-slice.function.ts', (): void => {
         }),
       ).toThrow(errorsMsg.key.empty);
     });
-    it('should throw an error if `key` starts with `slice`', (): void => {
+    it('should throw an error if `key` starts with `slice-`', (): void => {
       expect(() =>
         createSlice<number>({
           ...sliceConfig,
-          key: 'sliceCounter',
+          key: 'slice-counter',
         }),
       ).toThrow(errorsMsg.key.startWithSlice);
+    });
+    it('should throw an error if `key` starts with `slices-`', (): void => {
+      expect(() =>
+        createSlice<number>({
+          ...sliceConfig,
+          key: 'slices-counter',
+        }),
+      ).toThrow(errorsMsg.key.startWithSlices);
     });
   });
   describe('validate `encrypt`', (): void => {

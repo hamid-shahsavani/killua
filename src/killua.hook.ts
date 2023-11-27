@@ -54,7 +54,8 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
   // changed `sliceSaltKey` in localstorage by user ===> remove all slices from localstorage | set `sliceState` to `defaultClientSliceValue` | add `sliceSaltKey` to localstorage
   useEffect(() => {
     const handleStorageChange = (e: any) => {
-      if (e.key === 'slicesSaltKey') {
+      if (e.key === 'slices-salt-key') {
+        console.log('slices-salt-key changed');
         removeAllSlicesFromLocalStorage();
         setSliceState(defaultSliceValue<T>({ config: params, type: 'client' }));
         getSaltKey();
