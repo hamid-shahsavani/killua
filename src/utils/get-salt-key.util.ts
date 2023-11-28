@@ -24,6 +24,7 @@ export function getSaltKey(): string {
       const decryptedSaltKeyValue = decrypt({
         data: localStorageValue,
         key: 'killua',
+        default: '',
       });
       if (decryptedSaltKeyValue) {
         saltKeyValue = decryptedSaltKeyValue;

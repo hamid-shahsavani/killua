@@ -4,8 +4,6 @@ import callSliceEvent from './utils/call-slice-event.util';
 import defaultSliceValue from './utils/default-slice-value.util';
 import { TSliceConfig } from './types/slice-config.type';
 import setSliceToLocalstorage from './utils/set-slice-to-localstorage.util';
-import { getSaltKey } from './utils/get-salt-key.util';
-import removeAllSlicesFromLocalStorage from './utils/remove-all-slices-from-localstorage.util';
 
 export default function useKillua<T>(params: TSliceConfig<T>): {
   get: T;
@@ -50,22 +48,6 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
       setSliceState(getSliceFromLocalstorage<T>({ config: params }));
     }
   }, [sliceState]);
-
-  // changed `sliceSaltKey` in localstorage by user ===> remove all slices from localstorage | set `sliceState` to `defaultClientSliceValue` | add `sliceSaltKey` to localstorage
-  useEffect(() => {
-    const handleStorageChange = (e: any) => {
-      if (e.key === 'slices-salt-key') {
-        console.log('slices-salt-key changed');
-        removeAllSlicesFromLocalStorage();
-        setSliceState(defaultSliceValue<T>({ config: params, type: 'client' }));
-        getSaltKey();
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
 
   return {
     get: sliceState,
