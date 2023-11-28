@@ -36,11 +36,6 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
     }
   });
 
-  // dispatch `storage` event for detect update localstorage
-  useEffect(() => {
-    window.dispatchEvent(new Event('storage'));
-  }, []);
-
   // params.ssr && !isReady ===> set `isReady` to `true` | get slice from localstorage and set to `sliceState`
   useEffect(() => {
     if (params.ssr && !isReady) {
