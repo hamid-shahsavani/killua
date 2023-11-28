@@ -36,6 +36,24 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
     }
   });
 
+  // call post message `killua-slice-change` after set slice value to localstorage
+  // call message `killua-slice-change` ===> set `event.data.value` to `sliceState` | call event `onChange`
+  const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
+  useEffect(() => {
+    broadcastChannel.onmessage = (event) => {
+      if (
+        event.data.type === 'killua-slice-change' &&
+        event.data.key === params.key
+      ) {
+        setSliceState(event.data.value);
+        callSliceEvent<T>({
+          slice: event.data.value,
+          event: params.events?.onChange,
+        });
+      }
+    };
+  }, []);
+
   // params.ssr && !isReady ===> set `isReady` to `true` | get slice from localstorage and set to `sliceState`
   useEffect(() => {
     if (params.ssr && !isReady) {
@@ -50,7 +68,6 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
       setSliceToLocalstorage<T>({
         config: params,
         slice: value instanceof Function ? value(sliceState) : value,
-        setSliceState,
       });
     },
     isReady,
