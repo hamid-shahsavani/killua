@@ -5,8 +5,6 @@ import defaultSliceValue from './default-slice-value.util';
 import generateSliceKeyName from './generate-slice-key-name.util';
 import { getSaltKey } from './get-salt-key.util';
 
-// TODO : call event onInitialize client before return value.
-
 export default function getSliceFromLocalstorage<T>(params: {
   config: TSliceConfig<T>;
 }): T {

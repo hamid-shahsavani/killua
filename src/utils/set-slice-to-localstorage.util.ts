@@ -3,8 +3,6 @@ import encrypt from './encrypt.util';
 import generateSliceKeyName from './generate-slice-key-name.util';
 import { getSaltKey } from './get-salt-key.util';
 
-// TODO : call event onChange after set slice value to localstorage.
-
 export default function setSliceToLocalstorage<T>(params: {
   config: TSliceConfig<T>;
   slice: T;
