@@ -26,7 +26,7 @@ export default function setSliceToLocalstorage<T>(params: {
   // call broadcast channel with event `slice-event-onChange` for call event `onChange` and set updated slice value to `sliceState`
   const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
   broadcastChannel.postMessage({
-    type: 'killua-slice-change',
+    type: 'killua-event-onChange',
     key: params.config.key,
     value: params.slice,
   });

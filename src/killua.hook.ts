@@ -36,21 +36,28 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
     }
   });
 
-  // call post message `killua-slice-change` after set slice value to localstorage
-  // call message `killua-slice-change` ===> set `event.data.value` to `sliceState` | call event `onChange`
+  // broadcast channel message events
+  const broadcastChannelEvents = {
+    onChange: (event: MessageEvent) => {
+      if (event.data.type === 'killua-event-onChange') {
+        if (event.data.key === params.key) {
+          setSliceState(event.data.value);
+          callSliceEvent<T>({
+            slice: event.data.value,
+            event: params.events?.onChange,
+          });
+        }
+      }
+    },
+  };
+
+  // broadcast channel with onmessage events
   const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
   useEffect(() => {
     broadcastChannel.onmessage = (event) => {
-      if (
-        event.data.type === 'killua-slice-change' &&
-        event.data.key === params.key
-      ) {
-        setSliceState(event.data.value);
-        callSliceEvent<T>({
-          slice: event.data.value,
-          event: params.events?.onChange,
-        });
-      }
+      // call post message `killua-slice-change` after set slice value to localstorage
+      // call message `killua-slice-change` ===> set `event.data.value` to `sliceState` | call event `onChange`
+      broadcastChannelEvents.onChange(event);
     };
   }, []);
 
