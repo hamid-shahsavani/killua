@@ -12,6 +12,12 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
   reducers: TSliceConfig<T>['reducers'];
   selectors: TSliceConfig<T>['selectors'];
 } {
+  // default slice value server
+  const defaultSliceValueServer = defaultSliceValue<T>({
+    config: params,
+    type: 'client',
+  });
+
   // default `isReady` value is `false` and set to `true` in client-side
   const [isReady, setIsReady] = useState(false);
 
@@ -20,16 +26,10 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
   const [sliceState, setSliceState] = useState<T>((): T => {
     if (params.ssr) {
       callSliceEvent<T>({
-        slice: defaultSliceValue<T>({
-          config: params,
-          type: 'server',
-        }),
+        slice: defaultSliceValueServer,
         event: params.events?.onInitializeServer,
       });
-      return defaultSliceValue<T>({
-        config: params,
-        type: 'server',
-      });
+      return defaultSliceValueServer;
     } else {
       setIsReady(true);
       return getSliceFromLocalstorage<T>({ config: params });

@@ -8,11 +8,14 @@ import { getSaltKey } from './get-salt-key.util';
 export default function getSliceFromLocalstorage<T>(params: {
   config: TSliceConfig<T>;
 }): T {
-  // default is `default-client value` (update after get slice value from localstorage)
-  let returnValue: T = defaultSliceValue<T>({
+  // default slice value client
+  const defaultSliceValueClient = defaultSliceValue<T>({
     config: params.config,
     type: 'client',
   });
+
+  // default is `default-client value` (update after get slice value from localstorage)
+  let returnValue: T = defaultSliceValueClient;
 
   // get slice value from localstorage and update `returnValue`
   const localstorageSliceValue: string | null = localStorage.getItem(
@@ -25,18 +28,12 @@ export default function getSliceFromLocalstorage<T>(params: {
           ? decrypt({
               data: localstorageSliceValue,
               key: getSaltKey(),
-              default: defaultSliceValue<T>({
-                config: params.config,
-                type: 'client',
-              }),
+              default: defaultSliceValueClient,
             })
           : JSON.parse(localstorageSliceValue)
       ) as T;
     } catch (error) {
-      returnValue = defaultSliceValue<T>({
-        config: params.config,
-        type: 'client',
-      });
+      returnValue = defaultSliceValueClient;
     }
   }
 

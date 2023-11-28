@@ -15,6 +15,5 @@ export default function defaultSliceValue<T>(params: {
       ? params.config.defaultServer
       : params.config.default,
   };
-
   return defaultSliceValue[params.type];
 }
