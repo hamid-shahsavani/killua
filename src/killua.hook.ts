@@ -17,7 +17,7 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
   // default slice value server
   const defaultSliceValueServer = defaultSliceValue<T>({
     config: params,
-    type: 'client',
+    type: 'server',
   });
 
   // default `isReady` value is `false` and set to `true` in client-side
