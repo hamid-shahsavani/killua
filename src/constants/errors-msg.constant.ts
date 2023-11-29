@@ -18,6 +18,7 @@ export const errorsMsg = {
   ssr: {
     required: '`ssr` is required!',
     invalidType: '`ssr` is not boolean!',
+    mustBeTrue: 'your application is server-side, `ssr` must be `true`!',
   },
   encrypt: {
     invalidType: '`encrypt` is not boolean!',

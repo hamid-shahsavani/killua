@@ -4,6 +4,8 @@ import callSliceEvent from './utils/call-slice-event.util';
 import defaultSliceValue from './utils/default-slice-value.util';
 import { TSliceConfig } from './types/slice-config.type';
 import setSliceToLocalstorage from './utils/set-slice-to-localstorage.util';
+import errorTemplate from './utils/error-template.utli';
+import { errorsMsg } from './constants/errors-msg.constant';
 
 export default function useKillua<T>(params: TSliceConfig<T>): {
   get: T;
@@ -31,6 +33,9 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
       });
       return defaultSliceValueServer;
     } else {
+      if (typeof window === 'undefined') {
+        errorTemplate(errorsMsg.ssr.mustBeTrue);
+      }
       setIsReady(true);
       return getSliceFromLocalstorage<T>({ config: params });
     }
