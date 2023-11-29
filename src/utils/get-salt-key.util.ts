@@ -11,7 +11,7 @@ export function getSaltKey(): string {
       'slices-salt-key',
       encrypt({
         data: saltKeyValue,
-        key: 'killua',
+        saltKey: 'killua',
       }),
     );
   }
@@ -23,7 +23,8 @@ export function getSaltKey(): string {
     try {
       const decryptedSaltKeyValue = decrypt({
         data: localStorageValue,
-        key: 'killua',
+        saltKey: 'killua',
+        localstorageKey: 'slices-salt-key',
         default: '',
       });
       if (decryptedSaltKeyValue) {

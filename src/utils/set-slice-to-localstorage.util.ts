@@ -16,7 +16,7 @@ export default function setSliceToLocalstorage<T>(params: {
     params.config.encrypt
       ? encrypt({
           data: params.slice,
-          key: getSaltKey(),
+          saltKey: getSaltKey(),
         })
       : JSON.stringify(params.slice),
   );

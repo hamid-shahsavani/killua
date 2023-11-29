@@ -27,12 +27,14 @@ export default function getSliceFromLocalstorage<T>(params: {
         params.config.encrypt
           ? decrypt({
               data: localstorageSliceValue,
-              key: getSaltKey(),
+              saltKey: getSaltKey(),
+              localstorageKey: generateSliceKeyName(params.config.key),
               default: defaultSliceValueClient,
             })
           : JSON.parse(localstorageSliceValue)
       ) as T;
     } catch (error) {
+      localStorage.removeItem(generateSliceKeyName(params.config.key));
       returnValue = defaultSliceValueClient;
     }
   }
