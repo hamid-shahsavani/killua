@@ -20,6 +20,12 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
     type: 'server',
   });
 
+  // default slice value client
+  const defaultSliceValueClient = defaultSliceValue<T>({
+    config: params,
+    type: 'client',
+  });
+
   // default `isReady` value is `false` and set to `true` in client-side
   const [isReady, setIsReady] = useState(false);
 
@@ -48,15 +54,22 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
   const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
   useEffect(() => {
     broadcastChannel.onmessage = (event) => {
-      // call post message `killua-event-onChange` after set slice value to localstorage
-      // call message `killua-event-onChange` ===> set `event.data.value` to `sliceState` | call event `onChange`
-      if (event.data.type === 'killua-event-onChange') {
+      // call post message `localstorage-set-slice-value` after set slice value to localstorage
+      // call message `localstorage-set-slice-value` ===> set `event.data.value` to `sliceState` | call event `onChange`
+      if (event.data.type === 'localstorage-set-slice-value') {
         if (event.data.key === params.key) {
           setSliceState(event.data.value);
           callSliceEvent<T>({
             slice: event.data.value,
             event: params.events?.onChange,
           });
+        }
+      } else if (
+        event.data.type === 'localstorage-value-not-valid-and-removed'
+      ) {
+        // call message `localstorage-value-not-valid-and-removed` ===> set `defaultSliceValueClient` to `sliceState`
+        if (event.data.key === params.key) {
+          setSliceState(defaultSliceValueClient);
         }
       }
     };

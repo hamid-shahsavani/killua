@@ -29,12 +29,21 @@ export default function getSliceFromLocalstorage<T>(params: {
               data: localstorageSliceValue,
               saltKey: getSaltKey(),
               localstorageKey: generateSliceKeyName(params.config.key),
+              configKey: params.config.key,
               default: defaultSliceValueClient,
             })
           : JSON.parse(localstorageSliceValue)
       ) as T;
     } catch (error) {
+      // call broadcast channel with event `localstorage-value-not-valid-and-removed`
+      const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
+      broadcastChannel.postMessage({
+        type: 'localstorage-value-not-valid-and-removed',
+        key: params.config.key,
+      });
+      // remove slice value from localstorage
       localStorage.removeItem(generateSliceKeyName(params.config.key));
+      // set `defaultSliceValueClient` to `returnValue`
       returnValue = defaultSliceValueClient;
     }
   }

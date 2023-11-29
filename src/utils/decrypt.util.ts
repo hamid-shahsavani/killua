@@ -5,6 +5,7 @@ export default function decrypt(params: {
   default: any;
   saltKey: string;
   localstorageKey: string;
+  configKey?: string;
 }): string {
   try {
     const decryptedData = CryptoJS.AES.decrypt(
@@ -13,7 +14,17 @@ export default function decrypt(params: {
     ).toString(CryptoJS.enc.Utf8);
     return JSON.parse(decryptedData);
   } catch (error) {
+    // call broadcast channel with event `localstorage-value-not-valid-and-removed`
+    if (params.configKey) {
+      const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
+      broadcastChannel.postMessage({
+        type: 'localstorage-value-not-valid-and-removed',
+        key: params.configKey,
+      });
+    }
+    // remove slice value from localstorage
     localStorage.removeItem(params.localstorageKey);
+    // return default value
     return params.default;
   }
 }
