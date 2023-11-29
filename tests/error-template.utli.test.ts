@@ -3,8 +3,11 @@ import errorTemplate from '../src/utils/error-template.utli';
 
 describe('error-template.utli.ts', (): void => {
   it('should throw an error with the correct message', (): void => {
-    expect(() => errorTemplate('test error')).toThrowError(
-      'killua: test error',
-    );
+    expect(() =>
+      errorTemplate({
+        msg: 'test error',
+        key: 'test key',
+      }),
+    ).toThrowError('killua(test key): test error');
   });
 });

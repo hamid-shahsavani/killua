@@ -18,89 +18,155 @@ export default function createSlice<T>(
 ): TSliceConfig<T> {
   // validate `ssr`
   if (isUndefined(params.ssr)) {
-    errorTemplate(errorsMsg.ssr.required);
+    errorTemplate({
+      msg: errorsMsg.ssr.required,
+      key: params.key,
+    });
   } else if (!isBoolean(params.ssr)) {
-    errorTemplate(errorsMsg.ssr.invalidType);
+    errorTemplate({
+      msg: errorsMsg.ssr.invalidType,
+      key: params.key,
+    });
   }
 
   // validate `default`
   if (!params.ssr && isUndefined(params.default)) {
-    errorTemplate(errorsMsg.default.required);
+    errorTemplate({
+      msg: errorsMsg.default.required,
+      key: params.key,
+    });
   }
 
   // validate `defaultClient`
   if (params.ssr && isUndefined(params.defaultClient)) {
-    errorTemplate(errorsMsg.defaultClient.required);
+    errorTemplate({
+      msg: errorsMsg.defaultClient.required,
+      key: params.key,
+    });
   }
 
   // validate `defaultServer`
   if (params.ssr && isUndefined(params.defaultServer)) {
-    errorTemplate(errorsMsg.defaultServer.required);
+    errorTemplate({
+      msg: errorsMsg.defaultServer.required,
+      key: params.key,
+    });
   }
 
   // validate `key`
   if (isUndefined(params.key)) {
-    errorTemplate(errorsMsg.key.required);
+    errorTemplate({
+      msg: errorsMsg.key.required,
+      key: params.key,
+    });
   } else if (!isString(params.key)) {
-    errorTemplate(errorsMsg.key.invalidType);
+    errorTemplate({
+      msg: errorsMsg.key.invalidType,
+      key: params.key,
+    });
   } else if (isEmptyString(params.key)) {
-    errorTemplate(errorsMsg.key.empty);
+    errorTemplate({
+      msg: errorsMsg.key.empty,
+      key: params.key,
+    });
   } else if ((params.key as string).startsWith('slice-')) {
-    errorTemplate(errorsMsg.key.startWithSlice);
+    errorTemplate({
+      msg: errorsMsg.key.startWithSlice,
+      key: params.key,
+    });
   } else if ((params.key as string).startsWith('slices-')) {
-    errorTemplate(errorsMsg.key.startWithSlices);
+    errorTemplate({
+      msg: errorsMsg.key.startWithSlices,
+      key: params.key,
+    });
   }
 
   // validate `encrypt`
   if (isUndefined(params.encrypt)) {
-    errorTemplate(errorsMsg.encrypt.required);
+    errorTemplate({
+      msg: errorsMsg.encrypt.required,
+      key: params.key,
+    });
   } else if (!isBoolean(params.encrypt)) {
-    errorTemplate(errorsMsg.encrypt.invalidType);
+    errorTemplate({
+      msg: errorsMsg.encrypt.invalidType,
+      key: params.key,
+    });
   }
 
   // validate `expire`
   if (isUndefined(params.expire)) {
-    errorTemplate(errorsMsg.expire.required);
+    errorTemplate({
+      msg: errorsMsg.expire.required,
+      key: params.key,
+    });
   } else if (!isNull(params.expire) && !isNumber(params.expire)) {
-    errorTemplate(errorsMsg.expire.invalidType);
+    errorTemplate({
+      msg: errorsMsg.expire.invalidType,
+      key: params.key,
+    });
   }
 
   // validate `reducers`
   if (!isUndefined(params.reducers)) {
     if (!isObject(params.reducers)) {
-      errorTemplate(errorsMsg.reducers.invalidType);
+      errorTemplate({
+        msg: errorsMsg.reducers.invalidType,
+        key: params.key,
+      });
     } else if (isEmptyObject(params.reducers)) {
-      errorTemplate(errorsMsg.reducers.empty);
+      errorTemplate({
+        msg: errorsMsg.reducers.empty,
+        key: params.key,
+      });
     } else if (
       Object.keys(params.reducers).some(
         (key): boolean => !isFunction(params.reducers![key]),
       )
     ) {
-      errorTemplate(errorsMsg.reducers.keysValueIsNotFunction);
+      errorTemplate({
+        msg: errorsMsg.reducers.keysValueIsNotFunction,
+        key: params.key,
+      });
     }
   }
 
   // validate `selectors`
   if (!isUndefined(params.selectors)) {
     if (!isObject(params.selectors)) {
-      errorTemplate(errorsMsg.selectors.invalidType);
+      errorTemplate({
+        msg: errorsMsg.selectors.invalidType,
+        key: params.key,
+      });
     } else if (isEmptyObject(params.selectors)) {
-      errorTemplate(errorsMsg.selectors.empty);
+      errorTemplate({
+        msg: errorsMsg.selectors.empty,
+        key: params.key,
+      });
     } else if (
       Object.keys(params.selectors).some(
         (key): boolean => !isFunction(params.selectors![key]),
       )
     ) {
-      errorTemplate(errorsMsg.selectors.keysValueIsNotFunction);
+      errorTemplate({
+        msg: errorsMsg.selectors.keysValueIsNotFunction,
+        key: params.key,
+      });
     }
   }
 
   // validate `events`
   if (!isUndefined(params.events)) {
     if (!isObject(params.events)) {
-      errorTemplate(errorsMsg.events.invalidType);
+      errorTemplate({
+        msg: errorsMsg.events.invalidType,
+        key: params.key,
+      });
     } else if (isEmptyObject(params.events)) {
-      errorTemplate(errorsMsg.events.empty);
+      errorTemplate({
+        msg: errorsMsg.events.empty,
+        key: params.key,
+      });
     } else if (
       !params.ssr &&
       Object.keys(params.events).some(
@@ -108,7 +174,10 @@ export default function createSlice<T>(
           !['onExpire', 'onChange', 'onInitialize'].includes(key),
       )
     ) {
-      errorTemplate(errorsMsg.events.keysIsNotValidInSsrFalse);
+      errorTemplate({
+        msg: errorsMsg.events.keysIsNotValidInSsrFalse,
+        key: params.key,
+      });
     } else if (
       params.ssr &&
       Object.keys(params.events).some(
@@ -121,20 +190,29 @@ export default function createSlice<T>(
           ].includes(key),
       )
     ) {
-      errorTemplate(errorsMsg.events.keysIsNotValidInSsrTrue);
+      errorTemplate({
+        msg: errorsMsg.events.keysIsNotValidInSsrTrue,
+        key: params.key,
+      });
     } else if (
       Object.keys(params.events).some(
         (key): boolean =>
           !isFunction(params.events![key as typeof params.events]),
       )
     ) {
-      errorTemplate(errorsMsg.events.keysValueIsNotFunction);
+      errorTemplate({
+        msg: errorsMsg.events.keysValueIsNotFunction,
+        key: params.key,
+      });
     }
   }
 
   // validate `schema`
   if (!isUndefined(params.schema) && !isObject(params.schema)) {
-    errorTemplate(errorsMsg.schema.invalidType);
+    errorTemplate({
+      msg: errorsMsg.schema.invalidType,
+      key: params.key,
+    });
   }
 
   // validate other keys
@@ -154,7 +232,10 @@ export default function createSlice<T>(
     (key) => !validKeys.has(key),
   );
   if (notDefinedSliceKey.length > 0) {
-    errorTemplate(errorsMsg.other.notDefined(notDefinedSliceKey));
+    errorTemplate({
+      msg: errorsMsg.other.notDefined(notDefinedSliceKey),
+      key: params.key,
+    });
   }
 
   return params;

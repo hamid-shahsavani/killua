@@ -34,7 +34,10 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
       return defaultSliceValueServer;
     } else {
       if (typeof window === 'undefined') {
-        errorTemplate(errorsMsg.ssr.mustBeTrue);
+        errorTemplate({
+          msg: errorsMsg.ssr.mustBeTrue,
+          key: params.key,
+        });
       }
       setIsReady(true);
       return getSliceFromLocalstorage<T>({ config: params });
