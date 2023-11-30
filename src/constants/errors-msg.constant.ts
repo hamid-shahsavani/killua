@@ -25,7 +25,7 @@ export const errorsMsg = {
     required: '`encrypt` is required!',
   },
   expire: {
-    invalidType: '`expire` is not number or null!',
+    invalidType: '`expire` is not number!',
     required: '`expire` required!',
   },
   schema: {

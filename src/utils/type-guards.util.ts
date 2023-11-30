@@ -19,5 +19,3 @@ export const isFunction = (x: unknown): x is Function =>
   typeof x === 'function';
 
 export const isUndefined = (x: unknown): x is undefined => x === undefined;
-
-export const isNull = (x: unknown): x is null => x === null;

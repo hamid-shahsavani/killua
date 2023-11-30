@@ -4,7 +4,6 @@ import {
   isEmptyObject,
   isEmptyString,
   isFunction,
-  isNull,
   isNumber,
   isObject,
   isString,
@@ -108,15 +107,6 @@ describe('type-guards.util.ts', (): void => {
     });
     it('should return false for a defined value', (): void => {
       expect(isUndefined('hello')).toBe(false);
-    });
-  });
-  describe('is-null', (): void => {
-    it('should return true for null', (): void => {
-      const nullVariable: null = null;
-      expect(isNull(nullVariable)).toBe(true);
-    });
-    it('should return false for a non-null value', (): void => {
-      expect(isNull('hello')).toBe(false);
     });
   });
 });

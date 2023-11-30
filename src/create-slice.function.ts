@@ -6,7 +6,6 @@ import {
   isEmptyObject,
   isEmptyString,
   isFunction,
-  isNull,
   isNumber,
   isObject,
   isString,
@@ -95,16 +94,13 @@ export default function createSlice<T>(
   }
 
   // validate `expire`
-  if (isUndefined(params.expire)) {
-    errorTemplate({
-      msg: errorsMsg.expire.required,
-      key: params.key,
-    });
-  } else if (!isNull(params.expire) && !isNumber(params.expire)) {
-    errorTemplate({
-      msg: errorsMsg.expire.invalidType,
-      key: params.key,
-    });
+  if (!isUndefined(params.expire)) {
+    if (!isNumber(params.expire)) {
+      errorTemplate({
+        msg: errorsMsg.expire.invalidType,
+        key: params.key,
+      });
+    }
   }
 
   // validate `reducers`
@@ -208,7 +204,7 @@ export default function createSlice<T>(
   }
 
   // validate `schema`
-  if (!isUndefined(params.schema) && !isObject(params.schema)) {
+  if (!isUndefined(params.schema) && !isFunction(params.schema?.parse)) {
     errorTemplate({
       msg: errorsMsg.schema.invalidType,
       key: params.key,
