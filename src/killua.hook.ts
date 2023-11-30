@@ -14,41 +14,20 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
   reducers: TSliceConfig<T>['reducers'];
   selectors: TSliceConfig<T>['selectors'];
 } {
-  // default slice value server
-  const defaultSliceValueServer = defaultSliceValue<T>({
-    config: params,
-    type: 'server',
-  });
-
-  // default slice value client
-  const defaultSliceValueClient = defaultSliceValue<T>({
-    config: params,
-    type: 'client',
-  });
-
-  // default `isReady` value is `false` and set to `true` in client-side
-  const [isReady, setIsReady] = useState(false);
-
-  // params.ssr is truthy ===> call event onInitialize server | return `params.defaultServer`
-  // params.ssr is falsy ===> set `isReady` to `true` | return slice value from localstorage
-  const [sliceState, setSliceState] = useState<T>((): T => {
-    if (params.ssr) {
-      callSliceEvent<T>({
-        slice: defaultSliceValueServer,
-        event: params.events?.onInitializeServer,
-      });
-      return defaultSliceValueServer;
-    } else {
-      if (typeof window === 'undefined') {
-        errorTemplate({
-          msg: errorsMsg.ssr.mustBeTrue,
-          key: params.key,
-        });
-      }
-      setIsReady(true);
-      return getSliceFromLocalstorage<T>({ config: params });
-    }
-  });
+  // default value slice
+  const defaultValueSlice: {
+    server: T;
+    client: T;
+  } = {
+    server: defaultSliceValue<T>({
+      config: params,
+      type: 'server',
+    }),
+    client: defaultSliceValue<T>({
+      config: params,
+      type: 'client',
+    }),
+  };
 
   // broadcast channel with onmessage events
   const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
@@ -67,13 +46,37 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
       } else if (
         event.data.type === 'localstorage-value-not-valid-and-removed'
       ) {
-        // call message `localstorage-value-not-valid-and-removed` ===> set `defaultSliceValueClient` to `sliceState`
+        // call message `localstorage-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState`
         if (event.data.key === params.key) {
-          setSliceState(defaultSliceValueClient);
+          setSliceState(defaultValueSlice.client);
         }
       }
     };
   }, []);
+
+  // default `isReady` value is `false` and set to `true` in client-side
+  const [isReady, setIsReady] = useState(false);
+
+  // params.ssr is truthy ===> call event onInitialize server | return `params.defaultServer`
+  // params.ssr is falsy ===> set `isReady` to `true` | return slice value from localstorage
+  const [sliceState, setSliceState] = useState<T>((): T => {
+    if (params.ssr) {
+      callSliceEvent<T>({
+        slice: defaultValueSlice.server,
+        event: params.events?.onInitializeServer,
+      });
+      return defaultValueSlice.server;
+    } else {
+      if (typeof window === 'undefined') {
+        errorTemplate({
+          msg: errorsMsg.ssr.mustBeTrue,
+          key: params.key,
+        });
+      }
+      setIsReady(true);
+      return getSliceFromLocalstorage<T>({ config: params });
+    }
+  });
 
   // params.ssr && !isReady ===> set `isReady` to `true` | get slice from localstorage and set to `sliceState`
   useEffect(() => {
