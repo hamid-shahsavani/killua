@@ -7,7 +7,6 @@ describe('default-slice-value.util.ts', (): void => {
     const config: TConfig<string> = {
       key: 'test',
       ssr: false,
-      encrypt: true,
       default: 'default value',
     };
     const result = defaultSliceValue<string>({ config, type: 'client' });
@@ -17,7 +16,6 @@ describe('default-slice-value.util.ts', (): void => {
     const config: TConfig<string> = {
       key: 'test',
       ssr: true,
-      encrypt: true,
       defaultClient: 'client value',
       defaultServer: 'server value',
     };
@@ -28,7 +26,6 @@ describe('default-slice-value.util.ts', (): void => {
     const config: TConfig<string> = {
       key: 'test',
       ssr: true,
-      encrypt: true,
       defaultClient: 'client value',
       defaultServer: 'server value',
     };
