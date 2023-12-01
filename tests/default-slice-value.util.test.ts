@@ -1,13 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import defaultSliceValue from '../src/utils/default-slice-value.util';
-import { TSliceConfig } from '../src/types/slice-config.type';
+import { TConfig } from '../src/types/config.type';
 
 describe('default-slice-value.util.ts', (): void => {
   it('should return the default value when type is "client" and ssr is false', (): void => {
-    const config: TSliceConfig<string> = {
+    const config: TConfig<string> = {
       key: 'test',
       ssr: false,
-      expire: null,
       encrypt: true,
       default: 'default value',
     };
@@ -15,10 +14,9 @@ describe('default-slice-value.util.ts', (): void => {
     expect(result).toBe(config.default);
   });
   it('should return the default value when type is "server" and ssr is true', (): void => {
-    const config: TSliceConfig<string> = {
+    const config: TConfig<string> = {
       key: 'test',
       ssr: true,
-      expire: null,
       encrypt: true,
       defaultClient: 'client value',
       defaultServer: 'server value',
@@ -27,10 +25,9 @@ describe('default-slice-value.util.ts', (): void => {
     expect(result).toBe(config.defaultServer);
   });
   it('should return the default value when type is "server" and ssr is false', (): void => {
-    const config: TSliceConfig<string> = {
+    const config: TConfig<string> = {
       key: 'test',
       ssr: true,
-      expire: null,
       encrypt: true,
       defaultClient: 'client value',
       defaultServer: 'server value',

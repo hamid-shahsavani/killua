@@ -1,12 +1,12 @@
-import { TSliceConfig } from '../types/slice-config.type';
+import { TConfig } from '../types/config.type';
 
-export default function defaultSliceValue<T>(params: {
-  config: TSliceConfig<T>;
+export default function defaultSliceValue<TSlice>(params: {
+  config: TConfig<TSlice>;
   type: 'client' | 'server';
 }) {
   const defaultSliceValue: {
-    client: T;
-    server: T;
+    client: TSlice;
+    server: TSlice;
   } = {
     client: params.config.ssr
       ? params.config.defaultClient

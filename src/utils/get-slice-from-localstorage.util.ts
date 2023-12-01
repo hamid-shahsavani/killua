@@ -1,21 +1,21 @@
-import { TSliceConfig } from '../types/slice-config.type';
+import { TConfig } from '../types/config.type';
 import callSliceEvent from './call-slice-event.util';
 import decrypt from './decrypt.util';
 import defaultSliceValue from './default-slice-value.util';
 import generateSliceKeyName from './generate-slice-key-name.util';
 import { getSaltKey } from './get-salt-key.util';
 
-export default function getSliceFromLocalstorage<T>(params: {
-  config: TSliceConfig<T>;
-}): T {
+export default function getSliceFromLocalstorage<TSlice>(params: {
+  config: TConfig<TSlice>;
+}): TSlice {
   // default slice value client
-  const defaultSliceValueClient = defaultSliceValue<T>({
+  const defaultSliceValueClient = defaultSliceValue<TSlice>({
     config: params.config,
     type: 'client',
   });
 
   // default is `default-client value` (update after get slice value from localstorage)
-  let returnValue: T = defaultSliceValueClient;
+  let returnValue: TSlice = defaultSliceValueClient;
 
   // get slice value from localstorage and update `returnValue`
   const localstorageSliceValue: string | null = localStorage.getItem(
@@ -33,7 +33,7 @@ export default function getSliceFromLocalstorage<T>(params: {
               default: defaultSliceValueClient,
             })
           : JSON.parse(localstorageSliceValue)
-      ) as T;
+      ) as TSlice;
     } catch (error) {
       // call broadcast channel with event `localstorage-value-not-valid-and-removed`
       const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');

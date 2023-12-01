@@ -1,11 +1,11 @@
-import { TSliceConfig } from '../types/slice-config.type';
+import { TConfig } from '../types/config.type';
 import encrypt from './encrypt.util';
 import generateSliceKeyName from './generate-slice-key-name.util';
 import { getSaltKey } from './get-salt-key.util';
 
-export default function setSliceToLocalstorage<T>(params: {
-  config: TSliceConfig<T>;
-  slice: T;
+export default function setSliceToLocalstorage<TSlice>(params: {
+  config: TConfig<TSlice>;
+  slice: TSlice;
 }): void {
   // slice key name
   const sliceKeyName = generateSliceKeyName(params.config.key);

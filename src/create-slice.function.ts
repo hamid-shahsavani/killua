@@ -1,5 +1,5 @@
 import { errorsMsg } from './constants/errors-msg.constant';
-import { TSliceConfig } from './types/slice-config.type';
+import { TConfig } from './types/config.type';
 import errorTemplate from './utils/error-template.utli';
 import {
   isBoolean,
@@ -12,9 +12,9 @@ import {
   isUndefined,
 } from './utils/type-guards.util';
 
-export default function createSlice<T>(
-  params: TSliceConfig<T>,
-): TSliceConfig<T> {
+export default function createSlice<TSlice>(
+  params: TConfig<TSlice>,
+): TConfig<TSlice> {
   // validate `ssr`
   if (isUndefined(params.ssr)) {
     errorTemplate({

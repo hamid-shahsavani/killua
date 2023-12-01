@@ -2,28 +2,28 @@ import { useEffect, useState } from 'react';
 import getSliceFromLocalstorage from './utils/get-slice-from-localstorage.util';
 import callSliceEvent from './utils/call-slice-event.util';
 import defaultSliceValue from './utils/default-slice-value.util';
-import { TSliceConfig } from './types/slice-config.type';
+import { TConfig } from './types/config.type';
 import setSliceToLocalstorage from './utils/set-slice-to-localstorage.util';
 import errorTemplate from './utils/error-template.utli';
 import { errorsMsg } from './constants/errors-msg.constant';
 
-export default function useKillua<T>(params: TSliceConfig<T>): {
-  get: T;
-  set: (value: T | ((value: T) => T)) => void;
-  isReady: boolean;
-  reducers: TSliceConfig<T>['reducers'];
-  selectors: TSliceConfig<T>['selectors'];
+export default function useKillua<TSlice>(params: TConfig<TSlice>): {
+  get: TSlice;
+  set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
+  reducers: TConfig<TSlice>['reducers'];
+  selectors: TConfig<TSlice>['selectors'];
+  isReady?: boolean;
 } {
   // default value slice
   const defaultValueSlice: {
-    server: T;
-    client: T;
+    server: TSlice;
+    client: TSlice;
   } = {
-    server: defaultSliceValue<T>({
+    server: defaultSliceValue<TSlice>({
       config: params,
       type: 'server',
     }),
-    client: defaultSliceValue<T>({
+    client: defaultSliceValue<TSlice>({
       config: params,
       type: 'client',
     }),
@@ -38,7 +38,7 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
       if (event.data.type === 'localstorage-set-slice-value') {
         if (event.data.key === params.key) {
           setSliceState(event.data.value);
-          callSliceEvent<T>({
+          callSliceEvent<TSlice>({
             slice: event.data.value,
             event: params.events?.onChange,
           });
@@ -59,9 +59,9 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
 
   // params.ssr is truthy ===> call event onInitialize server | return `params.defaultServer`
   // params.ssr is falsy ===> set `isReady` to `true` | return slice value from localstorage
-  const [sliceState, setSliceState] = useState<T>((): T => {
+  const [sliceState, setSliceState] = useState<TSlice>((): TSlice => {
     if (params.ssr) {
-      callSliceEvent<T>({
+      callSliceEvent<TSlice>({
         slice: defaultValueSlice.server,
         event: params.events?.onInitializeServer,
       });
@@ -74,7 +74,7 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
         });
       }
       setIsReady(true);
-      return getSliceFromLocalstorage<T>({ config: params });
+      return getSliceFromLocalstorage<TSlice>({ config: params });
     }
   });
 
@@ -82,19 +82,19 @@ export default function useKillua<T>(params: TSliceConfig<T>): {
   useEffect(() => {
     if (params.ssr && !isReady) {
       setIsReady(true);
-      setSliceState(getSliceFromLocalstorage<T>({ config: params }));
+      setSliceState(getSliceFromLocalstorage<TSlice>({ config: params }));
     }
   }, [sliceState]);
 
   return {
     get: sliceState,
-    set: (value: T | ((value: T) => T)) => {
-      setSliceToLocalstorage<T>({
+    set: (value: TSlice | ((value: TSlice) => TSlice)) => {
+      setSliceToLocalstorage<TSlice>({
         config: params,
         slice: value instanceof Function ? value(sliceState) : value,
       });
     },
-    isReady,
+    isReady: params.ssr ? isReady : true,
     reducers: undefined,
     selectors: undefined,
   };

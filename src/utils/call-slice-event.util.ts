@@ -1,9 +1,9 @@
-export default function callSliceEvent<T>({
+export default function callSliceEvent<TSlice>({
   event,
   slice,
 }: {
-  slice: T;
-  event?: (slice: T) => void;
+  slice: TSlice;
+  event?: (slice: TSlice) => void;
 }): void {
   if (event) {
     event(slice);
