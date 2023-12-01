@@ -81,12 +81,7 @@ export default function createSlice<TSlice>(
   }
 
   // validate `encrypt`
-  if (isUndefined(params.encrypt)) {
-    errorTemplate({
-      msg: errorsMsg.encrypt.required,
-      key: params.key,
-    });
-  } else if (!isBoolean(params.encrypt)) {
+  if (!isUndefined(params.encrypt) && !isBoolean(params.encrypt)) {
     errorTemplate({
       msg: errorsMsg.encrypt.invalidType,
       key: params.key,
@@ -94,13 +89,11 @@ export default function createSlice<TSlice>(
   }
 
   // validate `expire`
-  if (!isUndefined(params.expire)) {
-    if (!isNumber(params.expire)) {
-      errorTemplate({
-        msg: errorsMsg.expire.invalidType,
-        key: params.key,
-      });
-    }
+  if (!isUndefined(params.expire) && !isNumber(params.expire)) {
+    errorTemplate({
+      msg: errorsMsg.expire.invalidType,
+      key: params.key,
+    });
   }
 
   // validate `reducers`

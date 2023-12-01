@@ -7,7 +7,6 @@ describe('create-slice.function.ts', (): void => {
     const sliceConfig: any = {
       key: 'test',
       ssr: false,
-      encrypt: true,
     };
     it('should throw an error if `default` is not provided when `ssr` is false', (): void => {
       expect(() =>
@@ -22,7 +21,6 @@ describe('create-slice.function.ts', (): void => {
     const sliceConfig: any = {
       key: 'test',
       ssr: true,
-      encrypt: true,
       defaultServer: 1,
     };
     it('should throw an error if `defaultClient` is not provided when `ssr` is true', (): void => {
@@ -38,7 +36,6 @@ describe('create-slice.function.ts', (): void => {
     const sliceConfig: any = {
       key: 'test',
       ssr: true,
-      encrypt: true,
       defaultClient: 1,
     };
     it('should throw an error if `defaultServer` is not provided when `ssr` is true', (): void => {
@@ -54,7 +51,6 @@ describe('create-slice.function.ts', (): void => {
     const sliceConfig: any = {
       key: 'test',
       default: 1,
-      encrypt: true,
     };
     it('should throw an error if `ssr` is not provided', (): void => {
       expect(() =>
@@ -77,7 +73,6 @@ describe('create-slice.function.ts', (): void => {
     const sliceConfig: any = {
       ssr: false,
       default: 1,
-      encrypt: true,
     };
     it('should throw an error if `key` is not provided', (): void => {
       expect(() =>
@@ -126,14 +121,6 @@ describe('create-slice.function.ts', (): void => {
       ssr: false,
       default: 1,
     };
-    it('should throw an error if `encrypt` is not provided', (): void => {
-      expect(() =>
-        createSlice<number>({
-          ...sliceConfig,
-          encrypt: undefined,
-        }),
-      ).toThrow(errorsMsg.encrypt.required);
-    });
     it('should throw an error if `encrypt` is not a boolean', (): void => {
       expect(() =>
         createSlice<number>({
@@ -148,7 +135,6 @@ describe('create-slice.function.ts', (): void => {
       key: 'test',
       ssr: false,
       default: 1,
-      encrypt: true,
     };
     it('should throw an error if `expire` is not a number', (): void => {
       expect(() =>
@@ -164,7 +150,6 @@ describe('create-slice.function.ts', (): void => {
       key: 'test',
       ssr: false,
       default: 1,
-      encrypt: true,
     };
     it('should throw an error if `reducers` is not an object', (): void => {
       expect(() =>
@@ -196,7 +181,6 @@ describe('create-slice.function.ts', (): void => {
       key: 'test',
       ssr: false,
       default: 1,
-      encrypt: true,
     };
     it('should throw an error if `selectors` is not an object', (): void => {
       expect(() =>
@@ -228,7 +212,6 @@ describe('create-slice.function.ts', (): void => {
       key: 'test',
       ssr: false,
       default: 1,
-      encrypt: true,
     };
     it('should throw an error if `events` is not an object', (): void => {
       expect(() =>
@@ -276,7 +259,6 @@ describe('create-slice.function.ts', (): void => {
       key: 'test',
       ssr: false,
       default: 1,
-      encrypt: true,
     };
     it('should throw an error if `schema` is not an valid', (): void => {
       expect(() =>
@@ -291,7 +273,6 @@ describe('create-slice.function.ts', (): void => {
   describe('validate other keys', (): void => {
     const sliceConfig: any = {
       key: 'test',
-      encrypt: true,
     };
     it('should not throw an error when ssr is false and events have valid keys', (): void => {
       expect(() =>

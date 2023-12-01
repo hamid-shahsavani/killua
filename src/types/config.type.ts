@@ -1,7 +1,7 @@
 export type TConfig<TSlice> = Readonly<
   {
     key: string;
-    encrypt: boolean;
+    encrypt?: boolean;
     expire?: number;
     schema?: { parse: (val: TSlice) => TSlice };
     reducers?: Record<string, (value: TSlice, payload?: any) => TSlice>;

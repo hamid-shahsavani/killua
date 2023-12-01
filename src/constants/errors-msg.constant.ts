@@ -22,11 +22,9 @@ export const errorsMsg = {
   },
   encrypt: {
     invalidType: '`encrypt` is not boolean!',
-    required: '`encrypt` is required!',
   },
   expire: {
     invalidType: '`expire` is not number!',
-    required: '`expire` required!',
   },
   schema: {
     invalidType: '`schema` is not an zod schema!',
