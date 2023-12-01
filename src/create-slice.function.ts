@@ -16,12 +16,7 @@ export default function createSlice<TSlice>(
   params: TConfig<TSlice>,
 ): TConfig<TSlice> {
   // validate `ssr`
-  if (isUndefined(params.ssr)) {
-    errorTemplate({
-      msg: errorsMsg.ssr.required,
-      key: params.key,
-    });
-  } else if (!isBoolean(params.ssr)) {
+  if (!isUndefined(params.ssr) && !isBoolean(params.ssr)) {
     errorTemplate({
       msg: errorsMsg.ssr.invalidType,
       key: params.key,

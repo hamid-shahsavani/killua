@@ -9,7 +9,7 @@ export type TConfig<TSlice> = Readonly<
     events?: Partial<Record<'onChange' | 'onExpire', (value: TSlice) => void>>;
   } & (
     | {
-        ssr: false;
+        ssr?: false;
         default: TSlice;
         events?: Partial<Record<'onInitialize', (value: TSlice) => void>>;
       }

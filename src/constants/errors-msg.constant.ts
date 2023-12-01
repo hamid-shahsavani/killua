@@ -16,7 +16,6 @@ export const errorsMsg = {
     required: '`defaultServer` is required!',
   },
   ssr: {
-    required: '`ssr` is required!',
     invalidType: '`ssr` is not boolean!',
     mustBeTrue: 'your application is server-side, `ssr` must be `true`!',
   },
