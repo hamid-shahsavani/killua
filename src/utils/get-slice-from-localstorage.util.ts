@@ -50,6 +50,8 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
 
   // call event onInitialize client
   callSliceEvent({
+    type: 'onInitializeClient',
+    storageKey: generateSliceKeyName(params.config.key),
     slice: returnValue,
     event: params.config.ssr
       ? params.config.events?.onInitializeClient

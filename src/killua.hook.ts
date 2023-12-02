@@ -6,6 +6,7 @@ import { TConfig } from './types/config.type';
 import setSliceToLocalstorage from './utils/set-slice-to-localstorage.util';
 import errorTemplate from './utils/error-template.utli';
 import { errorsMsg } from './constants/errors-msg.constant';
+import generateSliceKeyName from './utils/generate-slice-key-name.util';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
@@ -39,6 +40,8 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         if (event.data.key === params.key) {
           setSliceState(event.data.value);
           callSliceEvent<TSlice>({
+            type: 'onChange',
+            storageKey: generateSliceKeyName(params.key),
             slice: event.data.value,
             event: params.events?.onChange,
           });
@@ -63,6 +66,8 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   const [sliceState, setSliceState] = useState<TSlice>((): TSlice => {
     if (params.ssr) {
       callSliceEvent<TSlice>({
+        type: 'onInitializeServer',
+        storageKey: generateSliceKeyName(params.key),
         slice: defaultValueSlice.server,
         event: params.events?.onInitializeServer,
       });
