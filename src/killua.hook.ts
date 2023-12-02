@@ -11,9 +11,9 @@ import generateSliceKeyName from './utils/generate-slice-key-name.util';
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
   set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
+  isReady: boolean;
   reducers: TConfig<TSlice>['reducers'];
   selectors: TConfig<TSlice>['selectors'];
-  isReady: boolean;
 } {
   // default value slice
   const defaultValueSlice: {
@@ -67,6 +67,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     if (params.ssr) {
       return defaultValueSlice.server;
     } else {
+      // `params.ssr` is `false` and application is server-side ===> throw error
       if (typeof window === 'undefined') {
         errorTemplate({
           msg: errorsMsg.ssr.mustBeTrue,
