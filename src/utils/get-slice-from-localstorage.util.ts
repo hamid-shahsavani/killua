@@ -1,5 +1,4 @@
 import { TConfig } from '../types/config.type';
-import callSliceEvent from './call-slice-event.util';
 import decrypt from './decrypt.util';
 import defaultSliceValue from './default-slice-value.util';
 import generateSliceKeyName from './generate-slice-key-name.util';
@@ -47,16 +46,6 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
       returnValue = defaultSliceValueClient;
     }
   }
-
-  // call event onInitialize client
-  callSliceEvent({
-    type: 'onInitializeClient',
-    storageKey: generateSliceKeyName(params.config.key),
-    slice: returnValue,
-    event: params.config.ssr
-      ? params.config.events?.onInitializeClient
-      : params.config.events?.onInitialize,
-  });
 
   // return slice value
   return returnValue;

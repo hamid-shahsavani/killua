@@ -152,30 +152,12 @@ export default function createSlice<TSlice>(
         key: params.key,
       });
     } else if (
-      !params.ssr &&
       Object.keys(params.events).some(
-        (key): boolean =>
-          !['onExpire', 'onChange', 'onInitialize'].includes(key),
+        (key): boolean => !['onExpire', 'onChange'].includes(key),
       )
     ) {
       errorTemplate({
-        msg: errorsMsg.events.keysIsNotValidInSsrFalse,
-        key: params.key,
-      });
-    } else if (
-      params.ssr &&
-      Object.keys(params.events).some(
-        (key): boolean =>
-          ![
-            'onExpire',
-            'onChange',
-            'onInitializeClient',
-            'onInitializeServer',
-          ].includes(key),
-      )
-    ) {
-      errorTemplate({
-        msg: errorsMsg.events.keysIsNotValidInSsrTrue,
+        msg: errorsMsg.events.keysIsNotValid,
         key: params.key,
       });
     } else if (

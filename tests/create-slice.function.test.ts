@@ -214,7 +214,15 @@ describe('create-slice.function.ts', (): void => {
         }),
       ).toThrow(errorsMsg.events.empty);
     });
-    it('should throw an error if `events` key onChange value is not a function', (): void => {
+    it('should throw an error if `events` keys are not `onChange` or `onExpire`', (): void => {
+      expect(() =>
+        createSlice<number>({
+          ...sliceConfig,
+          events: { test: (): void => {} },
+        }),
+      ).toThrow(errorsMsg.events.keysIsNotValid);
+    });
+    it('should throw an error if `events` key `onChange` value is not a function', (): void => {
       expect(() =>
         createSlice<number>({
           ...sliceConfig,
@@ -222,15 +230,7 @@ describe('create-slice.function.ts', (): void => {
         }),
       ).toThrow(errorsMsg.events.keysValueIsNotFunction);
     });
-    it('should throw an error if `events` key onInitialize value is not a function', (): void => {
-      expect(() =>
-        createSlice<number>({
-          ...sliceConfig,
-          events: { onInitialize: 'test' },
-        }),
-      ).toThrow(errorsMsg.events.keysValueIsNotFunction);
-    });
-    it('should throw an error if `events` key onInitialize value is not a function', (): void => {
+    it('should throw an error if `events` key `onExpire` value is not a function', (): void => {
       expect(() =>
         createSlice<number>({
           ...sliceConfig,
@@ -258,29 +258,12 @@ describe('create-slice.function.ts', (): void => {
     const sliceConfig: any = {
       key: 'test',
     };
-    it('should not throw an error when ssr is false and events have valid keys', (): void => {
+    it('should not throw an error when events have valid keys', (): void => {
       expect(() =>
         createSlice<number>({
           ...sliceConfig,
           default: 1,
           events: {
-            onInitialize: (): void => {},
-            onChange: (): void => {},
-            onExpire: (): void => {},
-          },
-        }),
-      ).not.toThrow();
-    });
-    it('should not throw an error when ssr is true and events have valid keys', (): void => {
-      expect(() =>
-        createSlice<number>({
-          ...sliceConfig,
-          ssr: true,
-          defaultClient: 1,
-          defaultServer: 1,
-          events: {
-            onInitializeClient: (): void => {},
-            onInitializeServer: (): void => {},
             onChange: (): void => {},
             onExpire: (): void => {},
           },

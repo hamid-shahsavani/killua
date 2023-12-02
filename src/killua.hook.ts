@@ -61,16 +61,10 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   // params.ssr is falsy ===> `isReady` value is `true`
   const [isReady, setIsReady] = useState(params.ssr ? false : true);
 
-  // params.ssr is truthy ===> call event onInitialize server | return `params.defaultServer`
+  // params.ssr is truthy ===> return `params.defaultServer`
   // params.ssr is falsy ===> return slice value from localstorage
   const [sliceState, setSliceState] = useState<TSlice>((): TSlice => {
     if (params.ssr) {
-      callSliceEvent<TSlice>({
-        type: 'onInitializeServer',
-        storageKey: generateSliceKeyName(params.key),
-        slice: defaultValueSlice.server,
-        event: params.events?.onInitializeServer,
-      });
       return defaultValueSlice.server;
     } else {
       if (typeof window === 'undefined') {

@@ -42,10 +42,7 @@ export const errorsMsg = {
     invalidType: '`events` is not an object!',
     empty: '`events` keys is an empty object!',
     keysValueIsNotFunction: '`events` keys value is not function!',
-    keysIsNotValidInSsrFalse:
-      '`events` keys is not `onInitialize`, `onChange` or `onExpire`!',
-    keysIsNotValidInSsrTrue:
-      '`events` keys is not `onInitializeServer`, `onInitializeClient`, `onChange` or `onExpire`!',
+    keysIsNotValid: '`events` keys is not `onChange` or `onExpire`!',
   },
   other: {
     notDefined: (keys: string[]): string =>
