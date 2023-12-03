@@ -16,8 +16,7 @@ export default function decrypt(params: {
   } catch (error) {
     // call broadcast channel with event `localstorage-value-not-valid-and-removed`
     if (params.configKey) {
-      const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
-      broadcastChannel.postMessage({
+      new BroadcastChannel('killua').postMessage({
         type: 'localstorage-value-not-valid-and-removed',
         key: params.configKey,
       });

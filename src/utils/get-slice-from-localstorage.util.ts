@@ -3,6 +3,7 @@ import decrypt from './decrypt.util';
 import defaultSliceValue from './default-slice-value.util';
 import generateSliceKeyName from './generate-slice-key-name.util';
 import { getSaltKey } from './get-salt-key.util';
+import schemaValidation from './schema-validation.util';
 
 export default function getSliceFromLocalstorage<TSlice>(params: {
   config: TConfig<TSlice>;
@@ -33,10 +34,26 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
             })
           : JSON.parse(localstorageSliceValue)
       ) as TSlice;
-    } catch (error) {
+      // validate slice value from localstorage with schema
+      try {
+        schemaValidation<TSlice>({
+          data: returnValue,
+          schema: params.config.schema,
+        });
+      } catch (error: any) {
+        // call broadcast channel with event `localstorage-value-not-valid-and-removed`
+        new BroadcastChannel('killua').postMessage({
+          type: 'localstorage-value-not-valid-and-removed',
+          key: params.config.key,
+        });
+        // remove slice value from localstorage
+        localStorage.removeItem(generateSliceKeyName(params.config.key));
+        // throw zod schema validation error
+        throw Error(error);
+      }
+    } catch (error: any) {
       // call broadcast channel with event `localstorage-value-not-valid-and-removed`
-      const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
-      broadcastChannel.postMessage({
+      new BroadcastChannel('killua').postMessage({
         type: 'localstorage-value-not-valid-and-removed',
         key: params.config.key,
       });

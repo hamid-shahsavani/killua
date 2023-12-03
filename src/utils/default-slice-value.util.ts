@@ -1,19 +1,18 @@
 import { TConfig } from '../types/config.type';
+import schemaValidation from './schema-validation.util';
 
 export default function defaultSliceValue<TSlice>(params: {
   config: TConfig<TSlice>;
   type: 'client' | 'server';
 }) {
-  const defaultSliceValue: {
-    client: TSlice;
-    server: TSlice;
-  } = {
-    client: params.config.ssr
+  const data = params.config.ssr
+    ? params.type === 'client'
       ? params.config.defaultClient
-      : params.config.default,
-    server: params.config.ssr
-      ? params.config.defaultServer
-      : params.config.default,
-  };
-  return defaultSliceValue[params.type];
+      : params.config.defaultServer
+    : params.config.default;
+
+  return schemaValidation<TSlice>({
+    data,
+    schema: params.config.schema,
+  });
 }

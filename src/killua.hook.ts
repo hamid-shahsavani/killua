@@ -7,6 +7,7 @@ import setSliceToLocalstorage from './utils/set-slice-to-localstorage.util';
 import errorTemplate from './utils/error-template.utli';
 import { errorsMsg } from './constants/errors-msg.constant';
 import generateSliceKeyName from './utils/generate-slice-key-name.util';
+import isClientSide from './utils/is-client-side';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
@@ -31,9 +32,8 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   };
 
   // broadcast channel with onmessage events
-  const broadcastChannel: BroadcastChannel = new BroadcastChannel('killua');
   useEffect(() => {
-    broadcastChannel.onmessage = (event) => {
+    new BroadcastChannel('killua').onmessage = (event) => {
       // call post message `localstorage-set-slice-value` after set slice value to localstorage
       // call message `localstorage-set-slice-value` ===> set `event.data.value` to `sliceState` | call event `onChange`
       if (event.data.type === 'localstorage-set-slice-value') {
@@ -68,7 +68,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
       return defaultValueSlice.server;
     } else {
       // `params.ssr` is `false` and application is server-side ===> throw error
-      if (typeof window === 'undefined') {
+      if (!isClientSide()) {
         errorTemplate({
           msg: errorsMsg.ssr.mustBeTrue,
           key: params.key,
