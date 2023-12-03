@@ -5,7 +5,7 @@ export function getSaltKey(): string {
   // salt key value with random string (update after get salt key value from localstorage)
   let saltKeyValue = Math.floor(Math.random() * Date.now()).toString(36);
 
-  // remove all slices from localstorage | set salt key to localstorage
+  // set salt key to localstorage
   function setNewSaltKeyToLocalstorageHandler(): void {
     localStorage.setItem(
       'slices-salt-key',
@@ -24,8 +24,6 @@ export function getSaltKey(): string {
       const decryptedSaltKeyValue = decrypt({
         data: localStorageValue,
         saltKey: 'killua',
-        localstorageKey: 'slices-salt-key',
-        default: '',
       });
       if (decryptedSaltKeyValue) {
         saltKeyValue = decryptedSaltKeyValue;

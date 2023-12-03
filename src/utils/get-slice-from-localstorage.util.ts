@@ -14,56 +14,45 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
     type: 'client',
   });
 
+  // storage key
+  const storageKey = generateSliceKeyName(params.config.key);
+
   // default is `default-client value` (update after get slice value from localstorage)
   let returnValue: TSlice = defaultSliceValueClient;
 
   // get slice value from localstorage and update `returnValue`
-  const localstorageSliceValue: string | null = localStorage.getItem(
-    generateSliceKeyName(params.config.key),
-  );
-  if (localstorageSliceValue) {
-    try {
-      returnValue = (
-        params.config.encrypt
-          ? decrypt({
-              data: localstorageSliceValue,
-              saltKey: getSaltKey(),
-              localstorageKey: generateSliceKeyName(params.config.key),
-              configKey: params.config.key,
-              default: defaultSliceValueClient,
-            })
-          : JSON.parse(localstorageSliceValue)
-      ) as TSlice;
-      // validate slice value from localstorage with schema
-      try {
-        schemaValidation<TSlice>({
-          data: returnValue,
-          schema: params.config.schema,
-        });
-      } catch (error: any) {
-        // call broadcast channel with event `localstorage-value-not-valid-and-removed`
-        new BroadcastChannel('killua').postMessage({
-          type: 'localstorage-value-not-valid-and-removed',
-          key: params.config.key,
-        });
-        // remove slice value from localstorage
-        localStorage.removeItem(generateSliceKeyName(params.config.key));
-        // throw zod schema validation error
-        throw Error(error);
-      }
-    } catch (error: any) {
-      // call broadcast channel with event `localstorage-value-not-valid-and-removed`
+  const storageValue: string | null = localStorage.getItem(storageKey);
+
+  // call broadcast channel event
+  const callBroadcastChannelEventLocalstorageValueNotValidAndRemovedHandler =
+    () => {
       new BroadcastChannel('killua').postMessage({
         type: 'localstorage-value-not-valid-and-removed',
         key: params.config.key,
       });
-      // remove slice value from localstorage
-      localStorage.removeItem(generateSliceKeyName(params.config.key));
-      // set `defaultSliceValueClient` to `returnValue`
-      returnValue = defaultSliceValueClient;
+    };
+
+  if (storageValue) {
+    try {
+      // set localstorage value to `returnValue` (if data encrypted ? decrypt : JSON.parse)
+      returnValue = (
+        params.config.encrypt
+          ? decrypt({
+              data: storageValue,
+              saltKey: getSaltKey(),
+            })
+          : JSON.parse(storageValue)
+      ) as TSlice;
+      // validate storage value with schema
+      schemaValidation<TSlice>({
+        data: returnValue,
+        schema: params.config.schema,
+      });
+    } catch (error: any) {
+      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `localstorage-value-not-valid-and-removed`
+      callBroadcastChannelEventLocalstorageValueNotValidAndRemovedHandler();
     }
   }
 
-  // return slice value
   return returnValue;
 }
