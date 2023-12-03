@@ -48,10 +48,11 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         }
       }
       if (event.data.type === 'localstorage-value-not-valid-and-removed') {
+        console.log('call broadcast channel event');
         // call message `localstorage-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
         if (event.data.key === params.key) {
-          localStorage.removeItem(generateSliceKeyName(params.key));
           setSliceState(defaultValueSlice.client);
+          localStorage.removeItem(generateSliceKeyName(params.key));
         }
       }
     };
