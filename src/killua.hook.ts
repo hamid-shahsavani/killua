@@ -38,17 +38,16 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         // call post message `localstorage-set-slice-value` after set slice value to localstorage
         // call message `localstorage-set-slice-value` ===> set `event.data.value` to `sliceState` | call event `onChange`
         if (event.data.key === params.key) {
-          setSliceState(event.data.value);
           callSliceEvent<TSlice>({
             type: 'onChange',
             storageKey: generateSliceKeyName(params.key),
             slice: event.data.value,
             event: params.events?.onChange,
           });
+          setSliceState(event.data.value);
         }
       }
       if (event.data.type === 'localstorage-value-not-valid-and-removed') {
-        console.log('call broadcast channel event');
         // call message `localstorage-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
         if (event.data.key === params.key) {
           setSliceState(defaultValueSlice.client);
