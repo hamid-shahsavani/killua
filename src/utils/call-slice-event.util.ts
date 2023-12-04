@@ -1,22 +1,16 @@
-import { TConfig } from '../types/config.type';
-
 export default function callSliceEvent<TSlice>(params: {
   slice: TSlice;
-  storageKey: string;
-  type: keyof NonNullable<TConfig<TSlice>['events']>;
   event?: (slice: TSlice) => void;
 }): void {
-  // localstorage key
-  const storageKeyWithType = `${params.storageKey}-${params.type}`;
+  // storage key name
+  const storageKey = 'slices-event-is-called';
 
   // check if event is called (for fix multiple event call)
-  const isCalledEvent = JSON.parse(
-    localStorage.getItem(storageKeyWithType) || 'false',
-  );
+  const isCalledEvent = JSON.parse(localStorage.getItem(storageKey) || 'false');
   const isCalledEventHandler = () => {
-    localStorage.setItem(storageKeyWithType, JSON.stringify(true));
+    localStorage.setItem(storageKey, JSON.stringify(true));
     setTimeout(() => {
-      localStorage.removeItem(storageKeyWithType);
+      localStorage.removeItem(storageKey);
     }, 10);
   };
 

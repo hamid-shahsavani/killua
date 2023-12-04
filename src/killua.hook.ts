@@ -34,25 +34,25 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   // broadcast channel with onmessage events
   useEffect(() => {
     new BroadcastChannel('killua').onmessage = (event) => {
-      if (event.data.type === 'localstorage-set-slice-value') {
-        // call post message `localstorage-set-slice-value` after set slice value to localstorage
-        // call message `localstorage-set-slice-value` ===> set `event.data.value` to `sliceState` | call event `onChange`
-        if (event.data.key === params.key) {
-          callSliceEvent<TSlice>({
-            type: 'onChange',
-            storageKey: generateSliceKeyName(params.key),
-            slice: event.data.value,
-            event: params.events?.onChange,
-          });
-          setSliceState(event.data.value);
-        }
+      // call post message `localstorage-set-slice-value` after set slice value to localstorage
+      // call message `localstorage-set-slice-value` ===> set `event.data.value` to `sliceState` | call event `onChange`
+      if (
+        event.data.type === 'localstorage-set-slice-value' &&
+        event.data.key === params.key
+      ) {
+        callSliceEvent<TSlice>({
+          slice: event.data.value,
+          event: params.events?.onChange,
+        });
+        setSliceState(event.data.value);
       }
-      if (event.data.type === 'localstorage-value-not-valid-and-removed') {
-        // call message `localstorage-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
-        if (event.data.key === params.key) {
-          setSliceState(defaultValueSlice.client);
-          localStorage.removeItem(generateSliceKeyName(params.key));
-        }
+      // call message `localstorage-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
+      if (
+        event.data.type === 'localstorage-value-not-valid-and-removed' &&
+        event.data.key === params.key
+      ) {
+        setSliceState(defaultValueSlice.client);
+        localStorage.removeItem(generateSliceKeyName(params.key));
       }
     };
   }, []);
@@ -74,6 +74,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
           key: params.key,
         });
       }
+      // `params.ssr` is `false` and application is client-side ===> return slice value from localstorage
       return getSliceFromLocalstorage<TSlice>({ config: params });
     }
   });
