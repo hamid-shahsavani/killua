@@ -5,8 +5,6 @@ export const isEmptyString = (x: unknown): x is string =>
 
 export const isBoolean = (x: unknown): x is boolean => typeof x === 'boolean';
 
-export const isNumber = (x: unknown): x is number => typeof x === 'number';
-
 export const isObject = (
   x: unknown,
 ): x is Record<number | string | symbol, any> =>

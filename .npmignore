@@ -1,4 +1,5 @@
-src/
-node_modules/
-websites/
-tests/
+src
+node_modules
+websites
+tests
+coverage

@@ -8,6 +8,7 @@ import errorTemplate from './utils/error-template.utli';
 import { errorsMsg } from './constants/errors-msg.constant';
 import generateSliceKeyName from './utils/generate-slice-key-name.util';
 import isClientSide from './utils/is-client-side';
+import timeStringToSeconds from './utils/time-string-to-second.util';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
@@ -30,6 +31,8 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
       type: 'client',
     }),
   };
+
+  console.log(timeStringToSeconds('0h-2m-30s'));
 
   // broadcast channel with onmessage events
   useEffect(() => {

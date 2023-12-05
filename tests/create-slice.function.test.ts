@@ -124,7 +124,23 @@ describe('create-slice.function.ts', (): void => {
       key: 'test',
       default: 1,
     };
-    it('should throw an error if `expire` is not a number', (): void => {
+    it('should not throw an error if `expire` is undefined', (): void => {
+      expect(() =>
+        createSlice<number>({
+          ...sliceConfig,
+          expire: undefined,
+        }),
+      ).not.toThrow();
+    });
+    it('should not throw an error if `expire` is a valid', (): void => {
+      expect(() =>
+        createSlice<number>({
+          ...sliceConfig,
+          expire: '1h-30m-0s',
+        }),
+      ).not.toThrow();
+    });
+    it('should throw an error if `expire` is not a valid', (): void => {
       expect(() =>
         createSlice<number>({
           ...sliceConfig,

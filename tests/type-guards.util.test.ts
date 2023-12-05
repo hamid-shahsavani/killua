@@ -4,7 +4,6 @@ import {
   isEmptyObject,
   isEmptyString,
   isFunction,
-  isNumber,
   isObject,
   isString,
   isUndefined,
@@ -82,14 +81,6 @@ describe('type-guards.util.ts', (): void => {
     });
     it('should return false for a non-boolean value', (): void => {
       expect(isBoolean('hello')).toBe(false);
-    });
-  });
-  describe('is-number', (): void => {
-    it('should return true for a number', (): void => {
-      expect(isNumber(42)).toBe(true);
-    });
-    it('should return false for a non-number value', (): void => {
-      expect(isNumber('hello')).toBe(false);
     });
   });
   describe('is-function', (): void => {

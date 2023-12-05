@@ -6,7 +6,6 @@ import {
   isEmptyObject,
   isEmptyString,
   isFunction,
-  isNumber,
   isObject,
   isString,
   isUndefined,
@@ -84,7 +83,7 @@ export default function createSlice<TSlice>(
   }
 
   // validate `expire`
-  if (!isUndefined(params.expire) && !isNumber(params.expire)) {
+  if (!isUndefined(params.expire) && !/^\d+h-\d+m-\d+s$/.test(params.expire)) {
     errorTemplate({
       msg: errorsMsg.expire.invalidType,
       key: params.key,
