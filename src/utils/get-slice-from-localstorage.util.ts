@@ -27,7 +27,7 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
   const callBroadcastChannelEventLocalstorageValueNotValidAndRemovedHandler =
     () => {
       new BroadcastChannel('killua').postMessage({
-        type: 'localstorage-value-not-valid-and-removed',
+        type: 'localstorage-slice-value-not-valid-and-removed',
         key: params.config.key,
       });
     };
@@ -50,7 +50,7 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
       });
     } catch (error: any) {
       returnValue = defaultSliceValueClient;
-      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `localstorage-value-not-valid-and-removed`
+      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `localstorage-slice-value-not-valid-and-removed`
       callBroadcastChannelEventLocalstorageValueNotValidAndRemovedHandler();
     }
   }

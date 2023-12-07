@@ -46,9 +46,9 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         });
         setSliceState(event.data.value);
       }
-      // call message `localstorage-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
+      // call message `localstorage-slice-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
       if (
-        event.data.type === 'localstorage-value-not-valid-and-removed' &&
+        event.data.type === 'localstorage-slice-value-not-valid-and-removed' &&
         event.data.key === params.key
       ) {
         setSliceState(defaultValueSlice.client);
