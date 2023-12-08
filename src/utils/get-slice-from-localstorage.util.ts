@@ -49,8 +49,15 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
         schema: params.config.schema,
       });
     } catch (error: any) {
+      /*
+        if(schema validation fail || JSON.parse fail || decrypt fail) {
+          call broadcast channel event `localstorage-slice-value-not-valid-and-removed`
+          remove slice value from localstorage
+          set `defaultSliceValueClient` to `returnValue`
+        }
+      */
       returnValue = defaultSliceValueClient;
-      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `localstorage-slice-value-not-valid-and-removed`
+      localStorage.removeItem(storageKey);
       callBroadcastChannelEventLocalstorageValueNotValidAndRemovedHandler();
     }
   }

@@ -8,7 +8,8 @@ import errorTemplate from './utils/error-template.utli';
 import { errorsMsg } from './constants/errors-msg.constant';
 import generateSliceKeyName from './utils/generate-slice-key-name.util';
 import isClientSide from './utils/is-client-side';
-import { getSliceExpireTimestamp } from './utils/get-slice-expire-timestamp';
+import { getSliceExpireTimestamp } from './utils/get-slice-expire-timestamp.util';
+import { getSlicesExpireFromLocalStorage } from './utils/get-slices-expire-from-localstorage.util';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
@@ -32,39 +33,14 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     }),
   };
 
-  // broadcast channel with onmessage events
-  useEffect(() => {
-    new BroadcastChannel('killua').onmessage = (event) => {
-      // call post message `localstorage-set-slice-value` after set slice value to localstorage
-      // call message `localstorage-set-slice-value` ===> set `event.data.value` to `sliceState` | call event `onChange`
-      if (
-        event.data.type === 'localstorage-set-slice-value' &&
-        event.data.key === params.key
-      ) {
-        callSliceEvent<TSlice>({
-          slice: event.data.value,
-          event: params.events?.onChange,
-        });
-        setSliceState(event.data.value);
-      }
-      // call message `localstorage-slice-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
-      if (
-        event.data.type === 'localstorage-slice-value-not-valid-and-removed' &&
-        event.data.key === params.key
-      ) {
-        setSliceState(defaultValueSlice.client);
-        localStorage.removeItem(
-          generateSliceKeyName({
-            key: params.key,
-          }),
-        );
-      }
-    };
-  }, []);
+  console.log(
+    `get-slice-expire-timestamp - ${params.key}`,
+    getSliceExpireTimestamp({ config: params }),
+  );
 
   console.log(
-    `getSliceExpireTime - ${params.key}`,
-    getSliceExpireTimestamp({ config: params }),
+    `get-slices-expire-key-to-localstorage`,
+    getSlicesExpireFromLocalStorage<TSlice>({ config: params }),
   );
 
   // params.ssr is truthy ===> default `isReady` value is `false` and set to `true` in client-side
@@ -96,6 +72,37 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
       setSliceState(getSliceFromLocalstorage<TSlice>({ config: params }));
     }
   }, [sliceState]);
+
+  // broadcast channel with onmessage events
+  useEffect(() => {
+    new BroadcastChannel('killua').onmessage = (event) => {
+      // call post message `localstorage-set-slice-value` after set slice value to localstorage
+      // call message `localstorage-set-slice-value` ===> set `event.data.value` to `sliceState` | call event `onChange`
+      if (
+        event.data.type === 'localstorage-set-slice-value' &&
+        event.data.key === params.key
+      ) {
+        callSliceEvent<TSlice>({
+          slice: event.data.value,
+          event: params.events?.onChange,
+        });
+        setSliceState(event.data.value);
+      }
+      // call message `localstorage-slice-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
+      if (
+        event.data.type === 'localstorage-slice-value-not-valid-and-removed' &&
+        event.data.key === params.key
+      ) {
+        alert('localstorage-slice-value-not-valid-and-removed');
+        setSliceState(defaultValueSlice.client);
+        localStorage.removeItem(
+          generateSliceKeyName({
+            key: params.key,
+          }),
+        );
+      }
+    };
+  }, []);
 
   return {
     get: sliceState,
