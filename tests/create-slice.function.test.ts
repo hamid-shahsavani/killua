@@ -146,7 +146,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           expire: 'test',
         }),
-      ).toThrow(errorsMsg.expire.invalidType);
+      ).toThrow(errorsMsg.expire.invalidFormat);
     });
   });
   describe('validate `reducers`', (): void => {

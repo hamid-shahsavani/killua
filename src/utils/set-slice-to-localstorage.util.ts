@@ -9,7 +9,7 @@ export default function setSliceToLocalstorage<TSlice>(params: {
   slice: TSlice;
 }): void {
   // slice key name
-  const sliceKeyName = generateSliceKeyName(params.config.key);
+  const sliceKeyName = generateSliceKeyName({ key: params.config.key });
 
   // validate slice value with schema before set to localstorage and set to `sliceState`
   schemaValidation<TSlice>({

@@ -23,7 +23,7 @@ export const errorsMsg = {
     invalidType: '`encrypt` is not boolean!',
   },
   expire: {
-    invalidType: '`expire` is not vaild!',
+    invalidFormat: '`expire` is not vaild format!',
   },
   schema: {
     invalidType: '`schema` is not an zod schema!',

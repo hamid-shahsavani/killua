@@ -3,6 +3,10 @@ import timeStringToSeconds from '../src/utils/time-string-to-second.util';
 
 describe('time-string-to-second.util.test.ts', (): void => {
   it('should return the correct number of seconds', (): void => {
-    expect(timeStringToSeconds('1h-2m-30s')).toBe(3750);
+    expect(
+      timeStringToSeconds({
+        timeString: '1h-2m-30s',
+      }),
+    ).toBe(3750);
   });
 });

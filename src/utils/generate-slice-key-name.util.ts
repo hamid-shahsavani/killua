@@ -1,3 +1,3 @@
-export default function generateSliceKeyName(key: string): string {
-  return `slice-${key}`;
+export default function generateSliceKeyName(params: { key: string }): string {
+  return `slice-${params.key}`;
 }

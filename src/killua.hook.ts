@@ -8,6 +8,7 @@ import errorTemplate from './utils/error-template.utli';
 import { errorsMsg } from './constants/errors-msg.constant';
 import generateSliceKeyName from './utils/generate-slice-key-name.util';
 import isClientSide from './utils/is-client-side';
+import { getSliceExpireTimestamp } from './utils/get-slice-expire-timestamp';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
@@ -52,10 +53,19 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         event.data.key === params.key
       ) {
         setSliceState(defaultValueSlice.client);
-        localStorage.removeItem(generateSliceKeyName(params.key));
+        localStorage.removeItem(
+          generateSliceKeyName({
+            key: params.key,
+          }),
+        );
       }
     };
   }, []);
+
+  console.log(
+    `getSliceExpireTime - ${params.key}`,
+    getSliceExpireTimestamp({ config: params }),
+  );
 
   // params.ssr is truthy ===> default `isReady` value is `false` and set to `true` in client-side
   // params.ssr is falsy ===> `isReady` value is `true`

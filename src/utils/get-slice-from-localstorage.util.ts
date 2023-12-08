@@ -15,7 +15,7 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
   });
 
   // storage key
-  const storageKey = generateSliceKeyName(params.config.key);
+  const storageKey = generateSliceKeyName({ key: params.config.key });
 
   // default is `default-client value` (update after get slice value from localstorage)
   let returnValue: TSlice = defaultSliceValueClient;
