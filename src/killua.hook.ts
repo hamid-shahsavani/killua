@@ -76,6 +76,18 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   // broadcast channel with onmessage events
   useEffect(() => {
     new BroadcastChannel('killua').onmessage = (event) => {
+      // call message `localstorage-slice-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
+      if (
+        event.data.type === 'localstorage-slice-value-not-valid-and-removed' &&
+        event.data.key === params.key
+      ) {
+        setSliceState(defaultValueSlice.client);
+        localStorage.removeItem(
+          generateSliceKeyName({
+            key: params.key,
+          }),
+        );
+      }
       // call post message `localstorage-set-slice-value` after set slice value to localstorage
       // call message `localstorage-set-slice-value` ===> set `event.data.value` to `sliceState` | call event `onChange`
       if (
@@ -87,19 +99,6 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
           event: params.events?.onChange,
         });
         setSliceState(event.data.value);
-      }
-      // call message `localstorage-slice-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
-      if (
-        event.data.type === 'localstorage-slice-value-not-valid-and-removed' &&
-        event.data.key === params.key
-      ) {
-        alert('localstorage-slice-value-not-valid-and-removed');
-        setSliceState(defaultValueSlice.client);
-        localStorage.removeItem(
-          generateSliceKeyName({
-            key: params.key,
-          }),
-        );
       }
     };
   }, []);
