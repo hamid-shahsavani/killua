@@ -115,10 +115,13 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         event.data.type === 'localstorage-set-slice-value' &&
         event.data.key === params.key
       ) {
-        callSliceEvent<TSlice>({
-          slice: event.data.value,
-          event: params.events?.onChange,
-        });
+        // `event.data.value` is not equal to `sliceState` ===> call event `onChange`
+        if (event.data.value !== sliceState) {
+          callSliceEvent<TSlice>({
+            slice: event.data.value,
+            event: params.events?.onChange,
+          });
+        }
         setSliceState(event.data.value);
       }
       // call post message `localstorage-expire-slice-value` after set slice expire timestamp to localstorage
