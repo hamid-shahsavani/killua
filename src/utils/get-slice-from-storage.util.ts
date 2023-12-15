@@ -5,7 +5,7 @@ import generateSliceKeyName from './generate-slice-key-name.util';
 import { getSaltKey } from './get-salt-key.util';
 import schemaValidation from './schema-validation.util';
 
-export default function getSliceFromLocalstorage<TSlice>(params: {
+export default function getSliceFromStorage<TSlice>(params: {
   config: TConfig<TSlice>;
 }): TSlice {
   // default slice value client
@@ -17,24 +17,23 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
   // storage key
   const storageKey = generateSliceKeyName({ key: params.config.key });
 
-  // default is `default-client value` (update after get slice value from localstorage)
+  // default is `default-client value` (update after get slice value from storage)
   let returnValue: TSlice = defaultSliceValueClient;
 
-  // get slice value from localstorage and update `returnValue`
+  // get slice value from storageand update `returnValue`
   const storageValue: string | null = localStorage.getItem(storageKey);
 
   // call broadcast channel event
-  const callBroadcastChannelEventLocalstorageValueNotValidAndRemovedHandler =
-    () => {
-      new BroadcastChannel('killua').postMessage({
-        type: 'localstorage-slice-value-not-valid-and-removed',
-        key: params.config.key,
-      });
-    };
+  const callBroadcastChannelEventStorageValueNotValidAndRemovedHandler = () => {
+    new BroadcastChannel('killua').postMessage({
+      type: 'storage-slice-value-not-valid-and-removed',
+      key: params.config.key,
+    });
+  };
 
   if (storageValue) {
     try {
-      // set localstorage value to `returnValue` (if data encrypted ? decrypt : JSON.parse)
+      // set storagevalue to `returnValue` (if data encrypted ? decrypt : JSON.parse)
       returnValue = (
         params.config.encrypt
           ? decrypt({
@@ -50,8 +49,8 @@ export default function getSliceFromLocalstorage<TSlice>(params: {
       });
     } catch (error: any) {
       returnValue = defaultSliceValueClient;
-      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `localstorage-slice-value-not-valid-and-removed`
-      callBroadcastChannelEventLocalstorageValueNotValidAndRemovedHandler();
+      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `storage-slice-value-not-valid-and-removed`
+      callBroadcastChannelEventStorageValueNotValidAndRemovedHandler();
     }
   }
 

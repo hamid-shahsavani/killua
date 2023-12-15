@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import getSliceFromLocalstorage from './utils/get-slice-from-localstorage.util';
+import getSliceFromStorage from './utils/get-slice-from-storage.util';
 import callSliceEvent from './utils/call-slice-event.util';
 import defaultSliceValue from './utils/default-slice-value.util';
 import { TConfig } from './types/config.type';
-import setSliceToLocalstorage from './utils/set-slice-to-localstorage.util';
+import setSliceToStorage from './utils/set-slice-to-storage.util';
 import errorTemplate from './utils/error-template.utli';
 import { errorsMsg } from './constants/errors-msg.constant';
 import generateSliceKeyName from './utils/generate-slice-key-name.util';
@@ -38,7 +38,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   const [isReady, setIsReady] = useState(params.ssr ? false : true);
 
   // params.ssr is truthy ===> return `params.defaultServer`
-  // params.ssr is falsy ===> return slice value from localstorage
+  // params.ssr is falsy ===> return slice value from storage
   const [sliceState, setSliceState] = useState<TSlice>((): TSlice => {
     if (params.ssr) {
       return defaultValueSlice.server;
@@ -50,8 +50,8 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
           key: params.key,
         });
       }
-      // `params.ssr` is `false` and application is client-side ===> return slice value from localstorage
-      return getSliceFromLocalstorage<TSlice>({ config: params });
+      // `params.ssr` is `false` and application is client-side ===> return slice value from storage
+      return getSliceFromStorage<TSlice>({ config: params });
     }
   });
 
@@ -86,20 +86,20 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     };
   }, [sliceState]);
 
-  // params.ssr && !isReady ===> set `isReady` to `true` | get slice from localstorage and set to `sliceState`
+  // params.ssr && !isReady ===> set `isReady` to `true` | get slice from storage and set to `sliceState`
   useEffect((): void => {
     if (params.ssr && !isReady) {
       setIsReady(true);
-      setSliceState(getSliceFromLocalstorage<TSlice>({ config: params }));
+      setSliceState(getSliceFromStorage<TSlice>({ config: params }));
     }
   }, [sliceState]);
 
   // broadcast channel with onmessage events
   useEffect((): void => {
     new BroadcastChannel('killua').onmessage = (event) => {
-      // call message `localstorage-slice-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
+      // call message `storage-slice-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from storage
       if (
-        event.data.type === 'localstorage-slice-value-not-valid-and-removed' &&
+        event.data.type === 'storage-slice-value-not-valid-and-removed' &&
         event.data.key === params.key
       ) {
         setSliceState(defaultValueSlice.client);
@@ -109,7 +109,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
           }),
         );
       }
-      // call post message `slice-event-onChange` after set slice value to localstorage
+      // call post message `slice-event-onChange` after set slice value to storage
       // call message `slice-event-onChange` ===> set `event.data.value` to `sliceState` | call event `onChange`
       if (
         event.data.type === 'slice-event-onChange' &&
@@ -124,16 +124,15 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         }
         setSliceState(event.data.value);
       }
-      // call post message `slice-event-onExpire` after set slice expire timestamp to localstorage
-      // call message `slice-event-onExpire` ===> set `defaultValueSlice.client` | remove slice key from localstorage | update slice expire time | call event `onExpire`
+      // call post message `slice-event-onExpire` after set slice expire timestamp to storage
+      // call message `slice-event-onExpire` ===> set `defaultValueSlice.client` | remove slice key from storage| update slice expire time | call event `onExpire`
       if (
         event.data.type === 'slice-event-onExpire' &&
         event.data.key === params.key
       ) {
-        // localstorage value is not equal to `defaultValueSlice.client` ===> call event `onExpire`
+        // storage value is not equal to `defaultValueSlice.client` ===> call event `onExpire`
         if (
-          getSliceFromLocalstorage({ config: params }) !==
-          defaultValueSlice.client
+          getSliceFromStorage({ config: params }) !== defaultValueSlice.client
         ) {
           callSliceEvent<TSlice>({
             slice: defaultValueSlice.client,
@@ -156,7 +155,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   return {
     get: sliceState,
     set: (value: TSlice | ((value: TSlice) => TSlice)) => {
-      setSliceToLocalstorage<TSlice>({
+      setSliceToStorage<TSlice>({
         config: params,
         slice: value instanceof Function ? value(sliceState) : value,
       });
