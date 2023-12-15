@@ -29,7 +29,7 @@ describe('default-slice-value.util.ts', (): void => {
       defaultClient: 'client value',
       defaultServer: 'server value',
     };
-    const result = defaultSliceValue({ config, type: 'client' });
+    const result = defaultSliceValue<string>({ config, type: 'client' });
     expect(result).toBe(config.defaultClient);
   });
 });

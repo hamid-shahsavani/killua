@@ -12,6 +12,6 @@ module.exports = {
     "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/ban-types": ["error", { "types": { "Function": false, "Object": false } }],
-    "no-prototype-builtins": "off"
+    "no-prototype-builtins": "off",
   }
 };

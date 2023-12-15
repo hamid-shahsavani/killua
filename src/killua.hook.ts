@@ -7,7 +7,7 @@ import setSliceToStorage from './utils/set-slice-to-storage.util';
 import errorTemplate from './utils/error-template.utli';
 import { errorsMsg } from './constants/errors-msg.constant';
 import generateSliceKeyName from './utils/generate-slice-key-name.util';
-import isClientSide from './utils/is-client-side';
+import isClientSide from './utils/is-client-side.util';
 import { getSliceExpireTimestamp } from './utils/get-slice-expire-timestamp.util';
 import { setSliceExpireTimestamp } from './utils/set-slice-expire-timestamp.util';
 
@@ -132,7 +132,8 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
       ) {
         // storage value is not equal to `defaultValueSlice.client` ===> call event `onExpire`
         if (
-          getSliceFromStorage({ config: params }) !== defaultValueSlice.client
+          getSliceFromStorage<TSlice>({ config: params }) !==
+          defaultValueSlice.client
         ) {
           callSliceEvent<TSlice>({
             slice: defaultValueSlice.client,

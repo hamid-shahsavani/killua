@@ -43,13 +43,13 @@ export function getSlicesExpireFromStorage<TSlice>(params: {
       });
       returnValue = decryptedStorageValue;
     } else {
-      setSlicesExpireKeyToStorage({
+      setSlicesExpireKeyToStorage<TSlice>({
         config: params.config,
         default: returnValue,
       });
     }
   } catch (error) {
-    setSlicesExpireKeyToStorage({
+    setSlicesExpireKeyToStorage<TSlice>({
       config: params.config,
       default: returnValue,
     });
