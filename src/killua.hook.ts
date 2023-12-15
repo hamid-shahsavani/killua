@@ -97,9 +97,9 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   // broadcast channel with onmessage events
   useEffect((): void => {
     new BroadcastChannel('killua').onmessage = (event) => {
-      // call message `storage-slice-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from storage
+      // call message `storage-slice-value-not-valid` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from storage
       if (
-        event.data.type === 'storage-slice-value-not-valid-and-removed' &&
+        event.data.type === 'storage-slice-value-not-valid' &&
         event.data.key === params.key
       ) {
         setSliceState(defaultValueSlice.client);

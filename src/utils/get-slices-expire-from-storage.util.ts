@@ -10,7 +10,7 @@ function setSlicesExpireKeyToStorage<TSlice>(params: {
 }): void {
   if (params.config.expire) {
     new BroadcastChannel('killua').postMessage({
-      type: 'storage-slice-value-not-valid-and-removed',
+      type: 'storage-slice-value-not-valid',
       key: params.config.key,
     });
   }

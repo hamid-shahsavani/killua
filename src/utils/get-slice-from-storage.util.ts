@@ -23,14 +23,6 @@ export default function getSliceFromStorage<TSlice>(params: {
   // get slice value from storageand update `returnValue`
   const storageValue: string | null = localStorage.getItem(storageKey);
 
-  // call broadcast channel event
-  const callBroadcastChannelEventStorageValueNotValidAndRemovedHandler = () => {
-    new BroadcastChannel('killua').postMessage({
-      type: 'storage-slice-value-not-valid-and-removed',
-      key: params.config.key,
-    });
-  };
-
   if (storageValue) {
     try {
       // set storagevalue to `returnValue` (if data encrypted ? decrypt : JSON.parse)
@@ -49,8 +41,11 @@ export default function getSliceFromStorage<TSlice>(params: {
       });
     } catch (error: any) {
       returnValue = defaultSliceValueClient;
-      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `storage-slice-value-not-valid-and-removed`
-      callBroadcastChannelEventStorageValueNotValidAndRemovedHandler();
+      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `storage-slice-value-not-valid`
+      new BroadcastChannel('killua').postMessage({
+        type: 'storage-slice-value-not-valid',
+        key: params.config.key,
+      });
     }
   }
 
