@@ -7,9 +7,9 @@ export default function callSliceEvent<TSlice>(params: {
 
   // check if event is called (for fix multiple event call)
   const isCalledEvent = JSON.parse(localStorage.getItem(storageKey) || 'false');
-  const isCalledEventHandler = () => {
+  const isCalledEventHandler = (): void => {
     localStorage.setItem(storageKey, JSON.stringify(true));
-    setTimeout(() => {
+    setTimeout((): void => {
       localStorage.removeItem(storageKey);
     }, 10);
   };

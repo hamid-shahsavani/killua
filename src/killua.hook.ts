@@ -9,7 +9,7 @@ import { errorsMsg } from './constants/errors-msg.constant';
 import generateSliceKeyName from './utils/generate-slice-key-name.util';
 import isClientSide from './utils/is-client-side';
 import { getSliceExpireTimestamp } from './utils/get-slice-expire-timestamp.util';
-import { getSlicesExpireFromLocalStorage } from './utils/get-slices-expire-from-localstorage.util';
+import { setSliceExpireTimestamp } from './utils/set-slice-expire-timestamp.util';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
@@ -33,16 +33,6 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     }),
   };
 
-  console.log(
-    `get-slice-expire-timestamp - ${params.key}`,
-    getSliceExpireTimestamp({ config: params }),
-  );
-
-  console.log(
-    `get-slices-expire-key-to-localstorage`,
-    getSlicesExpireFromLocalStorage<TSlice>({ config: params }),
-  );
-
   // params.ssr is truthy ===> default `isReady` value is `false` and set to `true` in client-side
   // params.ssr is falsy ===> `isReady` value is `true`
   const [isReady, setIsReady] = useState(params.ssr ? false : true);
@@ -65,8 +55,39 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     }
   });
 
+  // params.expire is truthy ===> check slice expire timestamp
+  useEffect((): (() => void) => {
+    let intervalId: any = null;
+    if (params.expire) {
+      const sliceExpireTimestamp = getSliceExpireTimestamp<TSlice>({
+        config: params,
+      });
+      if (Number(sliceExpireTimestamp) < Date.now()) {
+        new BroadcastChannel('killua').postMessage({
+          type: 'localstorage-expire-slice-value',
+          key: params.key,
+        });
+      } else {
+        intervalId = setInterval(
+          (): void => {
+            if (Number(sliceExpireTimestamp) < Date.now()) {
+              new BroadcastChannel('killua').postMessage({
+                type: 'localstorage-expire-slice-value',
+                key: params.key,
+              });
+            }
+          },
+          Number(sliceExpireTimestamp) - Date.now(),
+        );
+      }
+    }
+    return (): void => {
+      clearInterval(intervalId);
+    };
+  }, [sliceState]);
+
   // params.ssr && !isReady ===> set `isReady` to `true` | get slice from localstorage and set to `sliceState`
-  useEffect(() => {
+  useEffect((): void => {
     if (params.ssr && !isReady) {
       setIsReady(true);
       setSliceState(getSliceFromLocalstorage<TSlice>({ config: params }));
@@ -74,7 +95,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   }, [sliceState]);
 
   // broadcast channel with onmessage events
-  useEffect(() => {
+  useEffect((): void => {
     new BroadcastChannel('killua').onmessage = (event) => {
       // call message `localstorage-slice-value-not-valid-and-removed` ===> set `defaultValueSlice.client` to `sliceState` | remove slice value from localstorage
       if (
@@ -99,6 +120,32 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
           event: params.events?.onChange,
         });
         setSliceState(event.data.value);
+      }
+      // call post message `localstorage-expire-slice-value` after set slice expire timestamp to localstorage
+      // call message `localstorage-expire-slice-value` ===> set `defaultValueSlice.client` | remove slice key from localstorage | update slice expire time | call event `onExpire`
+      if (
+        event.data.type === 'localstorage-expire-slice-value' &&
+        event.data.key === params.key
+      ) {
+        // localstorage value is not equal to `defaultValueSlice.client` ===> call event `onExpire`
+        if (
+          getSliceFromLocalstorage({ config: params }) !==
+          defaultValueSlice.client
+        ) {
+          callSliceEvent<TSlice>({
+            slice: defaultValueSlice.client,
+            event: params.events?.onExpire,
+          });
+        }
+        setSliceExpireTimestamp<TSlice>({
+          config: params,
+        });
+        setSliceState(defaultValueSlice.client);
+        localStorage.removeItem(
+          generateSliceKeyName({
+            key: params.key,
+          }),
+        );
       }
     };
   }, []);
