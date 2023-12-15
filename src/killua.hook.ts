@@ -64,7 +64,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
       });
       if (Number(sliceExpireTimestamp) < Date.now()) {
         new BroadcastChannel('killua').postMessage({
-          type: 'localstorage-expire-slice-value',
+          type: 'slice-event-onExpire',
           key: params.key,
         });
       } else {
@@ -72,7 +72,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
           (): void => {
             if (Number(sliceExpireTimestamp) < Date.now()) {
               new BroadcastChannel('killua').postMessage({
-                type: 'localstorage-expire-slice-value',
+                type: 'slice-event-onExpire',
                 key: params.key,
               });
             }
@@ -109,10 +109,10 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
           }),
         );
       }
-      // call post message `localstorage-set-slice-value` after set slice value to localstorage
-      // call message `localstorage-set-slice-value` ===> set `event.data.value` to `sliceState` | call event `onChange`
+      // call post message `slice-event-onChange` after set slice value to localstorage
+      // call message `slice-event-onChange` ===> set `event.data.value` to `sliceState` | call event `onChange`
       if (
-        event.data.type === 'localstorage-set-slice-value' &&
+        event.data.type === 'slice-event-onChange' &&
         event.data.key === params.key
       ) {
         // `event.data.value` is not equal to `sliceState` ===> call event `onChange`
@@ -124,10 +124,10 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         }
         setSliceState(event.data.value);
       }
-      // call post message `localstorage-expire-slice-value` after set slice expire timestamp to localstorage
-      // call message `localstorage-expire-slice-value` ===> set `defaultValueSlice.client` | remove slice key from localstorage | update slice expire time | call event `onExpire`
+      // call post message `slice-event-onExpire` after set slice expire timestamp to localstorage
+      // call message `slice-event-onExpire` ===> set `defaultValueSlice.client` | remove slice key from localstorage | update slice expire time | call event `onExpire`
       if (
-        event.data.type === 'localstorage-expire-slice-value' &&
+        event.data.type === 'slice-event-onExpire' &&
         event.data.key === params.key
       ) {
         // localstorage value is not equal to `defaultValueSlice.client` ===> call event `onExpire`

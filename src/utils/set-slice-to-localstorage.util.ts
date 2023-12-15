@@ -28,9 +28,9 @@ export default function setSliceToLocalstorage<TSlice>(params: {
       : JSON.stringify(params.slice),
   );
 
-  // call broadcast channel with event `localstorage-set-slice-value` for call event `onChange` and set updated slice value to `sliceState`
+  // call broadcast channel with event `slice-event-onChange` for call event `onChange` and set updated slice value to `sliceState`
   new BroadcastChannel('killua').postMessage({
-    type: 'localstorage-set-slice-value',
+    type: 'slice-event-onChange',
     key: params.config.key,
     value: params.slice,
   });
