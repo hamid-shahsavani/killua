@@ -1,3 +1,4 @@
+import { broadcastChannelMessages } from '../constants/broadcast-channel-messages';
 import { TConfig } from '../types/config.type';
 import decrypt from './decrypt.util';
 import defaultSliceValue from './default-slice-value.util';
@@ -41,9 +42,9 @@ export default function getSliceFromStorage<TSlice>(params: {
       });
     } catch (error: any) {
       returnValue = defaultSliceValueClient;
-      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `storage-slice-value-not-valid`
+      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `broadcastChannelMessages.sliceValueInStorageNotValid`
       new BroadcastChannel('killua').postMessage({
-        type: 'storage-slice-value-not-valid',
+        type: broadcastChannelMessages.sliceValueInStorageNotValid,
         key: params.config.key,
       });
     }

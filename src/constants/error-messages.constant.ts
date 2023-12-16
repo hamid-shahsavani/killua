@@ -1,4 +1,4 @@
-export const errorsMsg = {
+export const errorMessages = {
   key: {
     required: '`key` is required!',
     invalidType: '`key` is not string!',

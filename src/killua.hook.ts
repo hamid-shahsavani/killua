@@ -4,10 +4,11 @@ import defaultSliceValue from './utils/default-slice-value.util';
 import { TConfig } from './types/config.type';
 import setSliceToStorage from './utils/set-slice-to-storage.util';
 import errorTemplate from './utils/error-template.utli';
-import { errorsMsg } from './constants/errors-msg.constant';
 import isClientSide from './utils/is-client-side.util';
 import { getSliceExpireTimestamp } from './utils/get-slice-expire-timestamp.util';
 import broadcastEvents from './utils/broadcast-events.util';
+import { broadcastChannelMessages } from './constants/broadcast-channel-messages';
+import { errorMessages } from './constants/error-messages.constant';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
@@ -41,7 +42,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
       // `params.ssr` is `false` and application is server-side ===> throw error
       if (!isClientSide()) {
         errorTemplate({
-          msg: errorsMsg.ssr.mustBeTrue,
+          msg: errorMessages.ssr.mustBeTrue,
           key: params.key,
         });
       }
@@ -52,22 +53,23 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
 
   // params.expire is truthy ===> check slice expire timestamp
   useEffect((): (() => void) => {
+    const broadcastChannel = new BroadcastChannel('killua');
     let intervalId: any = null;
     if (params.expire) {
       const sliceExpireTimestamp = getSliceExpireTimestamp<TSlice>({
         config: params,
       });
       if (Number(sliceExpireTimestamp) < Date.now()) {
-        new BroadcastChannel('killua').postMessage({
-          type: 'slice-event-onExpire',
+        broadcastChannel.postMessage({
+          type: broadcastChannelMessages.sliceEventOnExpire,
           key: params.key,
         });
       } else {
         intervalId = setInterval(
           (): void => {
             if (Number(sliceExpireTimestamp) < Date.now()) {
-              new BroadcastChannel('killua').postMessage({
-                type: 'slice-event-onExpire',
+              broadcastChannel.postMessage({
+                type: broadcastChannelMessages.sliceEventOnExpire,
                 key: params.key,
               });
             }

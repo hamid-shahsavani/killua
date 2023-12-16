@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { errorsMsg } from '../src/constants/errors-msg.constant';
+import { errors } from '../src/constants/errors-msg.constant';
 import createSlice from '../src/create-slice.function';
 
 describe('create-slice.function.ts', (): void => {

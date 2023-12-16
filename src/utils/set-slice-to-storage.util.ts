@@ -1,3 +1,4 @@
+import { broadcastChannelMessages } from '../constants/broadcast-channel-messages';
 import { TConfig } from '../types/config.type';
 import encrypt from './encrypt.util';
 import generateSliceKeyName from './generate-slice-key-name.util';
@@ -28,9 +29,9 @@ export default function setSliceToStorage<TSlice>(params: {
       : JSON.stringify(params.slice),
   );
 
-  // call broadcast channel with event `slice-event-onChange` for call event `onChange` and set updated slice value to `sliceState`
+  // call broadcast channel with event `broadcastChannelMessages.sliceEventOnChange` for call event `onChange` and set updated slice value to `sliceState`
   new BroadcastChannel('killua').postMessage({
-    type: 'slice-event-onChange',
+    type: broadcastChannelMessages.sliceEventOnChange,
     key: params.config.key,
     value: params.slice,
   });

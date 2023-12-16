@@ -1,3 +1,4 @@
+import { broadcastChannelMessages } from '../constants/broadcast-channel-messages';
 import { TConfig } from '../types/config.type';
 import callSliceEvent from './call-slice-event.util';
 import defaultSliceValue from './default-slice-value.util';
@@ -16,9 +17,10 @@ export default function broadcastEvents<TSlice>(params: {
   });
 
   new BroadcastChannel('killua').onmessage = (event) => {
-    // call message `storage-slice-value-not-valid` ===> set `defalutValueSliceClient` to `sliceState` | remove slice value from storage
+    // call message `broadcastChannelMessages.sliceValueInStorageNotValid` ===> set `defalutValueSliceClient` to `sliceState` | remove slice value from storage
     if (
-      event.data.type === 'storage-slice-value-not-valid' &&
+      event.data.type ===
+        broadcastChannelMessages.sliceValueInStorageNotValid &&
       event.data.key === params.config.key
     ) {
       params.setSliceState(defalutValueSliceClient);
@@ -28,10 +30,10 @@ export default function broadcastEvents<TSlice>(params: {
         }),
       );
     }
-    // call post message `slice-event-onChange` after set slice value to storage
-    // call message `slice-event-onChange` ===> set `event.data.value` to `sliceState` | call event `onChange`
+    // call post message `broadcastChannelMessages.sliceEventOnChange` after set slice value to storage
+    // call message `broadcastChannelMessages.sliceEventOnChange` ===> set `event.data.value` to `sliceState` | call event `onChange`
     if (
-      event.data.type === 'slice-event-onChange' &&
+      event.data.type === broadcastChannelMessages.sliceEventOnChange &&
       event.data.key === params.config.key
     ) {
       // `event.data.value` is not equal to `params.sliceState` ===> call event `onChange`
@@ -43,10 +45,10 @@ export default function broadcastEvents<TSlice>(params: {
       }
       params.setSliceState(event.data.value);
     }
-    // call post message `slice-event-onExpire` after set slice expire timestamp to storage
-    // call message `slice-event-onExpire` ===> set `defalutValueSliceClient` | remove slice key from storage| update slice expire time | call event `onExpire`
+    // call post message `broadcastChannelMessages.sliceEventOnExpire` after set slice expire timestamp to storage
+    // call message `broadcastChannelMessages.sliceEventOnExpire` ===> set `defalutValueSliceClient` | remove slice key from storage| update slice expire time | call event `onExpire`
     if (
-      event.data.type === 'slice-event-onExpire' &&
+      event.data.type === broadcastChannelMessages.sliceEventOnExpire &&
       event.data.key === params.config.key
     ) {
       // storage value is not equal to `defalutValueSliceClient` ===> call event `onExpire`

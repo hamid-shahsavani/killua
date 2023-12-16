@@ -1,3 +1,4 @@
+import { storageKeys } from '../constants/storage-keys.constant';
 import { TConfig } from '../types/config.type';
 import encrypt from './encrypt.util';
 import { getSaltKey } from './get-salt-key.util';
@@ -21,7 +22,7 @@ export function setSliceExpireTimestamp<TSlice>(params: {
     storageValue[params.config.key] = sliceExpireTimestamp;
   }
   localStorage.setItem(
-    'slices-expire-time',
+    storageKeys.slicesExpireTime,
     encrypt({
       data: storageValue,
       saltKey: getSaltKey(),

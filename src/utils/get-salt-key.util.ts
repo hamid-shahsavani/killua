@@ -1,3 +1,4 @@
+import { storageKeys } from '../constants/storage-keys.constant';
 import decrypt from './decrypt.util';
 import encrypt from './encrypt.util';
 
@@ -8,7 +9,7 @@ export function getSaltKey(): string {
   // set salt key to storage
   function setNewSaltKeyToStorageHandler(): void {
     localStorage.setItem(
-      'slices-salt-key',
+      storageKeys.slicesSaltKey,
       encrypt({
         data: saltKeyValue,
         saltKey: 'killua',
@@ -17,7 +18,9 @@ export function getSaltKey(): string {
   }
 
   // get salt key value from storage and update `saltKeyValue`
-  const storageValue: string | null = localStorage.getItem('slices-salt-key');
+  const storageValue: string | null = localStorage.getItem(
+    storageKeys.slicesSaltKey,
+  );
   if (storageValue) {
     try {
       const decryptedSaltKeyValue = decrypt({

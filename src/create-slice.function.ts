@@ -1,4 +1,4 @@
-import { errorsMsg } from './constants/errors-msg.constant';
+import { errorMessages } from './constants/error-messages.constant';
 import { TConfig } from './types/config.type';
 import errorTemplate from './utils/error-template.utli';
 import {
@@ -17,7 +17,7 @@ export default function createSlice<TSlice>(
   // validate `ssr`
   if (!isUndefined(params.ssr) && !isBoolean(params.ssr)) {
     errorTemplate({
-      msg: errorsMsg.ssr.invalidType,
+      msg: errorMessages.ssr.invalidType,
       key: params.key,
     });
   }
@@ -25,7 +25,7 @@ export default function createSlice<TSlice>(
   // validate `default`
   if (!params.ssr && isUndefined(params.default)) {
     errorTemplate({
-      msg: errorsMsg.default.required,
+      msg: errorMessages.default.required,
       key: params.key,
     });
   }
@@ -33,7 +33,7 @@ export default function createSlice<TSlice>(
   // validate `defaultClient`
   if (params.ssr && isUndefined(params.defaultClient)) {
     errorTemplate({
-      msg: errorsMsg.defaultClient.required,
+      msg: errorMessages.defaultClient.required,
       key: params.key,
     });
   }
@@ -41,7 +41,7 @@ export default function createSlice<TSlice>(
   // validate `defaultServer`
   if (params.ssr && isUndefined(params.defaultServer)) {
     errorTemplate({
-      msg: errorsMsg.defaultServer.required,
+      msg: errorMessages.defaultServer.required,
       key: params.key,
     });
   }
@@ -49,27 +49,27 @@ export default function createSlice<TSlice>(
   // validate `key`
   if (isUndefined(params.key)) {
     errorTemplate({
-      msg: errorsMsg.key.required,
+      msg: errorMessages.key.required,
       key: params.key,
     });
   } else if (!isString(params.key)) {
     errorTemplate({
-      msg: errorsMsg.key.invalidType,
+      msg: errorMessages.key.invalidType,
       key: params.key,
     });
   } else if (isEmptyString(params.key)) {
     errorTemplate({
-      msg: errorsMsg.key.empty,
+      msg: errorMessages.key.empty,
       key: params.key,
     });
   } else if ((params.key as string).startsWith('slice-')) {
     errorTemplate({
-      msg: errorsMsg.key.startWithSlice,
+      msg: errorMessages.key.startWithSlice,
       key: params.key,
     });
   } else if ((params.key as string).startsWith('slices-')) {
     errorTemplate({
-      msg: errorsMsg.key.startWithSlices,
+      msg: errorMessages.key.startWithSlices,
       key: params.key,
     });
   }
@@ -77,7 +77,7 @@ export default function createSlice<TSlice>(
   // validate `encrypt`
   if (!isUndefined(params.encrypt) && !isBoolean(params.encrypt)) {
     errorTemplate({
-      msg: errorsMsg.encrypt.invalidType,
+      msg: errorMessages.encrypt.invalidType,
       key: params.key,
     });
   }
@@ -85,7 +85,7 @@ export default function createSlice<TSlice>(
   // validate `expire`
   if (!isUndefined(params.expire) && !/^\d+h-\d+m-\d+s$/.test(params.expire)) {
     errorTemplate({
-      msg: errorsMsg.expire.invalidFormat,
+      msg: errorMessages.expire.invalidFormat,
       key: params.key,
     });
   }
@@ -94,12 +94,12 @@ export default function createSlice<TSlice>(
   if (!isUndefined(params.reducers)) {
     if (!isObject(params.reducers)) {
       errorTemplate({
-        msg: errorsMsg.reducers.invalidType,
+        msg: errorMessages.reducers.invalidType,
         key: params.key,
       });
     } else if (isEmptyObject(params.reducers)) {
       errorTemplate({
-        msg: errorsMsg.reducers.empty,
+        msg: errorMessages.reducers.empty,
         key: params.key,
       });
     } else if (
@@ -108,7 +108,7 @@ export default function createSlice<TSlice>(
       )
     ) {
       errorTemplate({
-        msg: errorsMsg.reducers.keysValueIsNotFunction,
+        msg: errorMessages.reducers.keysValueIsNotFunction,
         key: params.key,
       });
     }
@@ -118,12 +118,12 @@ export default function createSlice<TSlice>(
   if (!isUndefined(params.selectors)) {
     if (!isObject(params.selectors)) {
       errorTemplate({
-        msg: errorsMsg.selectors.invalidType,
+        msg: errorMessages.selectors.invalidType,
         key: params.key,
       });
     } else if (isEmptyObject(params.selectors)) {
       errorTemplate({
-        msg: errorsMsg.selectors.empty,
+        msg: errorMessages.selectors.empty,
         key: params.key,
       });
     } else if (
@@ -132,7 +132,7 @@ export default function createSlice<TSlice>(
       )
     ) {
       errorTemplate({
-        msg: errorsMsg.selectors.keysValueIsNotFunction,
+        msg: errorMessages.selectors.keysValueIsNotFunction,
         key: params.key,
       });
     }
@@ -142,12 +142,12 @@ export default function createSlice<TSlice>(
   if (!isUndefined(params.events)) {
     if (!isObject(params.events)) {
       errorTemplate({
-        msg: errorsMsg.events.invalidType,
+        msg: errorMessages.events.invalidType,
         key: params.key,
       });
     } else if (isEmptyObject(params.events)) {
       errorTemplate({
-        msg: errorsMsg.events.empty,
+        msg: errorMessages.events.empty,
         key: params.key,
       });
     } else if (
@@ -156,7 +156,7 @@ export default function createSlice<TSlice>(
       )
     ) {
       errorTemplate({
-        msg: errorsMsg.events.keysIsNotValid,
+        msg: errorMessages.events.keysIsNotValid,
         key: params.key,
       });
     } else if (
@@ -166,7 +166,7 @@ export default function createSlice<TSlice>(
       )
     ) {
       errorTemplate({
-        msg: errorsMsg.events.keysValueIsNotFunction,
+        msg: errorMessages.events.keysValueIsNotFunction,
         key: params.key,
       });
     }
@@ -175,7 +175,7 @@ export default function createSlice<TSlice>(
   // validate `schema`
   if (!isUndefined(params.schema) && !isFunction(params.schema?.parse)) {
     errorTemplate({
-      msg: errorsMsg.schema.invalidType,
+      msg: errorMessages.schema.invalidType,
       key: params.key,
     });
   }
@@ -198,7 +198,7 @@ export default function createSlice<TSlice>(
   );
   if (notDefinedSliceKey.length > 0) {
     errorTemplate({
-      msg: errorsMsg.other.notDefined(notDefinedSliceKey),
+      msg: errorMessages.other.notDefined(notDefinedSliceKey),
       key: params.key,
     });
   }
