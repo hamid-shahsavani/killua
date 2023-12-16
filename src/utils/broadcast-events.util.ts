@@ -60,7 +60,7 @@ export default function broadcastEvents<TSlice>(params: {
         defalutSliceValueClient
       ) {
         callSliceEvent({
-          slice: defalutSliceValueClient,
+          slice: event.data.value,
           event: params.config.events?.onExpire,
         });
       }

@@ -63,6 +63,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         broadcastChannel.postMessage({
           type: broadcastChannelMessages.sliceEventOnExpire,
           key: params.key,
+          value: sliceState,
         });
       } else {
         intervalId = setInterval(
@@ -71,6 +72,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
               broadcastChannel.postMessage({
                 type: broadcastChannelMessages.sliceEventOnExpire,
                 key: params.key,
+                value: sliceState,
               });
             }
           },
