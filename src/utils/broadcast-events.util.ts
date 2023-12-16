@@ -1,4 +1,4 @@
-import { broadcastChannelMessages } from '../constants/broadcast-channel-messages';
+import { broadcastChannelMessages } from '../constants/broadcast-channel-messages.constant';
 import { TConfig } from '../types/config.type';
 import callSliceEvent from './call-slice-event.util';
 import defaultSliceValue from './default-slice-value.util';

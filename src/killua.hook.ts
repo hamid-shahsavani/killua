@@ -7,7 +7,7 @@ import errorTemplate from './utils/error-template.utli';
 import isClientSide from './utils/is-client-side.util';
 import { getSliceExpireTimestamp } from './utils/get-slice-expire-timestamp.util';
 import broadcastEvents from './utils/broadcast-events.util';
-import { broadcastChannelMessages } from './constants/broadcast-channel-messages';
+import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
 import { errorMessages } from './constants/error-messages.constant';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {

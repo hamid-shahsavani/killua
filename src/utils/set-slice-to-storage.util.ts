@@ -1,4 +1,4 @@
-import { broadcastChannelMessages } from '../constants/broadcast-channel-messages';
+import { broadcastChannelMessages } from '../constants/broadcast-channel-messages.constant';
 import { TConfig } from '../types/config.type';
 import encrypt from './encrypt.util';
 import generateSliceKeyName from './generate-slice-key-name.util';
