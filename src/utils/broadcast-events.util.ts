@@ -11,19 +11,22 @@ export default function broadcastEvents<TSlice>(params: {
   sliceState: TSlice;
   setSliceState: (value: TSlice) => void;
 }): void {
-  const defalutValueSliceClient: TSlice = defaultSliceValue({
+  // default slice value Client
+  const defalutSliceValueClient: TSlice = defaultSliceValue({
     config: params.config,
     type: 'client',
   });
 
+  // broadcast events
   new BroadcastChannel('killua').onmessage = (event) => {
-    // call message `broadcastChannelMessages.sliceValueInStorageNotValid` ===> set `defalutValueSliceClient` to `sliceState` | remove slice value from storage
+    // call message `broadcastChannelMessages.sliceValueInStorageNotValid` ===> set `defalutSliceValueClient` to `sliceState` | remove slice value from storage
     if (
       event.data.type ===
         broadcastChannelMessages.sliceValueInStorageNotValid &&
       event.data.key === params.config.key
     ) {
-      params.setSliceState(defalutValueSliceClient);
+      console.log('not valid');
+      params.setSliceState(defalutSliceValueClient);
       localStorage.removeItem(
         generateSliceKeyName({
           key: params.config.key,
@@ -46,25 +49,25 @@ export default function broadcastEvents<TSlice>(params: {
       params.setSliceState(event.data.value);
     }
     // call post message `broadcastChannelMessages.sliceEventOnExpire` after set slice expire timestamp to storage
-    // call message `broadcastChannelMessages.sliceEventOnExpire` ===> set `defalutValueSliceClient` | remove slice key from storage| update slice expire time | call event `onExpire`
+    // call message `broadcastChannelMessages.sliceEventOnExpire` ===> set `defalutSliceValueClient` | remove slice key from storage| update slice expire time | call event `onExpire`
     if (
       event.data.type === broadcastChannelMessages.sliceEventOnExpire &&
       event.data.key === params.config.key
     ) {
-      // storage value is not equal to `defalutValueSliceClient` ===> call event `onExpire`
+      // storage value is not equal to `defalutSliceValueClient` ===> call event `onExpire`
       if (
         getSliceFromStorage({ config: params.config }) !==
-        defalutValueSliceClient
+        defalutSliceValueClient
       ) {
         callSliceEvent({
-          slice: defalutValueSliceClient,
+          slice: defalutSliceValueClient,
           event: params.config.events?.onExpire,
         });
       }
       setSliceExpireTimestamp({
         config: params.config,
       });
-      params.setSliceState(defalutValueSliceClient);
+      params.setSliceState(defalutSliceValueClient);
       localStorage.removeItem(
         generateSliceKeyName({
           key: params.config.key,
