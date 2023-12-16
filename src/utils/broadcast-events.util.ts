@@ -11,7 +11,7 @@ export default function broadcastEvents<TSlice>(params: {
   sliceState: TSlice;
   setSliceState: (value: TSlice) => void;
 }): void {
-  const defalutValueSliceClient: TSlice = defaultSliceValue<TSlice>({
+  const defalutValueSliceClient: TSlice = defaultSliceValue({
     config: params.config,
     type: 'client',
   });
@@ -38,7 +38,7 @@ export default function broadcastEvents<TSlice>(params: {
     ) {
       // `event.data.value` is not equal to `params.sliceState` ===> call event `onChange`
       if (event.data.value !== params.sliceState) {
-        callSliceEvent<TSlice>({
+        callSliceEvent({
           slice: event.data.value,
           event: params.config.events?.onChange,
         });
@@ -53,15 +53,15 @@ export default function broadcastEvents<TSlice>(params: {
     ) {
       // storage value is not equal to `defalutValueSliceClient` ===> call event `onExpire`
       if (
-        getSliceFromStorage<TSlice>({ config: params.config }) !==
+        getSliceFromStorage({ config: params.config }) !==
         defalutValueSliceClient
       ) {
-        callSliceEvent<TSlice>({
+        callSliceEvent({
           slice: defalutValueSliceClient,
           event: params.config.events?.onExpire,
         });
       }
-      setSliceExpireTimestamp<TSlice>({
+      setSliceExpireTimestamp({
         config: params.config,
       });
       params.setSliceState(defalutValueSliceClient);

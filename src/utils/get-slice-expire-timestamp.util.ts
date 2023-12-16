@@ -22,7 +22,7 @@ export function getSliceExpireTimestamp<TSlice>(params: {
     }
   */
   if (!storageValue[params.config.key]) {
-    returnValue = setSliceExpireTimestamp<TSlice>({ config: params.config });
+    returnValue = setSliceExpireTimestamp({ config: params.config });
   } else {
     returnValue = storageValue[params.config.key];
   }

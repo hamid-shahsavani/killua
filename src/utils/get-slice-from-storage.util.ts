@@ -10,7 +10,7 @@ export default function getSliceFromStorage<TSlice>(params: {
   config: TConfig<TSlice>;
 }): TSlice {
   // default slice value client
-  const defaultSliceValueClient = defaultSliceValue<TSlice>({
+  const defaultSliceValueClient = defaultSliceValue({
     config: params.config,
     type: 'client',
   });
@@ -36,7 +36,7 @@ export default function getSliceFromStorage<TSlice>(params: {
           : JSON.parse(storageValue)
       ) as TSlice;
       // validate storage value with schema
-      schemaValidation<TSlice>({
+      schemaValidation({
         data: returnValue,
         schema: params.config.schema,
       });

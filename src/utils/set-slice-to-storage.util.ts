@@ -13,7 +13,7 @@ export default function setSliceToStorage<TSlice>(params: {
   const sliceKeyName = generateSliceKeyName({ key: params.config.key });
 
   // validate slice value with schema before set to storageand set to `sliceState`
-  schemaValidation<TSlice>({
+  schemaValidation({
     data: params.slice,
     schema: params.config.schema,
   });

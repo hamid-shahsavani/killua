@@ -19,11 +19,11 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
 } {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', TSlice> = {
-    server: defaultSliceValue<TSlice>({
+    server: defaultSliceValue({
       config: params,
       type: 'server',
     }),
-    client: defaultSliceValue<TSlice>({
+    client: defaultSliceValue({
       config: params,
       type: 'client',
     }),
@@ -35,7 +35,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
 
   // params.ssr is truthy ===> return `params.defaultServer`
   // params.ssr is falsy ===> return slice value from storage
-  const [sliceState, setSliceState] = useState<TSlice>((): TSlice => {
+  const [sliceState, setSliceState] = useState((): TSlice => {
     if (params.ssr) {
       return defaultValueSlice.server;
     } else {
@@ -47,7 +47,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         });
       }
       // `params.ssr` is `false` and application is client-side ===> return slice value from storage
-      return getSliceFromStorage<TSlice>({ config: params });
+      return getSliceFromStorage({ config: params });
     }
   });
 
@@ -56,7 +56,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     const broadcastChannel = new BroadcastChannel('killua');
     let intervalId: any = null;
     if (params.expire) {
-      const sliceExpireTimestamp = getSliceExpireTimestamp<TSlice>({
+      const sliceExpireTimestamp = getSliceExpireTimestamp({
         config: params,
       });
       if (Number(sliceExpireTimestamp) < Date.now()) {
@@ -87,13 +87,13 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   useEffect((): void => {
     if (params.ssr && !isReady) {
       setIsReady(true);
-      setSliceState(getSliceFromStorage<TSlice>({ config: params }));
+      setSliceState(getSliceFromStorage({ config: params }));
     }
   }, [sliceState]);
 
   // broadcast channel events
   useEffect((): void => {
-    broadcastEvents<TSlice>({
+    broadcastEvents({
       config: params,
       sliceState,
       setSliceState,
@@ -103,7 +103,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   return {
     get: sliceState,
     set: (value: TSlice | ((value: TSlice) => TSlice)) => {
-      setSliceToStorage<TSlice>({
+      setSliceToStorage({
         config: params,
         slice: value instanceof Function ? value(sliceState) : value,
       });

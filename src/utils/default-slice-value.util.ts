@@ -11,7 +11,7 @@ export default function defaultSliceValue<TSlice>(params: {
       : params.config.defaultServer
     : params.config.default;
 
-  return schemaValidation<TSlice>({
+  return schemaValidation({
     data,
     schema: params.config.schema,
   });
