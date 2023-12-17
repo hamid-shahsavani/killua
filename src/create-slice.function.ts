@@ -83,7 +83,12 @@ export default function createSlice<TSlice>(
   }
 
   // validate `expire`
-  if (!isUndefined(params.expire) && !/^\d+h-\d+m-\d+s$/.test(params.expire)) {
+  if (
+    !isUndefined(params.expire) &&
+    !/^(\d{2,}d-([01]\d|2[0-3])h-([0-5]\d|[1-5]\d?|59)m-([0-5]\d|[1-5]\d?|59)s)$/.test(
+      params.expire,
+    )
+  ) {
     errorTemplate({
       msg: errorMessages.expire.invalidFormat,
       key: params.key,

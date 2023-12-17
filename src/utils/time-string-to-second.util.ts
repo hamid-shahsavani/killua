@@ -7,6 +7,9 @@ export default function timeStringToSeconds(params: {
     const unit: string = component.slice(-1);
     const value: number = parseInt(component.slice(0, -1), 10);
     switch (unit) {
+      case 'd':
+        seconds += value * 86400;
+        break;
       case 'h':
         seconds += value * 3600;
         break;

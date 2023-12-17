@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { errors } from '../src/constants/errors-msg.constant';
 import createSlice from '../src/create-slice.function';
+import { errorMessages } from '../src/constants/error-messages.constant';
 
 describe('create-slice.function.ts', (): void => {
   describe('validate `default`', (): void => {
@@ -13,7 +13,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           default: undefined,
         }),
-      ).toThrow(errorsMsg.default.required);
+      ).toThrow(errorMessages.default.required);
     });
   });
   describe('validate `defaultClient`', (): void => {
@@ -28,7 +28,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           defaultClient: undefined,
         }),
-      ).toThrow(errorsMsg.defaultClient.required);
+      ).toThrow(errorMessages.defaultClient.required);
     });
   });
   describe('validate `defaultServer`', (): void => {
@@ -43,7 +43,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           defaultServer: undefined,
         }),
-      ).toThrow(errorsMsg.defaultServer.required);
+      ).toThrow(errorMessages.defaultServer.required);
     });
   });
   describe('validate `ssr`', (): void => {
@@ -57,7 +57,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           ssr: 'test',
         }),
-      ).toThrow(errorsMsg.ssr.invalidType);
+      ).toThrow(errorMessages.ssr.invalidType);
     });
   });
   describe('validate `key`', (): void => {
@@ -70,7 +70,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           key: undefined as any,
         }),
-      ).toThrow(errorsMsg.key.required);
+      ).toThrow(errorMessages.key.required);
     });
     it('should throw an error if `key` is not a string', (): void => {
       expect(() =>
@@ -78,7 +78,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           key: 1 as any,
         }),
-      ).toThrow(errorsMsg.key.invalidType);
+      ).toThrow(errorMessages.key.invalidType);
     });
     it('should throw an error if `key` is an empty string', (): void => {
       expect(() =>
@@ -86,7 +86,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           key: '',
         }),
-      ).toThrow(errorsMsg.key.empty);
+      ).toThrow(errorMessages.key.empty);
     });
     it('should throw an error if `key` starts with `slice-`', (): void => {
       expect(() =>
@@ -94,7 +94,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           key: 'slice-counter',
         }),
-      ).toThrow(errorsMsg.key.startWithSlice);
+      ).toThrow(errorMessages.key.startWithSlice);
     });
     it('should throw an error if `key` starts with `slices-`', (): void => {
       expect(() =>
@@ -102,7 +102,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           key: 'slices-counter',
         }),
-      ).toThrow(errorsMsg.key.startWithSlices);
+      ).toThrow(errorMessages.key.startWithSlices);
     });
   });
   describe('validate `encrypt`', (): void => {
@@ -116,7 +116,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           encrypt: 'test',
         }),
-      ).toThrow(errorsMsg.encrypt.invalidType);
+      ).toThrow(errorMessages.encrypt.invalidType);
     });
   });
   describe('validate `expire`', (): void => {
@@ -136,7 +136,7 @@ describe('create-slice.function.ts', (): void => {
       expect(() =>
         createSlice<number>({
           ...sliceConfig,
-          expire: '1h-30m-0s',
+          expire: '00d-01h-30m-24s',
         }),
       ).not.toThrow();
     });
@@ -146,7 +146,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           expire: 'test',
         }),
-      ).toThrow(errorsMsg.expire.invalidFormat);
+      ).toThrow(errorMessages.expire.invalidFormat);
     });
   });
   describe('validate `reducers`', (): void => {
@@ -160,7 +160,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           reducers: 'test',
         }),
-      ).toThrow(errorsMsg.reducers.invalidType);
+      ).toThrow(errorMessages.reducers.invalidType);
     });
     it('should throw an error if `reducers` keys are empty', (): void => {
       expect(() =>
@@ -168,7 +168,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           reducers: {},
         }),
-      ).toThrow(errorsMsg.reducers.empty);
+      ).toThrow(errorMessages.reducers.empty);
     });
     it('should throw an error if `reducers` keys value is not a function', (): void => {
       expect(() =>
@@ -176,7 +176,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           reducers: { test: 'test' },
         }),
-      ).toThrow(errorsMsg.reducers.keysValueIsNotFunction);
+      ).toThrow(errorMessages.reducers.keysValueIsNotFunction);
     });
   });
   describe('validate `selectors`', (): void => {
@@ -190,7 +190,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           selectors: 'test',
         }),
-      ).toThrow(errorsMsg.selectors.invalidType);
+      ).toThrow(errorMessages.selectors.invalidType);
     });
     it('should throw an error if `selectors` keys are empty', (): void => {
       expect(() =>
@@ -198,7 +198,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           selectors: {},
         }),
-      ).toThrow(errorsMsg.selectors.empty);
+      ).toThrow(errorMessages.selectors.empty);
     });
     it('should throw an error if `selectors` keys value is not a function', (): void => {
       expect(() =>
@@ -206,7 +206,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           selectors: { test: 'test' },
         }),
-      ).toThrow(errorsMsg.selectors.keysValueIsNotFunction);
+      ).toThrow(errorMessages.selectors.keysValueIsNotFunction);
     });
   });
   describe('validate `events`', (): void => {
@@ -220,7 +220,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           events: 'test',
         }),
-      ).toThrow(errorsMsg.events.invalidType);
+      ).toThrow(errorMessages.events.invalidType);
     });
     it('should throw an error if `events` keys are empty', (): void => {
       expect(() =>
@@ -228,7 +228,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           events: {},
         }),
-      ).toThrow(errorsMsg.events.empty);
+      ).toThrow(errorMessages.events.empty);
     });
     it('should throw an error if `events` keys are not `onChange` or `onExpire`', (): void => {
       expect(() =>
@@ -236,7 +236,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           events: { test: (): void => {} },
         }),
-      ).toThrow(errorsMsg.events.keysIsNotValid);
+      ).toThrow(errorMessages.events.keysIsNotValid);
     });
     it('should throw an error if `events` key `onChange` value is not a function', (): void => {
       expect(() =>
@@ -244,7 +244,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           events: { onChange: 'test' },
         }),
-      ).toThrow(errorsMsg.events.keysValueIsNotFunction);
+      ).toThrow(errorMessages.events.keysValueIsNotFunction);
     });
     it('should throw an error if `events` key `onExpire` value is not a function', (): void => {
       expect(() =>
@@ -252,7 +252,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           events: { onExpire: 'test' },
         }),
-      ).toThrow(errorsMsg.events.keysValueIsNotFunction);
+      ).toThrow(errorMessages.events.keysValueIsNotFunction);
     });
   });
   describe('validate `schema`', (): void => {
@@ -266,7 +266,7 @@ describe('create-slice.function.ts', (): void => {
           ...sliceConfig,
           schema: 'test',
         }),
-      ).toThrow(errorsMsg.schema.invalidType);
+      ).toThrow(errorMessages.schema.invalidType);
     });
   });
 
