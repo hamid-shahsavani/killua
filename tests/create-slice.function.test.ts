@@ -136,7 +136,7 @@ describe('create-slice.function.ts', (): void => {
       expect(() =>
         createSlice<number>({
           ...sliceConfig,
-          expire: '00d-01h-30m-24s',
+          expire: '0d-01h-30m-24s',
         }),
       ).not.toThrow();
     });

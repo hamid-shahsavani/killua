@@ -85,7 +85,7 @@ export default function createSlice<TSlice>(
   // validate `expire`
   if (
     !isUndefined(params.expire) &&
-    !/^(\d{2,}d-([01]\d|2[0-3])h-([0-5]\d|[1-5]\d?|59)m-([0-5]\d|[1-5]\d?|59)s)$/.test(
+    !/^\d+d-(?:[0-1]?\d|2[0-3])[hH]-[0-5]?\d[mM]-[0-5]?\d[sS]$/.test(
       params.expire,
     )
   ) {
