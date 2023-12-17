@@ -1,4 +1,5 @@
 import { broadcastChannelMessages } from '../constants/broadcast-channel-messages.constant';
+import { storageKeys } from '../constants/storage-keys.constant';
 import { TConfig } from '../types/config.type';
 import decrypt from './decrypt.util';
 import defaultSliceValue from './default-slice-value.util';
@@ -40,6 +41,13 @@ export default function getSliceFromStorage<TSlice>(params: {
         data: returnValue,
         schema: params.config.schema,
       });
+      // params.config.expire truthy ===> check `storageKeys.slicesExpireTime` object in localstorage is valid
+      if (params.config.expire) {
+        decrypt({
+          data: localStorage.getItem(storageKeys.slicesExpireTime),
+          saltKey: getSaltKey(),
+        });
+      }
     } catch (error: any) {
       returnValue = defaultSliceValueClient;
       // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `broadcastChannelMessages.sliceValueInStorageNotValid`

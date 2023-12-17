@@ -25,7 +25,6 @@ export default function broadcastEvents<TSlice>(params: {
         broadcastChannelMessages.sliceValueInStorageNotValid &&
       event.data.key === params.config.key
     ) {
-      console.log('not valid');
       params.setSliceState(defalutSliceValueClient);
       localStorage.removeItem(
         generateSliceKeyName({

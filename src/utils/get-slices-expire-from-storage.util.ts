@@ -1,4 +1,3 @@
-import { broadcastChannelMessages } from '../constants/broadcast-channel-messages.constant';
 import { storageKeys } from '../constants/storage-keys.constant';
 import { TConfig } from '../types/config.type';
 import decrypt from './decrypt.util';
@@ -10,12 +9,6 @@ function setSlicesExpireKeyToStorage<TSlice>(params: {
   config: TConfig<TSlice>;
   default: Record<string, number>;
 }): void {
-  if (params.config.expire) {
-    new BroadcastChannel('killua').postMessage({
-      type: broadcastChannelMessages.sliceValueInStorageNotValid,
-      key: params.config.key,
-    });
-  }
   localStorage.setItem(
     storageKeys.slicesExpireTime,
     encrypt({ data: params.default, saltKey: getSaltKey() }),
