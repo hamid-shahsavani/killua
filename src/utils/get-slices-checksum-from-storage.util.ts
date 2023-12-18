@@ -28,7 +28,7 @@ export function getSlicesChecksumFromStorage<TSlice>(params: {
     }),
   };
 
-  // get slices checksum from storage((if not exist || is-not valid) && set `storageKeys.slicesChecksum` key to storage)
+  // get slices checksum from storage ((if not exist || is-not valid) && set `storageKeys.slicesChecksum` key to storage)
   try {
     const storageValue: string | null = localStorage.getItem(
       storageKeys.slicesChecksum,
