@@ -5,7 +5,7 @@ import { TConfig } from './types/config.type';
 import setSliceToStorage from './utils/set-slice-to-storage.util';
 import errorTemplate from './utils/error-template.utli';
 import isClientSide from './utils/is-client-side.util';
-import { getSliceExpireTimestamp } from './utils/get-slice-expire-timestamp-from-storage.util';
+import { getSliceExpireTimestampFromStorage } from './utils/get-slice-expire-timestamp-from-storage.util';
 import broadcastEvents from './utils/broadcast-events.util';
 import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
 import { errorMessages } from './constants/error-messages.constant';
@@ -56,7 +56,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     const broadcastChannel = new BroadcastChannel('killua');
     let intervalId: any = null;
     if (params.expire) {
-      const sliceExpireTimestamp = getSliceExpireTimestamp({
+      const sliceExpireTimestamp = getSliceExpireTimestampFromStorage({
         config: params,
       });
       if (Number(sliceExpireTimestamp) < Date.now()) {
