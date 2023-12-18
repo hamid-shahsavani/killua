@@ -30,7 +30,7 @@ export function getSlicesExpireTimeFromStorage<TSlice>(params: {
     }),
   };
 
-  // get slices expire timestamp from storage((if not exist || is-not valid) && set slices expire key to storage)
+  // get slices expire timestamp from storage((if not exist || is-not valid) && set `storageKeys.slicesExpireTime` key to storage)
   try {
     const storageValue: string | null = localStorage.getItem(
       storageKeys.slicesExpireTime,

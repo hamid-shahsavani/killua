@@ -48,11 +48,16 @@ export default function getSliceFromStorage<TSlice>(params: {
           saltKey: getSaltKeyFromStorage(),
         });
       }
+      // check `storageKeys.slicesChecksum` object in localstorage is valid
+      decryptStorageData({
+        data: localStorage.getItem(storageKeys.slicesChecksum),
+        saltKey: getSaltKeyFromStorage(),
+      });
     } catch (error: any) {
       returnValue = defaultSliceValueClient;
-      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `broadcastChannelMessages.sliceValueInStorageNotValid`
+      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `broadcastChannelMessages.storageValueNotValid`
       new BroadcastChannel('killua').postMessage({
-        type: broadcastChannelMessages.sliceValueInStorageNotValid,
+        type: broadcastChannelMessages.storageValueNotValid,
         key: params.config.key,
       });
     }

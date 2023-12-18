@@ -4,6 +4,7 @@ import callSliceEvent from './call-slice-event.util';
 import defaultSliceValue from './default-slice-value.util';
 import generateSliceStorageKey from './generate-slice-storage-key.util';
 import getSliceFromStorage from './get-slice-from-storage.util';
+import { setSliceConfigChecksumToStorage } from './set-slice-config-checksum-to-storage.util';
 import { setSliceExpireTimestampToStorage } from './set-slice-expire-timestamp-to-storage.util';
 
 export default function broadcastEvents<TSlice>(params: {
@@ -19,10 +20,9 @@ export default function broadcastEvents<TSlice>(params: {
 
   // broadcast events
   new BroadcastChannel('killua').onmessage = (event) => {
-    // call message `broadcastChannelMessages.sliceValueInStorageNotValid` ===> set `defalutSliceValueClient` to `sliceState` | remove slice value from storage
+    // call message `broadcastChannelMessages.storageValueNotValid` ===> set `defalutSliceValueClient` to `sliceState` | remove slice value from storage | update slice expire time | update slice checksum
     if (
-      event.data.type ===
-        broadcastChannelMessages.sliceValueInStorageNotValid &&
+      event.data.type === broadcastChannelMessages.storageValueNotValid &&
       event.data.key === params.config.key
     ) {
       params.setSliceState(defalutSliceValueClient);
@@ -31,6 +31,12 @@ export default function broadcastEvents<TSlice>(params: {
           key: params.config.key,
         }),
       );
+      setSliceConfigChecksumToStorage({ config: params.config });
+      if (params.config.expire) {
+        setSliceExpireTimestampToStorage({
+          config: params.config,
+        });
+      }
     }
     // call post message `broadcastChannelMessages.sliceEventOnChange` after set slice value to storage
     // call message `broadcastChannelMessages.sliceEventOnChange` ===> set `event.data.value` to `sliceState` | call event `onChange`

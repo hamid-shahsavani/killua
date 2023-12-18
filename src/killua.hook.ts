@@ -9,6 +9,8 @@ import { getSliceExpireTimestampFromStorage } from './utils/get-slice-expire-tim
 import broadcastEvents from './utils/broadcast-events.util';
 import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
 import { errorMessages } from './constants/error-messages.constant';
+import generateSliceConfigChecksum from './utils/generate-slice-config-checksum.util';
+import { getSliceConfigChecksumFromStorage } from './utils/get-slice-config-checksum-from-storage.util';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
@@ -50,6 +52,22 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
       return getSliceFromStorage({ config: params });
     }
   });
+
+  // is-changed slice config by developer ===> call broadcast channel event `broadcastChannelMessages.storageValueNotValid`
+  useEffect((): void => {
+    const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
+      config: params,
+    });
+    const currentSliceConfigChecksum = generateSliceConfigChecksum({
+      config: params,
+    });
+    if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
+      new BroadcastChannel('killua').postMessage({
+        type: broadcastChannelMessages.storageValueNotValid,
+        key: params.key,
+      });
+    }
+  }, []);
 
   // params.expire is truthy ===> check slice expire timestamp
   useEffect((): (() => void) => {
