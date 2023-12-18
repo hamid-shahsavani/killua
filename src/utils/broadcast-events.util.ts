@@ -2,7 +2,7 @@ import { broadcastChannelMessages } from '../constants/broadcast-channel-message
 import { TConfig } from '../types/config.type';
 import callSliceEvent from './call-slice-event.util';
 import defaultSliceValue from './default-slice-value.util';
-import generateSliceKeyName from './generate-slice-key-name.util';
+import generateSliceStorageKey from './generate-slice-storage-key.util';
 import getSliceFromStorage from './get-slice-from-storage.util';
 import { setSliceExpireTimestamp } from './set-slice-expire-timestamp.util';
 
@@ -27,7 +27,7 @@ export default function broadcastEvents<TSlice>(params: {
     ) {
       params.setSliceState(defalutSliceValueClient);
       localStorage.removeItem(
-        generateSliceKeyName({
+        generateSliceStorageKey({
           key: params.config.key,
         }),
       );
@@ -68,7 +68,7 @@ export default function broadcastEvents<TSlice>(params: {
       });
       params.setSliceState(defalutSliceValueClient);
       localStorage.removeItem(
-        generateSliceKeyName({
+        generateSliceStorageKey({
           key: params.config.key,
         }),
       );

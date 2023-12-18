@@ -1,8 +1,8 @@
 import { storageKeys } from '../constants/storage-keys.constant';
 import { TConfig } from '../types/config.type';
-import encrypt from './encrypt.util';
-import { getSaltKey } from './get-salt-key.util';
-import { getSlicesExpireFromStorage } from './get-slices-expire-from-storage.util';
+import encryptStorageData from './encrypt-storage-data.util';
+import { getSaltKeyFromStorage } from './get-salt-key-from-storage.util';
+import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
 import timeStringToSeconds from './time-string-to-second.util';
 
 export function setSliceExpireTimestamp<TSlice>(params: {
@@ -14,8 +14,8 @@ export function setSliceExpireTimestamp<TSlice>(params: {
       timeStringToSeconds({ timeString: params.config.expire }) * 1000
     : null;
 
-  // set `slices-expire` with current slice expire timestamp to storage
-  const storageValue: Record<string, number> = getSlicesExpireFromStorage({
+  // set `storageKeys.slicesExpireTime` with current slice expire timestamp to storage
+  const storageValue: Record<string, number> = getSlicesExpireTimeFromStorage({
     config: params.config,
   });
   if (sliceExpireTimestamp) {
@@ -23,9 +23,9 @@ export function setSliceExpireTimestamp<TSlice>(params: {
   }
   localStorage.setItem(
     storageKeys.slicesExpireTime,
-    encrypt({
+    encryptStorageData({
       data: storageValue,
-      saltKey: getSaltKey(),
+      saltKey: getSaltKeyFromStorage(),
     }),
   );
 

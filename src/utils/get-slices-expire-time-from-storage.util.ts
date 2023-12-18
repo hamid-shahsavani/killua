@@ -1,24 +1,27 @@
 import { storageKeys } from '../constants/storage-keys.constant';
 import { TConfig } from '../types/config.type';
-import decrypt from './decrypt.util';
-import encrypt from './encrypt.util';
-import { getSaltKey } from './get-salt-key.util';
+import decryptStorageData from './decrypt-storage-data.util';
+import encryptStorageData from './encrypt-storage-data.util';
+import { getSaltKeyFromStorage } from './get-salt-key-from-storage.util';
 import timeStringToSeconds from './time-string-to-second.util';
 
-function setSlicesExpireKeyToStorage<TSlice>(params: {
+function setSlicesExpireTimeKeyToStorage<TSlice>(params: {
   config: TConfig<TSlice>;
   default: Record<string, number>;
 }): void {
   localStorage.setItem(
     storageKeys.slicesExpireTime,
-    encrypt({ data: params.default, saltKey: getSaltKey() }),
+    encryptStorageData({
+      data: params.default,
+      saltKey: getSaltKeyFromStorage(),
+    }),
   );
 }
 
-export function getSlicesExpireFromStorage<TSlice>(params: {
+export function getSlicesExpireTimeFromStorage<TSlice>(params: {
   config: TConfig<TSlice>;
 }): Record<string, number> {
-  // default is `{ [params.config.key]: (params.config.expire ? slice expire timestamp : null)}` (update after get `slices-expire` from storage)
+  // default is `{ [params.config.key]: (params.config.expire ? slice expire timestamp : null)}` (update after get `storageKeys.slicesExpireTime` from storage)
   let returnValue: Record<string, number> = {
     ...(params.config.expire && {
       [params.config.key]:
@@ -33,19 +36,19 @@ export function getSlicesExpireFromStorage<TSlice>(params: {
       storageKeys.slicesExpireTime,
     );
     if (storageValue) {
-      const decryptedStorageValue: Record<string, number> = decrypt({
+      const decryptedStorageValue: Record<string, number> = decryptStorageData({
         data: storageValue,
-        saltKey: getSaltKey(),
+        saltKey: getSaltKeyFromStorage(),
       });
       returnValue = decryptedStorageValue;
     } else {
-      setSlicesExpireKeyToStorage({
+      setSlicesExpireTimeKeyToStorage({
         config: params.config,
         default: returnValue,
       });
     }
   } catch (error) {
-    setSlicesExpireKeyToStorage({
+    setSlicesExpireTimeKeyToStorage({
       config: params.config,
       default: returnValue,
     });

@@ -1,16 +1,16 @@
 import { broadcastChannelMessages } from '../constants/broadcast-channel-messages.constant';
 import { TConfig } from '../types/config.type';
-import encrypt from './encrypt.util';
-import generateSliceKeyName from './generate-slice-key-name.util';
-import { getSaltKey } from './get-salt-key.util';
+import encryptStorageData from './encrypt-storage-data.util';
+import generateSliceStorageKey from './generate-slice-storage-key.util';
+import { getSaltKeyFromStorage } from './get-salt-key-from-storage.util';
 import schemaValidation from './schema-validation.util';
 
 export default function setSliceToStorage<TSlice>(params: {
   config: TConfig<TSlice>;
   slice: TSlice;
 }): void {
-  // slice key name
-  const sliceKeyName = generateSliceKeyName({ key: params.config.key });
+  // slice storage name
+  const sliceStorageKey = generateSliceStorageKey({ key: params.config.key });
 
   // validate slice value with schema before set to storageand set to `sliceState`
   schemaValidation({
@@ -20,11 +20,11 @@ export default function setSliceToStorage<TSlice>(params: {
 
   // set slice value to storage
   localStorage.setItem(
-    sliceKeyName,
+    sliceStorageKey,
     params.config.encrypt
-      ? encrypt({
+      ? encryptStorageData({
           data: params.slice,
-          saltKey: getSaltKey(),
+          saltKey: getSaltKeyFromStorage(),
         })
       : JSON.stringify(params.slice),
   );

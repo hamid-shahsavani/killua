@@ -1,10 +1,10 @@
 import { broadcastChannelMessages } from '../constants/broadcast-channel-messages.constant';
 import { storageKeys } from '../constants/storage-keys.constant';
 import { TConfig } from '../types/config.type';
-import decrypt from './decrypt.util';
+import decryptStorageData from './decrypt-storage-data.util';
 import defaultSliceValue from './default-slice-value.util';
-import generateSliceKeyName from './generate-slice-key-name.util';
-import { getSaltKey } from './get-salt-key.util';
+import generateSliceStorageKey from './generate-slice-storage-key.util';
+import { getSaltKeyFromStorage } from './get-salt-key-from-storage.util';
 import schemaValidation from './schema-validation.util';
 
 export default function getSliceFromStorage<TSlice>(params: {
@@ -17,7 +17,7 @@ export default function getSliceFromStorage<TSlice>(params: {
   });
 
   // storage key
-  const storageKey = generateSliceKeyName({ key: params.config.key });
+  const storageKey = generateSliceStorageKey({ key: params.config.key });
 
   // default is `default-client value` (update after get slice value from storage)
   let returnValue: TSlice = defaultSliceValueClient;
@@ -30,9 +30,9 @@ export default function getSliceFromStorage<TSlice>(params: {
       // set storagevalue to `returnValue` (if data encrypted ? decrypt : JSON.parse)
       returnValue = (
         params.config.encrypt
-          ? decrypt({
+          ? decryptStorageData({
               data: storageValue,
-              saltKey: getSaltKey(),
+              saltKey: getSaltKeyFromStorage(),
             })
           : JSON.parse(storageValue)
       ) as TSlice;
@@ -43,9 +43,9 @@ export default function getSliceFromStorage<TSlice>(params: {
       });
       // params.config.expire truthy ===> check `storageKeys.slicesExpireTime` object in localstorage is valid
       if (params.config.expire) {
-        decrypt({
+        decryptStorageData({
           data: localStorage.getItem(storageKeys.slicesExpireTime),
-          saltKey: getSaltKey(),
+          saltKey: getSaltKeyFromStorage(),
         });
       }
     } catch (error: any) {

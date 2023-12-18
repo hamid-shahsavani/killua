@@ -1,6 +1,6 @@
 import * as CryptoJS from 'crypto-js';
 
-export default function encrypt(params: {
+export default function encryptStorageData(params: {
   data: any;
   saltKey: string;
 }): string {
