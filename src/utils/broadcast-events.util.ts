@@ -4,7 +4,7 @@ import callSliceEvent from './call-slice-event.util';
 import defaultSliceValue from './default-slice-value.util';
 import generateSliceStorageKey from './generate-slice-storage-key.util';
 import getSliceFromStorage from './get-slice-from-storage.util';
-import { setSliceExpireTimestamp } from './set-slice-expire-timestamp.util';
+import { setSliceExpireTimestampToStorage } from './set-slice-expire-timestamp-to-storage.util';
 
 export default function broadcastEvents<TSlice>(params: {
   config: TConfig<TSlice>;
@@ -63,7 +63,7 @@ export default function broadcastEvents<TSlice>(params: {
           event: params.config.events?.onExpire,
         });
       }
-      setSliceExpireTimestamp({
+      setSliceExpireTimestampToStorage({
         config: params.config,
       });
       params.setSliceState(defalutSliceValueClient);

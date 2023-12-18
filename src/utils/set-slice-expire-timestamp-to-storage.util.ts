@@ -5,7 +5,7 @@ import { getSaltKeyFromStorage } from './get-salt-key-from-storage.util';
 import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
 import timeStringToSeconds from './time-string-to-second.util';
 
-export function setSliceExpireTimestamp<TSlice>(params: {
+export function setSliceExpireTimestampToStorage<TSlice>(params: {
   config: TConfig<TSlice>;
 }): number | null {
   // params.config.expire ? slice expire timestamp : null

@@ -1,6 +1,6 @@
 import { TConfig } from '../types/config.type';
 import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
-import { setSliceExpireTimestamp } from './set-slice-expire-timestamp.util';
+import { setSliceExpireTimestampToStorage } from './set-slice-expire-timestamp-to-storage.util';
 
 export function getSliceExpireTimestamp<TSlice>(params: {
   config: TConfig<TSlice>;
@@ -22,7 +22,7 @@ export function getSliceExpireTimestamp<TSlice>(params: {
     }
   */
   if (!storageValue[params.config.key]) {
-    returnValue = setSliceExpireTimestamp({ config: params.config });
+    returnValue = setSliceExpireTimestampToStorage({ config: params.config });
   } else {
     returnValue = storageValue[params.config.key];
   }
