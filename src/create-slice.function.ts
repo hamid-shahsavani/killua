@@ -1,5 +1,5 @@
 import { errorMessages } from './constants/error-messages.constant';
-import { TConfig } from './types/config.type';
+import { TConfigWithSSR } from './types/config-with-ssr.type';
 import errorTemplate from './utils/other/error-template.utli';
 import {
   isBoolean,
@@ -10,13 +10,6 @@ import {
   isString,
   isUndefined,
 } from './utils/other/type-guards.util';
-
-type TConfigWithSSR<
-  TSlice,
-  TSSR extends boolean | undefined,
-> = TConfig<TSlice> & {
-  ssr: TSSR;
-};
 
 export default function createSlice<TSlice, TSSR extends boolean | undefined>(
   params: TConfigWithSSR<TSlice, TSSR>,

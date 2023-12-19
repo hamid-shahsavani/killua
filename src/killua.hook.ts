@@ -11,26 +11,17 @@ import { broadcastChannelMessages } from './constants/broadcast-channel-messages
 import { errorMessages } from './constants/error-messages.constant';
 import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
+import { TConfigWithSSR } from './types/config-with-ssr.type';
 
-type TReturn<TSlice, TSSR> = true extends TSSR
-  ? {
-      get: TSlice;
-      set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
-      reducers: TConfig<TSlice>['reducers'];
-      selectors: TConfig<TSlice>['selectors'];
-      isReady: boolean;
-    }
-  : {
-      get: TSlice;
-      set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
-      reducers: TConfig<TSlice>['reducers'];
-      selectors: TConfig<TSlice>['selectors'];
-    };
+type TReturn<TSlice, TSSR> = {
+  get: TSlice;
+  set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
+  reducers?: Record<string, (value: TSlice, payload?: any) => TSlice>;
+  selectors?: Record<string, (value: TSlice, payload?: any) => any>;
+} & (true extends TSSR ? { isReady: boolean } : Record<string, never>);
 
 export default function useKillua<TSlice, TSSR extends boolean | undefined>(
-  params: TConfig<TSlice> & {
-    ssr: TSSR;
-  },
+  params: TConfigWithSSR<TSlice, TSSR>,
 ): TReturn<TSlice, TSSR> {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', TSlice> = {
@@ -44,8 +35,7 @@ export default function useKillua<TSlice, TSSR extends boolean | undefined>(
     }),
   };
 
-  // params.ssr is truthy ===> default `isReady` value is `false` and set to `true` in client-side
-  // params.ssr is falsy ===> `isReady` value is `true`
+  // params.ssr is truthy ===> default `isReady` value is `false` and set to `true` in client-side in return (only for `ssr: true`)
   const [isReady, setIsReady] = useState(params.ssr ? false : true);
 
   // params.ssr is truthy ===> return `params.defaultServer`
@@ -158,8 +148,8 @@ export default function useKillua<TSlice, TSSR extends boolean | undefined>(
         slice: value instanceof Function ? value(sliceState) : value,
       });
     },
-    ...(isReady && { isReady: isReady }),
     reducers: undefined,
     selectors,
+    ...(isReady && { isReady: isReady }),
   } as TReturn<TSlice, TSSR>;
 }
