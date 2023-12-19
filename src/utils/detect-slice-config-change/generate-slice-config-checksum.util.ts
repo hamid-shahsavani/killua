@@ -1,4 +1,4 @@
-import { TConfig } from '../types/config.type';
+import { TConfig } from '../../types/config.type';
 import * as CryptoJS from 'crypto-js';
 
 export default function generateSliceConfigChecksum<TSlice>(params: {

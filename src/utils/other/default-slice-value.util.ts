@@ -1,5 +1,5 @@
-import { TConfig } from '../types/config.type';
-import schemaValidation from './schema-validation.util';
+import { TConfig } from '../../types/config.type';
+import schemaValidation from '../slice-schema-validation/schema-validation.util';
 
 export default function defaultSliceValue<TSlice>(params: {
   config: TConfig<TSlice>;

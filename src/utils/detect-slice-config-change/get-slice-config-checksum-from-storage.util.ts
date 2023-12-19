@@ -1,4 +1,4 @@
-import { TConfig } from '../types/config.type';
+import { TConfig } from '../../types/config.type';
 import { getSlicesChecksumFromStorage } from './get-slices-checksum-from-storage.util';
 import { setSliceConfigChecksumToStorage } from './set-slice-config-checksum-to-storage.util';
 

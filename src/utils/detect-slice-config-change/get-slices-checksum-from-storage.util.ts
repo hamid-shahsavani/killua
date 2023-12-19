@@ -1,9 +1,9 @@
-import { storageKeys } from '../constants/storage-keys.constant';
-import { TConfig } from '../types/config.type';
-import decryptStorageData from './decrypt-storage-data.util';
-import encryptStorageData from './encrypt-storage-data.util';
+import { storageKeys } from '../../constants/storage-keys.constant';
+import { TConfig } from '../../types/config.type';
+import decryptStorageData from '../cryptography/decrypt-storage-data.util';
+import encryptStorageData from '../cryptography/encrypt-storage-data.util';
 import generateSliceConfigChecksum from './generate-slice-config-checksum.util';
-import { getSaltKeyFromStorage } from './get-salt-key-from-storage.util';
+import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 
 function setSlicesChecksumKeyToStorage<TSlice>(params: {
   config: TConfig<TSlice>;

@@ -1,4 +1,4 @@
-import { storageKeys } from '../constants/storage-keys.constant';
+import { storageKeys } from '../../constants/storage-keys.constant';
 import decryptStorageData from './decrypt-storage-data.util';
 import encryptStorageData from './encrypt-storage-data.util';
 

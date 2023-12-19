@@ -1,4 +1,4 @@
-import { TConfig } from '../types/config.type';
+import { TConfig } from '../../types/config.type';
 import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
 import { setSliceExpireTimestampToStorage } from './set-slice-expire-timestamp-to-storage.util';
 

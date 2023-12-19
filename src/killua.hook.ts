@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import getSliceFromStorage from './utils/get-slice-from-storage.util';
-import defaultSliceValue from './utils/default-slice-value.util';
+import getSliceFromStorage from './utils/slice-set-and-get/get-slice-from-storage.util';
+import defaultSliceValue from './utils/other/default-slice-value.util';
 import { TConfig } from './types/config.type';
-import setSliceToStorage from './utils/set-slice-to-storage.util';
-import errorTemplate from './utils/error-template.utli';
-import isClientSide from './utils/is-client-side.util';
-import { getSliceExpireTimestampFromStorage } from './utils/get-slice-expire-timestamp-from-storage.util';
-import broadcastEvents from './utils/broadcast-events.util';
+import setSliceToStorage from './utils/slice-set-and-get/set-slice-to-storage.util';
+import errorTemplate from './utils/other/error-template.utli';
+import isClientSide from './utils/other/is-client-side.util';
+import { getSliceExpireTimestampFromStorage } from './utils/slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
+import broadcastEvents from './utils/other/broadcast-events.util';
 import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
 import { errorMessages } from './constants/error-messages.constant';
-import generateSliceConfigChecksum from './utils/generate-slice-config-checksum.util';
-import { getSliceConfigChecksumFromStorage } from './utils/get-slice-config-checksum-from-storage.util';
+import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
+import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;

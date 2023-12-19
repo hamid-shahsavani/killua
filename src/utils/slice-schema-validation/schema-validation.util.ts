@@ -1,4 +1,4 @@
-import { TConfig } from '../types/config.type';
+import { TConfig } from '../../types/config.type';
 
 export default function schemaValidation<TSlice>(params: {
   data: TSlice;

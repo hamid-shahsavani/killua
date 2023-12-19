@@ -1,6 +1,6 @@
 import { errorMessages } from './constants/error-messages.constant';
 import { TConfig } from './types/config.type';
-import errorTemplate from './utils/error-template.utli';
+import errorTemplate from './utils/other/error-template.utli';
 import {
   isBoolean,
   isEmptyObject,
@@ -9,7 +9,7 @@ import {
   isObject,
   isString,
   isUndefined,
-} from './utils/type-guards.util';
+} from './utils/other/type-guards.util';
 
 export default function createSlice<TSlice>(
   params: TConfig<TSlice>,

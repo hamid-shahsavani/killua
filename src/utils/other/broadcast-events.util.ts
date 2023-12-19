@@ -1,11 +1,11 @@
-import { broadcastChannelMessages } from '../constants/broadcast-channel-messages.constant';
-import { TConfig } from '../types/config.type';
-import callSliceEvent from './call-slice-event.util';
-import defaultSliceValue from './default-slice-value.util';
-import generateSliceStorageKey from './generate-slice-storage-key.util';
-import getSliceFromStorage from './get-slice-from-storage.util';
-import { setSliceConfigChecksumToStorage } from './set-slice-config-checksum-to-storage.util';
-import { setSliceExpireTimestampToStorage } from './set-slice-expire-timestamp-to-storage.util';
+import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
+import { TConfig } from '../../types/config.type';
+import callSliceEvent from '../slice-call-event/call-slice-event.util';
+import defaultSliceValue from '../other/default-slice-value.util';
+import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
+import getSliceFromStorage from '../slice-set-and-get/get-slice-from-storage.util';
+import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
+import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slice-expire-timestamp-to-storage.util';
 
 export default function broadcastEvents<TSlice>(params: {
   config: TConfig<TSlice>;

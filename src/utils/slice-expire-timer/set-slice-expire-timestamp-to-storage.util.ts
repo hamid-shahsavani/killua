@@ -1,7 +1,7 @@
-import { storageKeys } from '../constants/storage-keys.constant';
-import { TConfig } from '../types/config.type';
-import encryptStorageData from './encrypt-storage-data.util';
-import { getSaltKeyFromStorage } from './get-salt-key-from-storage.util';
+import { storageKeys } from '../../constants/storage-keys.constant';
+import { TConfig } from '../../types/config.type';
+import encryptStorageData from '../cryptography/encrypt-storage-data.util';
+import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
 import timeStringToSeconds from './time-string-to-second.util';
 

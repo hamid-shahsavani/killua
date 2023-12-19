@@ -1,9 +1,9 @@
-import { broadcastChannelMessages } from '../constants/broadcast-channel-messages.constant';
-import { TConfig } from '../types/config.type';
-import encryptStorageData from './encrypt-storage-data.util';
-import generateSliceStorageKey from './generate-slice-storage-key.util';
-import { getSaltKeyFromStorage } from './get-salt-key-from-storage.util';
-import schemaValidation from './schema-validation.util';
+import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
+import { TConfig } from '../../types/config.type';
+import encryptStorageData from '../cryptography/encrypt-storage-data.util';
+import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
+import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
+import schemaValidation from '../slice-schema-validation/schema-validation.util';
 
 export default function setSliceToStorage<TSlice>(params: {
   config: TConfig<TSlice>;
