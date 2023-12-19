@@ -12,13 +12,26 @@ import { errorMessages } from './constants/error-messages.constant';
 import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 
-export default function useKillua<TSlice>(params: TConfig<TSlice>): {
-  get: TSlice;
-  set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
-  isReady: boolean;
-  reducers: TConfig<TSlice>['reducers'];
-  selectors: TConfig<TSlice>['selectors'];
-} {
+type TReturn<TSlice, TSSR> = true extends TSSR
+  ? {
+      get: TSlice;
+      set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
+      reducers: TConfig<TSlice>['reducers'];
+      selectors: TConfig<TSlice>['selectors'];
+      isReady: boolean;
+    }
+  : {
+      get: TSlice;
+      set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
+      reducers: TConfig<TSlice>['reducers'];
+      selectors: TConfig<TSlice>['selectors'];
+    };
+
+export default function useKillua<TSlice, TSSR extends boolean | undefined>(
+  params: TConfig<TSlice> & {
+    ssr: TSSR;
+  },
+): TReturn<TSlice, TSSR> {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', TSlice> = {
     server: defaultSliceValue({
@@ -145,8 +158,38 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         slice: value instanceof Function ? value(sliceState) : value,
       });
     },
-    isReady,
-    selectors,
+    ...(isReady && { isReady: isReady }),
     reducers: undefined,
-  };
+    selectors,
+  } as TReturn<TSlice, TSSR>;
 }
+
+// const sliceCounterWithSSR = createSlice<number>({
+//   key: 'counter',
+//   ssr: true,
+//   defaultServer: 5,
+//   defaultClient: 10,
+// });
+
+// const sliceCounterWithNoSSR = createSlice<number>({
+//   key: 'counter',
+//   ssr: false,
+//   default: 5,
+// });
+
+// useKillua(sliceCounterWithSSR).isReady;
+
+// useKillua(sliceCounterWithNoSSR).isReady;
+
+// useKillua({
+//   key: 'counter',
+//   ssr: true,
+//   defaultServer: 5,
+//   defaultClient: 10,
+// }).isReady;
+
+// useKillua({
+//   key: 'counter',
+//   ssr: false,
+//   default: 5,
+// }).isReady;
