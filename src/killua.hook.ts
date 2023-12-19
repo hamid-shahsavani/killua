@@ -163,33 +163,3 @@ export default function useKillua<TSlice, TSSR extends boolean | undefined>(
     selectors,
   } as TReturn<TSlice, TSSR>;
 }
-
-// const sliceCounterWithSSR = createSlice<number>({
-//   key: 'counter',
-//   ssr: true,
-//   defaultServer: 5,
-//   defaultClient: 10,
-// });
-
-// const sliceCounterWithNoSSR = createSlice<number>({
-//   key: 'counter',
-//   ssr: false,
-//   default: 5,
-// });
-
-// useKillua(sliceCounterWithSSR).isReady;
-
-// useKillua(sliceCounterWithNoSSR).isReady;
-
-// useKillua({
-//   key: 'counter',
-//   ssr: true,
-//   defaultServer: 5,
-//   defaultClient: 10,
-// }).isReady;
-
-// useKillua({
-//   key: 'counter',
-//   ssr: false,
-//   default: 5,
-// }).isReady;
