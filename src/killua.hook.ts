@@ -120,6 +120,23 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     });
   }, []);
 
+  // params.selector is truthy ===> assign slice config selectors to selectors object
+  const selectors: TConfig<TSlice>['selectors'] = {};
+  if (params.selectors) {
+    for (const selectorName in params.selectors) {
+      if (
+        Object.prototype.hasOwnProperty.call(params.selectors, selectorName)
+      ) {
+        const selectorFunc = params.selectors[selectorName];
+        selectors[selectorName] = (payload: any) =>
+          (selectorFunc as (prev: TSlice, payload: any) => any)(
+            sliceState,
+            payload,
+          );
+      }
+    }
+  }
+
   return {
     get: sliceState,
     set: (value: TSlice | ((value: TSlice) => TSlice)) => {
@@ -129,7 +146,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
       });
     },
     isReady,
+    selectors,
     reducers: undefined,
-    selectors: undefined,
   };
 }
