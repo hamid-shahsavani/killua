@@ -1,4 +1,4 @@
-export type TConfig<TSlice, TSSR = boolean> = {
+export type TConfig<TSlice, TSSR extends boolean | undefined = boolean> = {
   key: string;
   encrypt?: boolean;
   expire?: string;

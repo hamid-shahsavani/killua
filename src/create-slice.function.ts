@@ -11,17 +11,9 @@ import {
   isUndefined,
 } from './utils/other/type-guards.util';
 
-export default function createSlice<TSlice>(
-  params: TConfig<TSlice, false>,
-): TConfig<TSlice, false>;
-
-export default function createSlice<TSlice>(
-  params: TConfig<TSlice, true>,
-): TConfig<TSlice, true>;
-
-export default function createSlice<TSlice>(
-  params: TConfig<TSlice, true> | TConfig<TSlice, false>,
-): TConfig<TSlice, true> | TConfig<TSlice, false> {
+export default function createSlice<TSlice, TSSR extends boolean | undefined>(
+  params: TConfig<TSlice, TSSR>,
+): TConfig<TSlice, TSSR> {
   // validate `ssr`
   if (!isUndefined(params.ssr) && !isBoolean(params.ssr)) {
     errorTemplate({
@@ -216,7 +208,5 @@ export default function createSlice<TSlice>(
     });
   }
 
-  return {
-    ...params,
-  };
+  return params as TConfig<TSlice, TSSR>;
 }
