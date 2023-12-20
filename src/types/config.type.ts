@@ -1,4 +1,4 @@
-export type TConfig<TSlice> = {
+export type TConfig<TSlice, TSSR = boolean> = {
   key: string;
   encrypt?: boolean;
   expire?: string;
@@ -6,14 +6,13 @@ export type TConfig<TSlice> = {
   reducers?: Record<string, (value: TSlice, payload?: any) => TSlice>;
   selectors?: Record<string, (value: TSlice, payload?: any) => any>;
   events?: Partial<Record<'onChange' | 'onExpire', (value: TSlice) => void>>;
-} & (
-  | {
+} & (TSSR extends true
+  ? {
+      ssr: true;
+      defaultClient: TSlice;
+      defaultServer: TSlice;
+    }
+  : {
       ssr?: false;
       default: TSlice;
-    }
-  | {
-      ssr: true;
-      defaultServer: TSlice;
-      defaultClient: TSlice;
-    }
-);
+    });

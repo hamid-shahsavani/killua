@@ -20,19 +20,15 @@ type TReturn<TSlice> = {
 };
 
 export default function useKillua<TSlice>(
-  params: TConfig<TSlice> & { ssr?: false; default: TSlice },
+  params: TConfig<TSlice, false>,
 ): TReturn<TSlice>;
 
 export default function useKillua<TSlice>(
-  params: TConfig<TSlice> & {
-    ssr?: true;
-    defaultServer: TSlice;
-    defaultClient: TSlice;
-  },
+  params: TConfig<TSlice, true>,
 ): TReturn<TSlice> & { isReady: boolean };
 
 export default function useKillua<TSlice>(
-  params: TConfig<TSlice>,
+  params: TConfig<TSlice, false> | TConfig<TSlice, true>,
 ): TReturn<TSlice> & { isReady?: boolean } {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', TSlice> = {

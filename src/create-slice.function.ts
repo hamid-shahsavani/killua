@@ -12,20 +12,16 @@ import {
 } from './utils/other/type-guards.util';
 
 export default function createSlice<TSlice>(
-  params: TConfig<TSlice> & { ssr?: false; default: TSlice },
-): TConfig<TSlice> & { ssr: false };
+  params: TConfig<TSlice, false>,
+): TConfig<TSlice, false>;
 
 export default function createSlice<TSlice>(
-  params: TConfig<TSlice> & {
-    ssr?: true;
-    defaultServer: TSlice;
-    defaultClient: TSlice;
-  },
-): TConfig<TSlice> & { ssr: true };
+  params: TConfig<TSlice, true>,
+): TConfig<TSlice, true>;
 
 export default function createSlice<TSlice>(
-  params: TConfig<TSlice>,
-): TConfig<TSlice> {
+  params: TConfig<TSlice, true> | TConfig<TSlice, false>,
+): TConfig<TSlice, true> | TConfig<TSlice, false> {
   // validate `ssr`
   if (!isUndefined(params.ssr) && !isBoolean(params.ssr)) {
     errorTemplate({
