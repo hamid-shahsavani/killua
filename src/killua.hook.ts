@@ -11,18 +11,29 @@ import { broadcastChannelMessages } from './constants/broadcast-channel-messages
 import { errorMessages } from './constants/error-messages.constant';
 import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
-import { TConfigWithSSR } from './types/config-with-ssr.type';
 
-type TReturn<TSlice, TSSR> = {
+type TReturn<TSlice> = {
   get: TSlice;
   set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
   reducers?: Record<string, (value: TSlice, payload?: any) => TSlice>;
   selectors?: Record<string, (value: TSlice, payload?: any) => any>;
-} & (true extends TSSR ? { isReady: boolean } : Record<string, never>);
+};
 
-export default function useKillua<TSlice, TSSR extends boolean | undefined>(
-  params: TConfigWithSSR<TSlice, TSSR>,
-): TReturn<TSlice, TSSR> {
+export default function useKillua<TSlice>(
+  params: TConfig<TSlice> & { ssr?: false; default: TSlice },
+): TReturn<TSlice>;
+
+export default function useKillua<TSlice>(
+  params: TConfig<TSlice> & {
+    ssr?: true;
+    defaultServer: TSlice;
+    defaultClient: TSlice;
+  },
+): TReturn<TSlice> & { isReady: boolean };
+
+export default function useKillua<TSlice>(
+  params: TConfig<TSlice>,
+): TReturn<TSlice> & { isReady?: boolean } {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', TSlice> = {
     server: defaultSliceValue({
@@ -151,5 +162,5 @@ export default function useKillua<TSlice, TSSR extends boolean | undefined>(
     reducers: undefined,
     selectors,
     ...(isReady && { isReady: isReady }),
-  } as TReturn<TSlice, TSSR>;
+  };
 }

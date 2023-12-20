@@ -1,5 +1,5 @@
 import { errorMessages } from './constants/error-messages.constant';
-import { TConfigWithSSR } from './types/config-with-ssr.type';
+import { TConfig } from './types/config.type';
 import errorTemplate from './utils/other/error-template.utli';
 import {
   isBoolean,
@@ -11,9 +11,21 @@ import {
   isUndefined,
 } from './utils/other/type-guards.util';
 
-export default function createSlice<TSlice, TSSR extends boolean | undefined>(
-  params: TConfigWithSSR<TSlice, TSSR>,
-): TConfigWithSSR<TSlice, TSSR> {
+export default function createSlice<TSlice>(
+  params: TConfig<TSlice> & { ssr?: false; default: TSlice },
+): TConfig<TSlice> & { ssr: false };
+
+export default function createSlice<TSlice>(
+  params: TConfig<TSlice> & {
+    ssr?: true;
+    defaultServer: TSlice;
+    defaultClient: TSlice;
+  },
+): TConfig<TSlice> & { ssr: true };
+
+export default function createSlice<TSlice>(
+  params: TConfig<TSlice>,
+): TConfig<TSlice> {
   // validate `ssr`
   if (!isUndefined(params.ssr) && !isBoolean(params.ssr)) {
     errorTemplate({
@@ -23,10 +35,7 @@ export default function createSlice<TSlice, TSSR extends boolean | undefined>(
   }
 
   // validate `default`
-  if (
-    !params.ssr &&
-    isUndefined((params as TConfigWithSSR<TSlice, false>).default)
-  ) {
+  if (!params.ssr && isUndefined(params.default)) {
     errorTemplate({
       msg: errorMessages.default.required,
       key: params.key,
@@ -34,10 +43,7 @@ export default function createSlice<TSlice, TSSR extends boolean | undefined>(
   }
 
   // validate `defaultClient`
-  if (
-    params.ssr &&
-    isUndefined((params as TConfigWithSSR<TSlice, true>).defaultClient)
-  ) {
+  if (params.ssr && isUndefined(params.defaultClient)) {
     errorTemplate({
       msg: errorMessages.defaultClient.required,
       key: params.key,
@@ -45,10 +51,7 @@ export default function createSlice<TSlice, TSSR extends boolean | undefined>(
   }
 
   // validate `defaultServer`
-  if (
-    params.ssr &&
-    isUndefined((params as TConfigWithSSR<TSlice, true>).defaultServer)
-  ) {
+  if (params.ssr && isUndefined(params.defaultServer)) {
     errorTemplate({
       msg: errorMessages.defaultServer.required,
       key: params.key,
@@ -217,5 +220,7 @@ export default function createSlice<TSlice, TSSR extends boolean | undefined>(
     });
   }
 
-  return params;
+  return {
+    ...params,
+  };
 }
