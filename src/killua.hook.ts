@@ -12,16 +12,13 @@ import { errorMessages } from './constants/error-messages.constant';
 import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 
-type TReturn<TSlice, TSSR> = {
+export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
   set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
   reducers?: Record<string, (value: TSlice, payload?: any) => TSlice>;
   selectors?: Record<string, (value: TSlice, payload?: any) => any>;
-} & (true extends TSSR ? { isReady: boolean } : Record<string, never>);
-
-export default function useKillua<TSlice, TSSR extends boolean | undefined>(
-  params: TConfig<TSlice, TSSR>,
-): TReturn<TSlice, TSSR> {
+  isReady: boolean;
+} {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', TSlice> = {
     server: defaultSliceValue({
@@ -149,6 +146,6 @@ export default function useKillua<TSlice, TSSR extends boolean | undefined>(
     },
     reducers: undefined,
     selectors,
-    ...(isReady && { isReady: isReady }),
-  } as TReturn<TSlice, TSSR>;
+    isReady,
+  };
 }
