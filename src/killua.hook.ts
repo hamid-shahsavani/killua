@@ -15,8 +15,8 @@ import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-c
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
   set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
-  reducers?: Record<string, (value: TSlice, payload?: any) => TSlice>;
-  selectors?: Record<string, (value: TSlice, payload?: any) => any>;
+  reducers: Record<string, Function>;
+  selectors: Record<string, Function>;
   isReady: boolean;
 } {
   // default value slice
@@ -119,19 +119,33 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     });
   }, []);
 
-  // params.selector is truthy ===> assign slice config selectors to selectors object
-  const selectors: TConfig<TSlice>['selectors'] = {};
+  // params.selectors is truthy ===> assign slice config selectors to selectors object
+  const selectors: Record<string, Function> = {};
   if (params.selectors) {
     for (const selectorName in params.selectors) {
       if (
         Object.prototype.hasOwnProperty.call(params.selectors, selectorName)
       ) {
         const selectorFunc = params.selectors[selectorName];
-        selectors[selectorName] = (payload: any) =>
-          (selectorFunc as (prev: TSlice, payload: any) => any)(
-            sliceState,
-            payload,
-          );
+        selectors[selectorName] = (payload: any) => {
+          return selectorFunc(sliceState, payload);
+        };
+      }
+    }
+  }
+
+  // params.reducers is truthy ===> assign slice config reducers to reducers object
+  const reducers: Record<string, Function> = {};
+  if (params.reducers) {
+    for (const reducerName in params.reducers) {
+      if (Object.prototype.hasOwnProperty.call(params.reducers, reducerName)) {
+        const reducerFunc = params.reducers[reducerName];
+        reducers[reducerName] = (payload: any) => {
+          setSliceToStorage({
+            config: params,
+            slice: reducerFunc(sliceState, payload),
+          });
+        };
       }
     }
   }
@@ -144,7 +158,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
         slice: value instanceof Function ? value(sliceState) : value,
       });
     },
-    reducers: undefined,
+    reducers,
     selectors,
     isReady,
   };
