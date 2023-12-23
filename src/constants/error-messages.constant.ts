@@ -27,7 +27,7 @@ export const errorMessages = {
       '`expire` is not vaild format! \n example: `1d-23h-9m-42s` \n d (day) : min 0 \n h (hour) : min 0 | max 23 \n m (minute) : min 0 | max 59 \n s (second) : min 0 | max 59',
   },
   schema: {
-    invalidType: '`schema` is not an zod schema!',
+    invalidType: '`schema` is not an zod or yup!',
   },
   reducers: {
     invalidType: '`reducers` is not an object!',

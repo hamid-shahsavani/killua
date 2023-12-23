@@ -178,11 +178,16 @@ export default function createSlice<TSlice>(
   }
 
   // validate `schema`
-  if (!isUndefined(params.schema) && !isFunction(params.schema?.parse)) {
-    errorTemplate({
-      msg: errorMessages.schema.invalidType,
-      key: params.key,
-    });
+  if (!isUndefined(params.schema)) {
+    if (
+      !('parse' in Object(params.schema)) &&
+      !('validateSync' in Object(params.schema))
+    ) {
+      errorTemplate({
+        msg: errorMessages.schema.invalidType,
+        key: params.key,
+      });
+    }
   }
 
   // validate other keys
