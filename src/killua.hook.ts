@@ -15,8 +15,8 @@ import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-c
 export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   get: TSlice;
   set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
-  selectors: Record<string, (payload?: any) => TSlice>;
-  reducers: Record<string, (payload?: any) => any>;
+  reducers: Record<string, (payload?: any) => TSlice>;
+  selectors: Record<string, (payload?: any) => any>;
   isReady: boolean;
 } {
   // default value slice
@@ -119,23 +119,8 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
     });
   }, []);
 
-  // params.selectors is truthy ===> assign slice config selectors to selectors object
-  const selectors: Record<string, (payload?: any) => TSlice> = {};
-  if (params.selectors) {
-    for (const selectorName in params.selectors) {
-      if (
-        Object.prototype.hasOwnProperty.call(params.selectors, selectorName)
-      ) {
-        const selectorFunc = params.selectors[selectorName];
-        selectors[selectorName] = (payload?: any) => {
-          return selectorFunc(sliceState, payload);
-        };
-      }
-    }
-  }
-
   // params.reducers is truthy ===> assign slice config reducers to reducers object
-  const reducers: Record<string, (payload?: any) => any> = {};
+  const reducers: Record<string, (payload?: any) => TSlice> = {};
   if (params.reducers) {
     for (const reducerName in params.reducers) {
       if (Object.prototype.hasOwnProperty.call(params.reducers, reducerName)) {
@@ -145,6 +130,22 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
             config: params,
             slice: reducerFunc(sliceState, payload),
           });
+          return reducerFunc(sliceState, payload);
+        };
+      }
+    }
+  }
+
+  // params.selectors is truthy ===> assign slice config selectors to selectors object
+  const selectors: Record<string, (payload?: any) => any> = {};
+  if (params.selectors) {
+    for (const selectorName in params.selectors) {
+      if (
+        Object.prototype.hasOwnProperty.call(params.selectors, selectorName)
+      ) {
+        const selectorFunc = params.selectors[selectorName];
+        selectors[selectorName] = (payload?: any) => {
+          return selectorFunc(sliceState, payload);
         };
       }
     }
