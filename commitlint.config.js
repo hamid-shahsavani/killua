@@ -14,6 +14,7 @@ module.exports = {
         'fix',
         'test',
         'clean',
+        'rollback',
         'version',
         'refactor',
         'style',
