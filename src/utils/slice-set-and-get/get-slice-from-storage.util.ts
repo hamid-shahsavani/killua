@@ -39,7 +39,7 @@ export default function getSliceFromStorage<TSlice>(params: {
       // validate storage value with schema
       schemaValidation({
         data: returnValue,
-        schema: params.config.schema,
+        config: params.config,
       });
       // params.config.expire truthy ===> check `storageKeys.slicesExpireTime` object in localstorage is valid
       if (params.config.expire) {

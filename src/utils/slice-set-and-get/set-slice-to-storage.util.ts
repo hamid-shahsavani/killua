@@ -15,7 +15,7 @@ export default function setSliceToStorage<TSlice>(params: {
   // validate slice value with schema before set to storageand set to `sliceState`
   schemaValidation({
     data: params.slice,
-    schema: params.config.schema,
+    config: params.config,
   });
 
   // set slice value to storage
