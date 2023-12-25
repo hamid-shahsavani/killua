@@ -14,7 +14,7 @@ export type TSelectors<TSlice> =
 export type TEvents<TSlice> = Partial<
   Record<'onChange' | 'onExpire', (value: TSlice) => void>
 >;
-export type TSSR<Type> = Type extends true ? true : false | undefined;
+export type TSSR<TType> = TType extends true ? true : false | undefined;
 
 export type TConfig<TSlice> = {
   key: TKey;

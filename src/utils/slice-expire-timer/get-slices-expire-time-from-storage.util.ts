@@ -7,12 +7,12 @@ import timeStringToSeconds from './time-string-to-second.util';
 
 function setSlicesExpireTimeKeyToStorage<TSlice>(params: {
   config: TConfig<TSlice>;
-  default: Record<string, number>;
+  defaultStorage: Record<string, number>;
 }): void {
   localStorage.setItem(
     storageKeys.slicesExpireTime,
     encryptStorageData({
-      data: params.default,
+      data: params.defaultStorage,
       saltKey: getSaltKeyFromStorage(),
     }),
   );
@@ -21,7 +21,7 @@ function setSlicesExpireTimeKeyToStorage<TSlice>(params: {
 export function getSlicesExpireTimeFromStorage<TSlice>(params: {
   config: TConfig<TSlice>;
 }): Record<string, number> {
-  // default is ` params.config.expire && { [params.config.key]: slice expire timestamp } : null` (update after get `storageKeys.slicesExpireTime` from storage)
+  // defaultStorage is ` params.config.expire && { [params.config.key]: slice expire timestamp } : null` (update after get `storageKeys.slicesExpireTime` from storage)
   let returnValue: Record<string, number> = {
     ...(params.config.expire && {
       [params.config.key]:
@@ -44,13 +44,13 @@ export function getSlicesExpireTimeFromStorage<TSlice>(params: {
     } else {
       setSlicesExpireTimeKeyToStorage({
         config: params.config,
-        default: returnValue,
+        defaultStorage: returnValue,
       });
     }
   } catch (error) {
     setSlicesExpireTimeKeyToStorage({
       config: params.config,
-      default: returnValue,
+      defaultStorage: returnValue,
     });
   }
 

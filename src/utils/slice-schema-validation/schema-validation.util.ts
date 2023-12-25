@@ -1,8 +1,8 @@
-import { TConfig } from '../../types/config.type';
+import { TSchema } from '../../types/config.type';
 
 export default function schemaValidation<TSlice>(params: {
   data: TSlice;
-  schema: TConfig<TSlice>['schema'];
+  schema: TSchema;
 }): TSlice {
   let returnValue = params.data;
   if (params.schema) {

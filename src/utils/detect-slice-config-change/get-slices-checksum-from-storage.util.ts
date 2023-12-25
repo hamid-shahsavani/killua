@@ -7,12 +7,12 @@ import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage
 
 function setSlicesChecksumKeyToStorage<TSlice>(params: {
   config: TConfig<TSlice>;
-  default: Record<string, string>;
+  defaultStorage: Record<string, string>;
 }): void {
   localStorage.setItem(
     storageKeys.slicesChecksum,
     encryptStorageData({
-      data: params.default,
+      data: params.defaultStorage,
       saltKey: getSaltKeyFromStorage(),
     }),
   );
@@ -21,7 +21,7 @@ function setSlicesChecksumKeyToStorage<TSlice>(params: {
 export function getSlicesChecksumFromStorage<TSlice>(params: {
   config: TConfig<TSlice>;
 }): Record<string, string> {
-  // default is `{ [params.config.key]: slice config checksum }` (update after get `storageKeys.slicesChecksum` from storage)
+  // defaultStorage is `{ [params.config.key]: slice config checksum }` (update after get `storageKeys.slicesChecksum` from storage)
   let returnValue: Record<string, string> = {
     [params.config.key]: generateSliceConfigChecksum({
       config: params.config,
@@ -42,13 +42,13 @@ export function getSlicesChecksumFromStorage<TSlice>(params: {
     } else {
       setSlicesChecksumKeyToStorage({
         config: params.config,
-        default: returnValue,
+        defaultStorage: returnValue,
       });
     }
   } catch (error) {
     setSlicesChecksumKeyToStorage({
       config: params.config,
-      default: returnValue,
+      defaultStorage: returnValue,
     });
   }
 
