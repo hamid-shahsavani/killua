@@ -1,37 +1,21 @@
-export type TKey = string;
-export type TEncrypt = boolean | undefined;
-export type TExpire = string | undefined;
-export type TSchema =
-  | { parse: (val: any) => any }
-  | { validateSync: (val: any) => any | undefined }
-  | undefined;
-export type TReducers<TSlice> =
-  | Record<string, (value: TSlice, payload?: any) => TSlice>
-  | undefined;
-export type TSelectors<TSlice> =
-  | Record<string, (value: TSlice, payload?: any) => any>
-  | undefined;
-export type TEvents<TSlice> =
-  | Partial<Record<'onChange' | 'onExpire', (value: TSlice) => void>>
-  | undefined;
-export type TSSR<TType> = TType extends true ? true : false | undefined;
-
 export type TConfig<TSlice> = {
-  key: TKey;
-  encrypt?: TEncrypt;
-  expire?: TExpire;
-  schema?: TSchema;
-  reducers?: TReducers<TSlice>;
-  selectors?: TSelectors<TSlice>;
-  events?: TEvents<TSlice>;
+  key: string;
+  encrypt?: boolean;
+  expire?: string;
+  schema?:
+    | { parse: (val: TSlice) => TSlice }
+    | { validateSync: (val: TSlice) => TSlice | undefined };
+  reducers?: Record<string, (value: TSlice, payload?: any) => TSlice>;
+  selectors?: Record<string, (value: TSlice, payload?: any) => any>;
+  events?: Partial<Record<'onChange' | 'onExpire', (value: TSlice) => void>>;
 } & (
   | {
-      ssr: TSSR<true>;
+      ssr: true;
       defaultClient: TSlice;
       defaultServer: TSlice;
     }
   | {
-      ssr?: TSSR<false>;
+      ssr?: false;
       default: TSlice;
     }
 );
