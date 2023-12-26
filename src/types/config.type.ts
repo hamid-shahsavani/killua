@@ -1,13 +1,15 @@
 export type TSelectors<GSlice> =
   | Record<string, (state: GSlice, payload?: any) => any>
   | undefined;
+
 export type TReducers<GSlice> =
   | Record<string, (state: GSlice, payload?: any) => GSlice>
   | undefined;
+
 export type TConfig<
   GSlice,
-  GSelectors extends TSelectors<GSlice>,
-  GReducers extends TReducers<GSlice>,
+  GSelectors extends TSelectors<GSlice> = undefined,
+  GReducers extends TReducers<GSlice> = undefined,
 > = {
   key: string;
   encrypt?: boolean;

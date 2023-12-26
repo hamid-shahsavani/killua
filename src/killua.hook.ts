@@ -12,19 +12,44 @@ import { errorMessages } from './constants/error-messages.constant';
 import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 
+type RemoveStateFromSelectorsAndReducers<T> = T extends (
+  first: any,
+  ...args: infer Rest
+) => infer R
+  ? (...args: Rest) => R
+  : never;
+
+export type RemoveEmptySelectorsAndReducers<T> = {
+  [K in keyof T as T[K] extends never ? never : K]: T[K];
+};
+
+type TReturn<GSlice, GSelectors, GReducers> = RemoveEmptySelectorsAndReducers<{
+  get: GSlice;
+  set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
+  isReady: boolean;
+  selectors: [GSelectors] extends [undefined]
+    ? never
+    : {
+        [K in keyof GSelectors]: RemoveStateFromSelectorsAndReducers<
+          GSelectors[K]
+        >;
+      };
+  reducers: [GReducers] extends [undefined]
+    ? never
+    : {
+        [K in keyof GReducers]: RemoveStateFromSelectorsAndReducers<
+          GReducers[K]
+        >;
+      };
+}>;
+
 export default function useKillua<
   GSlice,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(
   params: TConfig<GSlice, GSelectors, GReducers>,
-): {
-  get: GSlice;
-  set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
-  reducers: Record<string, (payload?: any) => GSlice>;
-  selectors: Record<string, (payload?: any) => any>;
-  isReady: boolean;
-} {
+): TReturn<GSlice, GSelectors, GReducers> {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', GSlice> = {
     server: defaultSliceValue({
@@ -125,11 +150,26 @@ export default function useKillua<
     });
   }, []);
 
+  // params.selectors is truthy ===> assign slice config selectors to selectors object
+  const selectors: Record<string, (payload?: any) => any> = {};
+  if (params.selectors!) {
+    for (const selectorName in params.selectors!) {
+      if (
+        Object.prototype.hasOwnProperty.call(params.selectors!, selectorName)
+      ) {
+        const selectorFunc = params.selectors[selectorName];
+        selectors[selectorName] = (payload?: any) => {
+          return selectorFunc(sliceState, payload);
+        };
+      }
+    }
+  }
+
   // params.reducers is truthy ===> assign slice config reducers to reducers object
   const reducers: Record<string, (payload?: any) => GSlice> = {};
-  if (params.reducers) {
-    for (const reducerName in params.reducers) {
-      if (Object.prototype.hasOwnProperty.call(params.reducers, reducerName)) {
+  if (params.reducers!) {
+    for (const reducerName in params.reducers!) {
+      if (Object.prototype.hasOwnProperty.call(params.reducers!, reducerName)) {
         const reducerFunc = params.reducers[reducerName];
         reducers[reducerName] = (payload?: any) => {
           setSliceToStorage({
@@ -137,21 +177,6 @@ export default function useKillua<
             slice: reducerFunc(sliceState, payload),
           });
           return reducerFunc(sliceState, payload);
-        };
-      }
-    }
-  }
-
-  // params.selectors is truthy ===> assign slice config selectors to selectors object
-  const selectors: Record<string, (payload?: any) => any> = {};
-  if (params.selectors) {
-    for (const selectorName in params.selectors) {
-      if (
-        Object.prototype.hasOwnProperty.call(params.selectors, selectorName)
-      ) {
-        const selectorFunc = params.selectors[selectorName];
-        selectors[selectorName] = (payload?: any) => {
-          return selectorFunc(sliceState, payload);
         };
       }
     }
@@ -168,5 +193,5 @@ export default function useKillua<
     reducers,
     selectors,
     isReady,
-  };
+  } as TReturn<GSlice, GSelectors, GReducers>;
 }
