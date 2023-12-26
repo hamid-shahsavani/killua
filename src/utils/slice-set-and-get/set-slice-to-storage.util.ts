@@ -1,13 +1,17 @@
 import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
-import { TConfig } from '../../types/config.type';
+import { TConfig, TReducers, TSelectors } from '../../types/config.type';
 import encryptStorageData from '../cryptography/encrypt-storage-data.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import schemaValidation from '../slice-schema-validation/schema-validation.util';
 
-export default function setSliceToStorage<TSlice>(params: {
-  config: TConfig<TSlice>;
-  slice: TSlice;
+export default function setSliceToStorage<
+  GSlice,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+>(params: {
+  config: TConfig<GSlice, GSelectors, GReducers>;
+  slice: GSlice;
 }): void {
   // slice storage name
   const sliceStorageKey = generateSliceStorageKey({ key: params.config.key });

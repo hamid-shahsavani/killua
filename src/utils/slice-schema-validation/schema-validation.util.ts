@@ -1,9 +1,13 @@
-import { TConfig } from '../../types/config.type';
+import { TConfig, TReducers, TSelectors } from '../../types/config.type';
 
-export default function schemaValidation<TSlice>(params: {
-  data: TSlice;
-  config: TConfig<TSlice>;
-}): TSlice {
+export default function schemaValidation<
+  GSlice,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+>(params: {
+  data: GSlice;
+  config: TConfig<GSlice, GSelectors, GReducers>;
+}): GSlice {
   let returnValue = params.data;
   if (params.config.schema) {
     if ('parse' in params.config.schema) {

@@ -1,6 +1,6 @@
-export default function callSliceEvent<TSlice>(params: {
-  slice: TSlice;
-  event?: (slice: TSlice) => void;
+export default function callSliceEvent<GSlice>(params: {
+  slice: GSlice;
+  event?: (slice: GSlice) => void;
 }): void {
   // storage key name
   const storageKey = 'slices-event-is-called';

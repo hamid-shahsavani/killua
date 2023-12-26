@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import getSliceFromStorage from './utils/slice-set-and-get/get-slice-from-storage.util';
 import defaultSliceValue from './utils/other/default-slice-value.util';
-import { TConfig } from './types/config.type';
+import { TConfig, TReducers, TSelectors } from './types/config.type';
 import setSliceToStorage from './utils/slice-set-and-get/set-slice-to-storage.util';
 import errorTemplate from './utils/other/error-template.utli';
 import isClientSide from './utils/other/is-client-side.util';
@@ -12,15 +12,21 @@ import { errorMessages } from './constants/error-messages.constant';
 import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 
-export default function useKillua<TSlice>(params: TConfig<TSlice>): {
-  get: TSlice;
-  set: (value: TSlice | ((value: TSlice) => TSlice)) => void;
-  reducers: Record<string, (payload?: any) => TSlice>;
+export default function useKillua<
+  GSlice,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+>(
+  params: TConfig<GSlice, GSelectors, GReducers>,
+): {
+  get: GSlice;
+  set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
+  reducers: Record<string, (payload?: any) => GSlice>;
   selectors: Record<string, (payload?: any) => any>;
   isReady: boolean;
 } {
   // default value slice
-  const defaultValueSlice: Record<'server' | 'client', TSlice> = {
+  const defaultValueSlice: Record<'server' | 'client', GSlice> = {
     server: defaultSliceValue({
       config: params,
       type: 'server',
@@ -36,7 +42,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
 
   // params.ssr is truthy ===> return `params.defaultServer`
   // params.ssr is falsy ===> return slice value from storage
-  const [sliceState, setSliceState] = useState((): TSlice => {
+  const [sliceState, setSliceState] = useState((): GSlice => {
     if (params.ssr) {
       return defaultValueSlice.server;
     } else {
@@ -120,7 +126,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
   }, []);
 
   // params.reducers is truthy ===> assign slice config reducers to reducers object
-  const reducers: Record<string, (payload?: any) => TSlice> = {};
+  const reducers: Record<string, (payload?: any) => GSlice> = {};
   if (params.reducers) {
     for (const reducerName in params.reducers) {
       if (Object.prototype.hasOwnProperty.call(params.reducers, reducerName)) {
@@ -153,7 +159,7 @@ export default function useKillua<TSlice>(params: TConfig<TSlice>): {
 
   return {
     get: sliceState,
-    set: (value: TSlice | ((value: TSlice) => TSlice)) => {
+    set: (value: GSlice | ((value: GSlice) => GSlice)) => {
       setSliceToStorage({
         config: params,
         slice: value instanceof Function ? value(sliceState) : value,

@@ -1,10 +1,12 @@
-import { TConfig } from '../../types/config.type';
+import { TConfig, TReducers, TSelectors } from '../../types/config.type';
 import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
 import { setSliceExpireTimestampToStorage } from './set-slice-expire-timestamp-to-storage.util';
 
-export function getSliceExpireTimestampFromStorage<TSlice>(params: {
-  config: TConfig<TSlice>;
-}): number | null {
+export function getSliceExpireTimestampFromStorage<
+  GSlice,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+>(params: { config: TConfig<GSlice, GSelectors, GReducers> }): number | null {
   // return value (default: null, updated after get slice expire timestamp from storage)
   let returnValue: null | number = null;
 

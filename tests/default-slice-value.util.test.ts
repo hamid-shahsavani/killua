@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import defaultSliceValue from '../src/utils/default-slice-value.util';
+import defaultSliceValue from '../src/utils/other/default-slice-value.util';
 import { TConfig } from '../src/types/config.type';
 
 describe('default-slice-value.util.ts', (): void => {

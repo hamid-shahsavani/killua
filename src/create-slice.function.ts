@@ -1,5 +1,5 @@
 import { errorMessages } from './constants/error-messages.constant';
-import { TConfig } from './types/config.type';
+import { TConfig, TReducers, TSelectors } from './types/config.type';
 import errorTemplate from './utils/other/error-template.utli';
 import {
   isBoolean,
@@ -11,9 +11,13 @@ import {
   isUndefined,
 } from './utils/other/type-guards.util';
 
-export default function createSlice<TSlice>(
-  params: TConfig<TSlice>,
-): TConfig<TSlice> {
+export default function createSlice<
+  GSlice,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+>(
+  params: TConfig<GSlice, GSelectors, GReducers>,
+): TConfig<GSlice, GSelectors, GReducers> {
   // validate `ssr`
   if (!isUndefined(params.ssr) && !isBoolean(params.ssr)) {
     errorTemplate({

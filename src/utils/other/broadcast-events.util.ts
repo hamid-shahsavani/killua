@@ -1,5 +1,5 @@
 import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
-import { TConfig } from '../../types/config.type';
+import { TConfig, TReducers, TSelectors } from '../../types/config.type';
 import callSliceEvent from '../slice-call-event/call-slice-event.util';
 import defaultSliceValue from '../other/default-slice-value.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
@@ -7,13 +7,17 @@ import getSliceFromStorage from '../slice-set-and-get/get-slice-from-storage.uti
 import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
 import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slice-expire-timestamp-to-storage.util';
 
-export default function broadcastEvents<TSlice>(params: {
-  config: TConfig<TSlice>;
-  sliceState: TSlice;
-  setSliceState: (value: TSlice) => void;
+export default function broadcastEvents<
+  GSlice,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+>(params: {
+  config: TConfig<GSlice, GSelectors, GReducers>;
+  sliceState: GSlice;
+  setSliceState: (value: GSlice) => void;
 }): void {
   // default slice value Client
-  const defalutSliceValueClient: TSlice = defaultSliceValue({
+  const defalutSliceValueClient: GSlice = defaultSliceValue({
     config: params.config,
     type: 'client',
   });

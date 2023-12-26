@@ -1,15 +1,17 @@
 import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
 import { storageKeys } from '../../constants/storage-keys.constant';
-import { TConfig } from '../../types/config.type';
+import { TConfig, TReducers, TSelectors } from '../../types/config.type';
 import decryptStorageData from '../cryptography/decrypt-storage-data.util';
 import defaultSliceValue from '../other/default-slice-value.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import schemaValidation from '../slice-schema-validation/schema-validation.util';
 
-export default function getSliceFromStorage<TSlice>(params: {
-  config: TConfig<TSlice>;
-}): TSlice {
+export default function getSliceFromStorage<
+  GSlice,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+>(params: { config: TConfig<GSlice, GSelectors, GReducers> }): GSlice {
   // default slice value client
   const defaultSliceValueClient = defaultSliceValue({
     config: params.config,
@@ -20,7 +22,7 @@ export default function getSliceFromStorage<TSlice>(params: {
   const storageKey = generateSliceStorageKey({ key: params.config.key });
 
   // default is `default-client value` (update after get slice value from storage)
-  let returnValue: TSlice = defaultSliceValueClient;
+  let returnValue: GSlice = defaultSliceValueClient;
 
   // get slice value from storageand update `returnValue`
   const storageValue: string | null = localStorage.getItem(storageKey);
@@ -35,7 +37,7 @@ export default function getSliceFromStorage<TSlice>(params: {
               saltKey: getSaltKeyFromStorage(),
             })
           : JSON.parse(storageValue)
-      ) as TSlice;
+      ) as GSlice;
       // validate storage value with schema
       schemaValidation({
         data: returnValue,

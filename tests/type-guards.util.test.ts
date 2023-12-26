@@ -7,7 +7,7 @@ import {
   isObject,
   isString,
   isUndefined,
-} from '../src/utils/type-guards.util';
+} from '../src/utils/other/type-guards.util';
 
 describe('type-guards.util.ts', (): void => {
   describe('is-object', (): void => {

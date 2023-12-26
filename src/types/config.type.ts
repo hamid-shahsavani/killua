@@ -1,21 +1,31 @@
-export type TConfig<TSlice> = {
+export type TSelectors<GSlice> =
+  | Record<string, (state: GSlice, payload?: any) => any>
+  | undefined;
+export type TReducers<GSlice> =
+  | Record<string, (state: GSlice, payload?: any) => GSlice>
+  | undefined;
+export type TConfig<
+  GSlice,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+> = {
   key: string;
   encrypt?: boolean;
   expire?: string;
   schema?:
-    | { parse: (val: TSlice) => TSlice }
-    | { validateSync: (val: TSlice) => TSlice | undefined };
-  reducers?: Record<string, (value: TSlice, payload?: any) => TSlice>;
-  selectors?: Record<string, (value: TSlice, payload?: any) => any>;
-  events?: Partial<Record<'onChange' | 'onExpire', (value: TSlice) => void>>;
+    | { parse: (val: GSlice) => GSlice }
+    | { validateSync: (val: GSlice) => GSlice | undefined };
+  selectors?: GSelectors;
+  reducers?: GReducers;
+  events?: Partial<Record<'onChange' | 'onExpire', (value: GSlice) => void>>;
 } & (
   | {
       ssr: true;
-      defaultClient: TSlice;
-      defaultServer: TSlice;
+      defaultClient: GSlice;
+      defaultServer: GSlice;
     }
   | {
       ssr?: false;
-      default: TSlice;
+      default: GSlice;
     }
 );

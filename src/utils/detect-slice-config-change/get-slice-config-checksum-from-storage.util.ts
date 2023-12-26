@@ -1,10 +1,12 @@
-import { TConfig } from '../../types/config.type';
+import { TConfig, TReducers, TSelectors } from '../../types/config.type';
 import { getSlicesChecksumFromStorage } from './get-slices-checksum-from-storage.util';
 import { setSliceConfigChecksumToStorage } from './set-slice-config-checksum-to-storage.util';
 
-export function getSliceConfigChecksumFromStorage<TSlice>(params: {
-  config: TConfig<TSlice>;
-}): string | null {
+export function getSliceConfigChecksumFromStorage<
+  GSlice,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+>(params: { config: TConfig<GSlice, GSelectors, GReducers> }): string | null {
   // return value (default: null, updated after get slice checksum from storage)
   let returnValue: null | string = null;
 
