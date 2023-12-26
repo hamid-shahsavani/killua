@@ -12,7 +12,7 @@ import { errorMessages } from './constants/error-messages.constant';
 import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 
-type RemoveStateFromSelectorsAndReducers<T> = T extends (
+type RemoveStateParamFromSelectorsAndReducers<T> = T extends (
   first: any,
   ...args: infer Rest
 ) => infer R
@@ -30,14 +30,14 @@ type TReturn<GSlice, GSelectors, GReducers> = RemoveEmptySelectorsAndReducers<{
   selectors: [GSelectors] extends [undefined]
     ? never
     : {
-        [K in keyof GSelectors]: RemoveStateFromSelectorsAndReducers<
+        [K in keyof GSelectors]: RemoveStateParamFromSelectorsAndReducers<
           GSelectors[K]
         >;
       };
   reducers: [GReducers] extends [undefined]
     ? never
     : {
-        [K in keyof GReducers]: RemoveStateFromSelectorsAndReducers<
+        [K in keyof GReducers]: RemoveStateParamFromSelectorsAndReducers<
           GReducers[K]
         >;
       };
