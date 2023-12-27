@@ -13,13 +13,14 @@ import {
 
 export default function createSlice<
   GSlice,
+  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(
-  params: TConfig<GSlice, GSelectors, GReducers>,
-): TConfig<GSlice, GSelectors, GReducers> {
-  // validate `default`
-  if (isUndefined(params.default)) {
+  params: TConfig<GSlice, GSsr, GSelectors, GReducers>,
+): TConfig<GSlice, GSsr, GSelectors, GReducers> {
+  // validate `defaultClient`
+  if (isUndefined(params.defaultClient)) {
     errorTemplate({
       msg: errorMessages.default.required,
       key: params.key,

@@ -3,9 +3,10 @@ import * as CryptoJS from 'crypto-js';
 
 export default function generateSliceConfigChecksum<
   GSlice,
+  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
->(params: { config: TConfig<GSlice, GSelectors, GReducers> }): string {
+>(params: { config: TConfig<GSlice, GSsr, GSelectors, GReducers> }): string {
   // generate md5 checksum with slice config (exclude `key`, `events`, `selectors`, `reducers`, `schema`)
   const sliceConfigChecksum: string = CryptoJS.MD5(
     JSON.stringify({

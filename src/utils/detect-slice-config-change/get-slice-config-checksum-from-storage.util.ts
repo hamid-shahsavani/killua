@@ -4,9 +4,12 @@ import { setSliceConfigChecksumToStorage } from './set-slice-config-checksum-to-
 
 export function getSliceConfigChecksumFromStorage<
   GSlice,
+  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
->(params: { config: TConfig<GSlice, GSelectors, GReducers> }): string | null {
+>(params: {
+  config: TConfig<GSlice, GSsr, GSelectors, GReducers>;
+}): string | null {
   // return value (default: null, updated after get slice checksum from storage)
   let returnValue: null | string = null;
 

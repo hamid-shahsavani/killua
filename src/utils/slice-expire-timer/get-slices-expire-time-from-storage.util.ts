@@ -7,10 +7,11 @@ import timeStringToSeconds from './time-string-to-second.util';
 
 function setSlicesExpireTimeKeyToStorage<
   GSlice,
+  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(params: {
-  config: TConfig<GSlice, GSelectors, GReducers>;
+  config: TConfig<GSlice, GSsr, GSelectors, GReducers>;
   defaultStorage: Record<string, number>;
 }): void {
   localStorage.setItem(
@@ -24,10 +25,11 @@ function setSlicesExpireTimeKeyToStorage<
 
 export function getSlicesExpireTimeFromStorage<
   GSlice,
+  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(params: {
-  config: TConfig<GSlice, GSelectors, GReducers>;
+  config: TConfig<GSlice, GSsr, GSelectors, GReducers>;
 }): Record<string, number> {
   // defaultStorage is ` params.config.expire && { [params.config.key]: slice expire timestamp } : null` (update after get `storageKeys.slicesExpireTime` from storage)
   let returnValue: Record<string, number> = {

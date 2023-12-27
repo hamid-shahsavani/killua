@@ -8,11 +8,12 @@ export type TReducers<GSlice> =
 
 export type TConfig<
   GSlice,
+  GSsr extends boolean = false,
   GSelectors extends TSelectors<GSlice> = undefined,
   GReducers extends TReducers<GSlice> = undefined,
 > = {
   key: string;
-  default: GSlice | Record<'client' | 'server', GSlice>;
+  defaultClient: GSlice;
   encrypt?: boolean;
   expire?: string;
   schema?:
@@ -21,4 +22,8 @@ export type TConfig<
   selectors?: GSelectors;
   reducers?: GReducers;
   events?: Partial<Record<'onChange' | 'onExpire', (value: GSlice) => void>>;
-};
+} & (GSsr extends true
+  ? {
+      defaultServer: GSlice;
+    }
+  : never);

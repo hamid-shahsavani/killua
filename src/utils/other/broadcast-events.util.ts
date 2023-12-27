@@ -9,10 +9,11 @@ import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slic
 
 export default function broadcastEvents<
   GSlice,
+  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(params: {
-  config: TConfig<GSlice, GSelectors, GReducers>;
+  config: TConfig<GSlice, GSsr, GSelectors, GReducers>;
   sliceState: GSlice;
   setSliceState: (value: GSlice) => void;
 }): void {
