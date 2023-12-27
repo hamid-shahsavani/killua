@@ -21,7 +21,7 @@ export default function createSlice<
   // validate `defaultClient`
   if (isUndefined(params.defaultClient)) {
     errorTemplate({
-      msg: errorMessages.defaultServer.required,
+      msg: errorMessages.defaultClient.required,
       key: params.key,
     });
   }

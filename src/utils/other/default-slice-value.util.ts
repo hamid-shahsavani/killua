@@ -1,5 +1,6 @@
 import { TConfig, TReducers, TSelectors } from '../../types/config.type';
 import schemaValidation from '../slice-schema-validation/schema-validation.util';
+import { isConfigSsr } from './is-config-ssr.util';
 
 export default function defaultSliceValue<
   GSlice,
@@ -9,11 +10,11 @@ export default function defaultSliceValue<
   config: TConfig<GSlice, GSelectors, GReducers>;
   type: 'client' | 'server';
 }) {
-  const data: GSlice =
-    params.type === 'client'
+  const data: GSlice = isConfigSsr({ config: params.config })
+    ? params.type === 'client'
       ? params.config.defaultClient
-      : params.config.defaultServer!;
-
+      : params.config.defaultServer!
+    : params.config.defaultClient;
   return schemaValidation({
     data,
     config: params.config,
