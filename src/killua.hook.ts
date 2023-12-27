@@ -4,13 +4,14 @@ import defaultSliceValue from './utils/other/default-slice-value.util';
 import { TConfig, TReducers, TSelectors } from './types/config.type';
 import setSliceToStorage from './utils/slice-set-and-get/set-slice-to-storage.util';
 import errorTemplate from './utils/other/error-template.utli';
-import isClientSide from './utils/other/is-client-side.util';
+import isAvailableCsr from './utils/other/is-available-csr';
 import { getSliceExpireTimestampFromStorage } from './utils/slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
 import broadcastEvents from './utils/other/broadcast-events.util';
 import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
 import { errorMessages } from './constants/error-messages.constant';
 import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
+import { isConfigSsr } from './utils/other/is-config-ssr.util';
 
 type RemoveStateParamFromSelectorsAndReducers<T> = T extends (
   first: any,
@@ -62,23 +63,25 @@ export default function useKillua<
     }),
   };
 
-  // params.ssr is truthy ===> default `isReady` value is `false` and set to `true` in client-side in return (only for `ssr: true`)
-  const [isReady, setIsReady] = useState(params.ssr ? false : true);
+  // `is-config-ssr` truthy ===> default `isReady` value is `false` and set to `true` in client-side in return (only for `is-config-ssr`)
+  const [isReady, setIsReady] = useState(
+    isConfigSsr({ config: params }) ? false : true,
+  );
 
-  // params.ssr is truthy ===> return `params.defaultServer`
-  // params.ssr is falsy ===> return slice value from storage
+  // `is-config-ssr` is truthy ===> return `params.defaultServer`
+  // `is-config-ssr` is falsy ===> return slice value from storage
   const [sliceState, setSliceState] = useState((): GSlice => {
-    if (params.ssr) {
+    if (isConfigSsr({ config: params })) {
       return defaultValueSlice.server;
     } else {
-      // `params.ssr` is `false` and application is server-side ===> throw error
-      if (!isClientSide()) {
+      // `is-config-ssr` is `false` and application is server-side ===> throw error
+      if (!isAvailableCsr()) {
         errorTemplate({
-          msg: errorMessages.ssr.mustBeTrue,
+          msg: errorMessages.default.configIsNotSsr,
           key: params.key,
         });
       }
-      // `params.ssr` is `false` and application is client-side ===> return slice value from storage
+      // `is-config-ssr` is `false` and application is client-side ===> return slice value from storage
       return getSliceFromStorage({ config: params });
     }
   });
@@ -133,9 +136,9 @@ export default function useKillua<
     };
   }, [sliceState]);
 
-  // params.ssr && !isReady ===> set `isReady` to `true` | get slice from storage and set to `sliceState`
+  // is-config-ssr && !isReady ===> set `isReady` to `true` | get slice from storage and set to `sliceState`
   useEffect((): void => {
-    if (params.ssr && !isReady) {
+    if (isConfigSsr({ config: params }) && !isReady) {
       setIsReady(true);
       setSliceState(getSliceFromStorage({ config: params }));
     }
