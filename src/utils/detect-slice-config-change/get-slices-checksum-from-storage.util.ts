@@ -7,11 +7,10 @@ import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage
 
 function setSlicesChecksumKeyToStorage<
   GSlice,
-  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(params: {
-  config: TConfig<GSlice, GSsr, GSelectors, GReducers>;
+  config: TConfig<GSlice, GSelectors, GReducers>;
   defaultStorage: Record<string, string>;
 }): void {
   localStorage.setItem(
@@ -25,11 +24,10 @@ function setSlicesChecksumKeyToStorage<
 
 export function getSlicesChecksumFromStorage<
   GSlice,
-  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(params: {
-  config: TConfig<GSlice, GSsr, GSelectors, GReducers>;
+  config: TConfig<GSlice, GSelectors, GReducers>;
 }): Record<string, string> {
   // defaultStorage is `{ [params.config.key]: slice config checksum }` (update after get `storageKeys.slicesChecksum` from storage)
   let returnValue: Record<string, string> = {

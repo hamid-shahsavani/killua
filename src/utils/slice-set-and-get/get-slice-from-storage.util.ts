@@ -9,10 +9,9 @@ import schemaValidation from '../slice-schema-validation/schema-validation.util'
 
 export default function getSliceFromStorage<
   GSlice,
-  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
->(params: { config: TConfig<GSlice, GSsr, GSelectors, GReducers> }): GSlice {
+>(params: { config: TConfig<GSlice, GSelectors, GReducers> }): GSlice {
   // default slice value client
   const defaultSliceValueClient = defaultSliceValue({
     config: params.config,

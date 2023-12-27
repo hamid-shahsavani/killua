@@ -7,12 +7,9 @@ import { getSlicesChecksumFromStorage } from './get-slices-checksum-from-storage
 
 export function setSliceConfigChecksumToStorage<
   GSlice,
-  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
->(params: {
-  config: TConfig<GSlice, GSsr, GSelectors, GReducers>;
-}): string | null {
+>(params: { config: TConfig<GSlice, GSelectors, GReducers> }): string | null {
   // generate slice checksum
   const sliceChecksum: string = generateSliceConfigChecksum({
     config: params.config,

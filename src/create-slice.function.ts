@@ -13,18 +13,27 @@ import {
 
 export default function createSlice<
   GSlice,
-  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(
-  params: TConfig<GSlice, GSsr, GSelectors, GReducers>,
-): TConfig<GSlice, GSsr, GSelectors, GReducers> {
+  params: TConfig<GSlice, GSelectors, GReducers>,
+): TConfig<GSlice, GSelectors, GReducers> {
   // validate `defaultClient`
   if (isUndefined(params.defaultClient)) {
     errorTemplate({
-      msg: errorMessages.default.required,
+      msg: errorMessages.defaultServer.required,
       key: params.key,
     });
+  }
+
+  // validate `defaultServer`
+  if (!isUndefined(params.defaultServer)) {
+    if (typeof params.defaultClient !== typeof params.defaultServer) {
+      errorTemplate({
+        msg: errorMessages.defaultServer.invalidType,
+        key: params.key,
+      });
+    }
   }
 
   // validate `key`
@@ -173,7 +182,8 @@ export default function createSlice<
 
   // validate other keys
   const validKeys = new Set([
-    'default',
+    'defaultClient',
+    'defaultServer',
     'key',
     'encrypt',
     'expire',

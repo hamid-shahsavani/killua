@@ -46,11 +46,10 @@ type TReturn<GSlice, GSelectors, GReducers> = RemoveEmptySelectorsAndReducers<{
 
 export default function useKillua<
   GSlice,
-  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(
-  params: TConfig<GSlice, GSsr, GSelectors, GReducers>,
+  params: TConfig<GSlice, GSelectors, GReducers>,
 ): TReturn<GSlice, GSelectors, GReducers> {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', GSlice> = {
@@ -78,7 +77,7 @@ export default function useKillua<
       // `is-config-ssr` is `false` and application is server-side ===> throw error
       if (!isAvailableCsr()) {
         errorTemplate({
-          msg: errorMessages.default.configIsNotSsr,
+          msg: errorMessages.defaultServer.required,
           key: params.key,
         });
       }

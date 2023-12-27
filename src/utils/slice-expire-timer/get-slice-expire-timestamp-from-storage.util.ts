@@ -4,12 +4,9 @@ import { setSliceExpireTimestampToStorage } from './set-slice-expire-timestamp-t
 
 export function getSliceExpireTimestampFromStorage<
   GSlice,
-  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
->(params: {
-  config: TConfig<GSlice, GSsr, GSelectors, GReducers>;
-}): number | null {
+>(params: { config: TConfig<GSlice, GSelectors, GReducers> }): number | null {
   // return value (default: null, updated after get slice expire timestamp from storage)
   let returnValue: null | number = null;
 

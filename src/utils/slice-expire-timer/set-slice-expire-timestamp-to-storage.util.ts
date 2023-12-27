@@ -7,12 +7,9 @@ import timeStringToSeconds from './time-string-to-second.util';
 
 export function setSliceExpireTimestampToStorage<
   GSlice,
-  GSsr extends boolean,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
->(params: {
-  config: TConfig<GSlice, GSsr, GSelectors, GReducers>;
-}): number | null {
+>(params: { config: TConfig<GSlice, GSelectors, GReducers> }): number | null {
   // params.config.expire ? slice expire timestamp : null
   const sliceExpireTimestamp: null | number = params.config.expire
     ? Date.now() +
