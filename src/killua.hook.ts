@@ -20,7 +20,7 @@ type RemoveStateParamFromSelectorsAndReducers<T> = T extends (
   ? (...args: Rest) => R
   : never;
 
-export type RemoveEmptySelectorsAndReducers<T> = {
+type RemoveEmptySelectorsAndReducers<T> = {
   [K in keyof T as T[K] extends never ? never : K]: T[K];
 };
 
