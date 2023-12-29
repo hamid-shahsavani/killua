@@ -10,7 +10,7 @@ export type TConfig<
   GSlice,
   GSelectors extends TSelectors<GSlice> = undefined,
   GReducers extends TReducers<GSlice> = undefined,
-> = {
+> = Readonly<{
   key: string;
   defaultClient: GSlice;
   defaultServer?: GSlice;
@@ -22,4 +22,4 @@ export type TConfig<
   selectors?: GSelectors;
   reducers?: GReducers;
   events?: Partial<Record<'onChange' | 'onExpire', (value: GSlice) => void>>;
-};
+}>;
