@@ -24,18 +24,22 @@ type RemoveEmptySelectorsAndReducers<T> = {
   [K in keyof T as T[K] extends never ? never : K]: T[K];
 };
 
-type TReturn<GSlice, GSelectors, GReducers> = RemoveEmptySelectorsAndReducers<{
+type TReturn<
+  GSlice,
+  GSelectors extends TSelectors<GSlice> = undefined,
+  GReducers extends TReducers<GSlice> = undefined,
+> = RemoveEmptySelectorsAndReducers<{
   get: GSlice;
   set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
   isReady: boolean;
-  selectors: [GSelectors] extends [undefined]
+  selectors: GSelectors extends undefined
     ? never
     : {
         [K in keyof GSelectors]: RemoveStateParamFromSelectorsAndReducers<
           GSelectors[K]
         >;
       };
-  reducers: [GReducers] extends [undefined]
+  reducers: GReducers extends undefined
     ? never
     : {
         [K in keyof GReducers]: RemoveStateParamFromSelectorsAndReducers<
@@ -46,8 +50,8 @@ type TReturn<GSlice, GSelectors, GReducers> = RemoveEmptySelectorsAndReducers<{
 
 export default function useKillua<
   GSlice,
-  GSelectors extends TSelectors<GSlice>,
-  GReducers extends TReducers<GSlice>,
+  GSelectors extends TSelectors<GSlice> = undefined,
+  GReducers extends TReducers<GSlice> = undefined,
 >(
   params: TConfig<GSlice, GSelectors, GReducers>,
 ): TReturn<GSlice, GSelectors, GReducers> {
