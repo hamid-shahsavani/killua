@@ -13,8 +13,8 @@ import {
 
 export default function createSlice<
   GSlice,
-  GSelectors extends TSelectors<GSlice>,
-  GReducers extends TReducers<GSlice>,
+  GSelectors extends TSelectors<GSlice> = undefined,
+  GReducers extends TReducers<GSlice> = undefined,
 >(
   params: TConfig<GSlice, GSelectors, GReducers>,
 ): TConfig<GSlice, GSelectors, GReducers> {
@@ -203,5 +203,5 @@ export default function createSlice<
     });
   }
 
-  return params;
+  return params as TConfig<GSlice, GSelectors, GReducers>;
 }

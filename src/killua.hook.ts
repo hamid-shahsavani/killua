@@ -24,11 +24,7 @@ type RemoveEmptySelectorsAndReducers<T> = {
   [K in keyof T as T[K] extends never ? never : K]: T[K];
 };
 
-type TReturn<
-  GSlice,
-  GSelectors extends TSelectors<GSlice> = undefined,
-  GReducers extends TReducers<GSlice> = undefined,
-> = RemoveEmptySelectorsAndReducers<{
+type TReturn<GSlice, GSelectors, GReducers> = RemoveEmptySelectorsAndReducers<{
   get: GSlice;
   set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
   isReady: boolean;
