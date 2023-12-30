@@ -13,34 +13,30 @@ import generateSliceConfigChecksum from './utils/detect-slice-config-change/gene
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { isConfigSsr } from './utils/other/is-config-ssr.util';
 
-type RemoveStateParamFromSelectorsAndReducers<T> = T extends (
+type URemoveStateParam<T> = T extends (
   first: any,
   ...args: infer Rest
 ) => infer R
   ? (...args: Rest) => R
   : never;
 
-type RemoveEmptySelectorsAndReducers<T> = {
+type URemoveNever<T> = {
   [K in keyof T as T[K] extends never ? never : K]: T[K];
 };
 
-type TReturn<GSlice, GSelectors, GReducers> = RemoveEmptySelectorsAndReducers<{
+type TReturn<GSlice, GSelectors, GReducers> = URemoveNever<{
   get: GSlice;
   set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
   isReady: boolean;
   selectors: GSelectors extends undefined
     ? never
     : {
-        [K in keyof GSelectors]: RemoveStateParamFromSelectorsAndReducers<
-          GSelectors[K]
-        >;
+        [K in keyof GSelectors]: URemoveStateParam<GSelectors[K]>;
       };
   reducers: GReducers extends undefined
     ? never
     : {
-        [K in keyof GReducers]: RemoveStateParamFromSelectorsAndReducers<
-          GReducers[K]
-        >;
+        [K in keyof GReducers]: URemoveStateParam<GReducers[K]>;
       };
 }>;
 
