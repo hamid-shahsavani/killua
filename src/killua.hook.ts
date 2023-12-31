@@ -28,12 +28,12 @@ type TReturn<GSlice, GSelectors, GReducers> = URemoveNever<{
   get: GSlice;
   set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
   isReady: boolean;
-  selectors: GSelectors extends undefined
+  selectors: undefined extends GSelectors
     ? never
     : {
         [K in keyof GSelectors]: URemoveStateParam<GSelectors[K]>;
       };
-  reducers: GReducers extends undefined
+  reducers: undefined extends GReducers
     ? never
     : {
         [K in keyof GReducers]: URemoveStateParam<GReducers[K]>;
@@ -42,8 +42,8 @@ type TReturn<GSlice, GSelectors, GReducers> = URemoveNever<{
 
 export default function useKillua<
   GSlice,
-  GSelectors extends TSelectors<GSlice> = undefined,
-  GReducers extends TReducers<GSlice> = undefined,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
 >(
   params: TConfig<GSlice, GSelectors, GReducers>,
 ): TReturn<GSlice, GSelectors, GReducers> {

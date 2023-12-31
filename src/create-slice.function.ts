@@ -13,11 +13,9 @@ import {
 
 export default function createSlice<
   GSlice,
-  GSelectors extends TSelectors<GSlice> = undefined,
-  GReducers extends TReducers<GSlice> = undefined,
->(
-  params: TConfig<GSlice, GSelectors, GReducers>,
-): TConfig<GSlice, GSelectors, GReducers> {
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>,
+>(params: TConfig<GSlice, GSelectors, GReducers>) {
   // validate `defaultClient`
   if (isUndefined(params.defaultClient)) {
     errorTemplate({
@@ -203,5 +201,5 @@ export default function createSlice<
     });
   }
 
-  return params as TConfig<GSlice, GSelectors, GReducers>;
+  return params;
 }
