@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import getSliceFromStorage from './utils/slice-set-and-get/get-slice-from-storage.util';
 import defaultSliceValue from './utils/other/default-slice-value.util';
-import { TConfig, TReducers, TSelectors } from './types/config.type';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors,
+} from './types/config.type';
 import setSliceToStorage from './utils/slice-set-and-get/set-slice-to-storage.util';
 import errorTemplate from './utils/other/error-template.utli';
 import isAvailableCsr from './utils/other/is-available-csr.util';
@@ -24,10 +29,10 @@ type URemoveNever<T> = {
   [K in keyof T as T[K] extends never ? never : K]: T[K];
 };
 
-type TReturn<GSlice, GSelectors, GReducers> = URemoveNever<{
+type TReturn<GSlice, GDefaultServer, GSelectors, GReducers> = URemoveNever<{
   get: GSlice;
   set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
-  isReady: boolean;
+  isReady: undefined extends GDefaultServer ? never : GDefaultServer;
   selectors: undefined extends GSelectors
     ? never
     : {
@@ -42,11 +47,12 @@ type TReturn<GSlice, GSelectors, GReducers> = URemoveNever<{
 
 export default function useKillua<
   GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(
-  params: TConfig<GSlice, GSelectors, GReducers>,
-): TReturn<GSlice, GSelectors, GReducers> {
+  params: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>,
+): TReturn<GSlice, GDefaultServer, GSelectors, GReducers> {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', GSlice> = {
     server: defaultSliceValue({
@@ -189,8 +195,8 @@ export default function useKillua<
         slice: value instanceof Function ? value(sliceState) : value,
       });
     },
+    ...(isConfigSsr({ config: params }) && { isReady }),
     reducers,
     selectors,
-    isReady,
-  } as TReturn<GSlice, GSelectors, GReducers>;
+  } as TReturn<GSlice, GDefaultServer, GSelectors, GReducers>;
 }

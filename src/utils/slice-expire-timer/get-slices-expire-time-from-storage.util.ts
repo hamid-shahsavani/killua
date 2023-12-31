@@ -1,5 +1,10 @@
 import { storageKeys } from '../../constants/storage-keys.constant';
-import { TConfig, TReducers, TSelectors } from '../../types/config.type';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors,
+} from '../../types/config.type';
 import decryptStorageData from '../cryptography/decrypt-storage-data.util';
 import encryptStorageData from '../cryptography/encrypt-storage-data.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
@@ -7,10 +12,11 @@ import timeStringToSeconds from './time-string-to-second.util';
 
 function setSlicesExpireTimeKeyToStorage<
   GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(params: {
-  config: TConfig<GSlice, GSelectors, GReducers>;
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
   defaultStorage: Record<string, number>;
 }): void {
   localStorage.setItem(
@@ -24,10 +30,11 @@ function setSlicesExpireTimeKeyToStorage<
 
 export function getSlicesExpireTimeFromStorage<
   GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(params: {
-  config: TConfig<GSlice, GSelectors, GReducers>;
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
 }): Record<string, number> {
   // defaultStorage is ` params.config.expire && { [params.config.key]: slice expire timestamp } : null` (update after get `storageKeys.slicesExpireTime` from storage)
   let returnValue: Record<string, number> = {

@@ -1,5 +1,10 @@
 import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
-import { TConfig, TReducers, TSelectors } from '../../types/config.type';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors,
+} from '../../types/config.type';
 import encryptStorageData from '../cryptography/encrypt-storage-data.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
@@ -7,10 +12,11 @@ import schemaValidation from '../slice-schema-validation/schema-validation.util'
 
 export default function setSliceToStorage<
   GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(params: {
-  config: TConfig<GSlice, GSelectors, GReducers>;
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
   slice: GSlice;
 }): void {
   // slice storage name

@@ -1,6 +1,11 @@
 import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
 import { storageKeys } from '../../constants/storage-keys.constant';
-import { TConfig, TReducers, TSelectors } from '../../types/config.type';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors,
+} from '../../types/config.type';
 import decryptStorageData from '../cryptography/decrypt-storage-data.util';
 import defaultSliceValue from '../other/default-slice-value.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
@@ -9,9 +14,12 @@ import schemaValidation from '../slice-schema-validation/schema-validation.util'
 
 export default function getSliceFromStorage<
   GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
->(params: { config: TConfig<GSlice, GSelectors, GReducers> }): GSlice {
+>(params: {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+}): GSlice {
   // default slice value client
   const defaultSliceValueClient = defaultSliceValue({
     config: params.config,

@@ -1,5 +1,10 @@
 import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
-import { TConfig, TReducers, TSelectors } from '../../types/config.type';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors,
+} from '../../types/config.type';
 import callSliceEvent from '../slice-call-event/call-slice-event.util';
 import defaultSliceValue from '../other/default-slice-value.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
@@ -9,10 +14,11 @@ import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slic
 
 export default function broadcastEvents<
   GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
 >(params: {
-  config: TConfig<GSlice, GSelectors, GReducers>;
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
   sliceState: GSlice;
   setSliceState: (value: GSlice) => void;
 }): void {

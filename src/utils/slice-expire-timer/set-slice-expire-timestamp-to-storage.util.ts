@@ -1,5 +1,10 @@
 import { storageKeys } from '../../constants/storage-keys.constant';
-import { TConfig, TReducers, TSelectors } from '../../types/config.type';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors,
+} from '../../types/config.type';
 import encryptStorageData from '../cryptography/encrypt-storage-data.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
@@ -7,9 +12,12 @@ import timeStringToSeconds from './time-string-to-second.util';
 
 export function setSliceExpireTimestampToStorage<
   GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
->(params: { config: TConfig<GSlice, GSelectors, GReducers> }): number | null {
+>(params: {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+}): number | null {
   // params.config.expire ? slice expire timestamp : null
   const sliceExpireTimestamp: null | number = params.config.expire
     ? Date.now() +

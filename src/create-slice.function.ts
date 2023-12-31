@@ -1,5 +1,10 @@
 import { errorMessages } from './constants/error-messages.constant';
-import { TConfig, TReducers, TSelectors } from './types/config.type';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors,
+} from './types/config.type';
 import errorTemplate from './utils/other/error-template.utli';
 import {
   isBoolean,
@@ -13,9 +18,10 @@ import {
 
 export default function createSlice<
   GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>,
->(params: TConfig<GSlice, GSelectors, GReducers>) {
+>(params: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>) {
   // validate `defaultClient`
   if (isUndefined(params.defaultClient)) {
     errorTemplate({
