@@ -1,6 +1,4 @@
-export type TSelectors<GSlice> =
-  | Record<string, (state: GSlice, payload?: any) => any>
-  | undefined;
+export type TSelectors<GSlice> = Record<string, (state: GSlice, payload?: any) => any> | undefined;
 
 export type TReducers<GSlice> =
   | Record<string, (state: GSlice, payload?: any) => GSlice>
@@ -12,7 +10,7 @@ export type TConfig<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
-  GReducers extends TReducers<GSlice>,
+  GReducers extends TReducers<GSlice>
 > = {
   key: string;
   defaultClient: GSlice;
@@ -24,5 +22,5 @@ export type TConfig<
     | { validateSync: (val: GSlice) => GSlice | undefined };
   selectors?: GSelectors;
   reducers?: GReducers;
-  events?: Partial<Record<'onChange' | 'onExpire', (value: GSlice) => void>>;
+  events?: Partial<Record<"onChange" | "onExpire", (value: GSlice) => void>>;
 };

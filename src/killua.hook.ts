@@ -1,27 +1,19 @@
-import { useEffect, useState } from 'react';
-import getSliceFromStorage from './utils/slice-set-and-get/get-slice-from-storage.util';
-import defaultSliceValue from './utils/other/default-slice-value.util';
-import {
-  TConfig,
-  TDefaultServer,
-  TReducers,
-  TSelectors,
-} from './types/config.type';
-import setSliceToStorage from './utils/slice-set-and-get/set-slice-to-storage.util';
-import errorTemplate from './utils/other/error-template.utli';
-import isAvailableCsr from './utils/other/is-available-csr.util';
-import { getSliceExpireTimestampFromStorage } from './utils/slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
-import broadcastEvents from './utils/other/broadcast-events.util';
-import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
-import { errorMessages } from './constants/error-messages.constant';
-import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
-import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
-import { isConfigSsr } from './utils/other/is-config-ssr.util';
+import { useEffect, useState } from "react";
+import getSliceFromStorage from "./utils/slice-set-and-get/get-slice-from-storage.util";
+import defaultSliceValue from "./utils/other/default-slice-value.util";
+import { TConfig, TDefaultServer, TReducers, TSelectors } from "./types/config.type";
+import setSliceToStorage from "./utils/slice-set-and-get/set-slice-to-storage.util";
+import errorTemplate from "./utils/other/error-template.utli";
+import isAvailableCsr from "./utils/other/is-available-csr.util";
+import { getSliceExpireTimestampFromStorage } from "./utils/slice-expire-timer/get-slice-expire-timestamp-from-storage.util";
+import broadcastEvents from "./utils/other/broadcast-events.util";
+import { broadcastChannelMessages } from "./constants/broadcast-channel-messages.constant";
+import { errorMessages } from "./constants/error-messages.constant";
+import generateSliceConfigChecksum from "./utils/detect-slice-config-change/generate-slice-config-checksum.util";
+import { getSliceConfigChecksumFromStorage } from "./utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util";
+import { isConfigSsr } from "./utils/other/is-config-ssr.util";
 
-type URemoveStateParam<T> = T extends (
-  first: any,
-  ...args: infer Rest
-) => infer R
+type URemoveStateParam<T> = T extends (first: any, ...args: infer Rest) => infer R
   ? (...args: Rest) => R
   : never;
 
@@ -49,26 +41,24 @@ export default function useKillua<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
-  GReducers extends TReducers<GSlice>,
+  GReducers extends TReducers<GSlice>
 >(
-  params: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>,
+  params: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>
 ): TReturn<GSlice, GDefaultServer, GSelectors, GReducers> {
   // default value slice
-  const defaultValueSlice: Record<'server' | 'client', GSlice> = {
+  const defaultValueSlice: Record<"server" | "client", GSlice> = {
     server: defaultSliceValue({
       config: params,
-      type: 'server',
+      type: "server"
     }),
     client: defaultSliceValue({
       config: params,
-      type: 'client',
-    }),
+      type: "client"
+    })
   };
 
   // `is-config-ssr` truthy ===> default `isReady` value is `false` and set to `true` in client-side in return (only for `is-config-ssr`)
-  const [isReady, setIsReady] = useState(
-    isConfigSsr({ config: params }) ? false : true,
-  );
+  const [isReady, setIsReady] = useState(isConfigSsr({ config: params }) ? false : true);
 
   // `is-config-ssr` is truthy ===> return `params.defaultServer`
   // `is-config-ssr` is falsy ===> return slice value from storage
@@ -80,7 +70,7 @@ export default function useKillua<
       if (!isAvailableCsr()) {
         errorTemplate({
           msg: errorMessages.defaultServer.required,
-          key: params.key,
+          key: params.key
         });
       }
       // `is-config-ssr` is `false` and application is client-side ===> return slice value from storage
@@ -91,32 +81,32 @@ export default function useKillua<
   // is-changed slice config by developer ===> call broadcast channel event `broadcastChannelMessages.storageValueNotValid`
   useEffect((): void => {
     const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
-      config: params,
+      config: params
     });
     const currentSliceConfigChecksum = generateSliceConfigChecksum({
-      config: params,
+      config: params
     });
     if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
-      new BroadcastChannel('killua').postMessage({
+      new BroadcastChannel("killua").postMessage({
         type: broadcastChannelMessages.storageValueNotValid,
-        key: params.key,
+        key: params.key
       });
     }
   }, []);
 
   // params.expire is truthy ===> check slice expire timestamp
   useEffect((): (() => void) => {
-    const broadcastChannel = new BroadcastChannel('killua');
+    const broadcastChannel = new BroadcastChannel("killua");
     let intervalId: any = null;
     if (params.expire) {
       const sliceExpireTimestamp = getSliceExpireTimestampFromStorage({
-        config: params,
+        config: params
       });
       if (Number(sliceExpireTimestamp) < Date.now()) {
         broadcastChannel.postMessage({
           type: broadcastChannelMessages.sliceEventOnExpire,
           key: params.key,
-          value: sliceState,
+          value: sliceState
         });
       } else {
         intervalId = setInterval(
@@ -125,11 +115,11 @@ export default function useKillua<
               broadcastChannel.postMessage({
                 type: broadcastChannelMessages.sliceEventOnExpire,
                 key: params.key,
-                value: sliceState,
+                value: sliceState
               });
             }
           },
-          Number(sliceExpireTimestamp) - Date.now(),
+          Number(sliceExpireTimestamp) - Date.now()
         );
       }
     }
@@ -151,7 +141,7 @@ export default function useKillua<
     broadcastEvents({
       config: params,
       sliceState,
-      setSliceState,
+      setSliceState
     });
   }, []);
 
@@ -159,9 +149,7 @@ export default function useKillua<
   const selectors: Record<string, (payload?: any) => any> = {};
   if (params.selectors!) {
     for (const selectorName in params.selectors!) {
-      if (
-        Object.prototype.hasOwnProperty.call(params.selectors!, selectorName)
-      ) {
+      if (Object.prototype.hasOwnProperty.call(params.selectors!, selectorName)) {
         const selectorFunc = params.selectors[selectorName];
         selectors[selectorName] = (payload?: any) => {
           return selectorFunc(sliceState, payload);
@@ -179,7 +167,7 @@ export default function useKillua<
         reducers[reducerName] = (payload?: any) => {
           setSliceToStorage({
             config: params,
-            slice: reducerFunc(sliceState, payload),
+            slice: reducerFunc(sliceState, payload)
           });
           return reducerFunc(sliceState, payload);
         };
@@ -192,11 +180,11 @@ export default function useKillua<
     set: (value: GSlice | ((value: GSlice) => GSlice)) => {
       setSliceToStorage({
         config: params,
-        slice: value instanceof Function ? value(sliceState) : value,
+        slice: value instanceof Function ? value(sliceState) : value
       });
     },
     ...(isConfigSsr({ config: params }) && { isReady }),
     reducers,
-    selectors,
+    selectors
   } as TReturn<GSlice, GDefaultServer, GSelectors, GReducers>;
 }
