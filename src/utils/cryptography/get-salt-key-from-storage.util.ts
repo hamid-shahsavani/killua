@@ -1,6 +1,6 @@
-import { storageKeys } from "../../constants/storage-keys.constant";
-import decryptStorageData from "./decrypt-storage-data.util";
-import encryptStorageData from "./encrypt-storage-data.util";
+import { storageKeys } from '../../constants/storage-keys.constant';
+import decryptStorageData from './decrypt-storage-data.util';
+import encryptStorageData from './encrypt-storage-data.util';
 
 export function getSaltKeyFromStorage(): string {
   // salt key value with random string (update after get salt key value from storage)
@@ -12,18 +12,20 @@ export function getSaltKeyFromStorage(): string {
       storageKeys.slicesSaltKey,
       encryptStorageData({
         data: saltKeyValue,
-        saltKey: "killua"
+        saltKey: 'killua'
       })
     );
   }
 
   // get salt key value from storage and update `saltKeyValue`
-  const storageValue: string | null = localStorage.getItem(storageKeys.slicesSaltKey);
+  const storageValue: string | null = localStorage.getItem(
+    storageKeys.slicesSaltKey
+  );
   if (storageValue) {
     try {
       const decryptedSaltKeyValue = decryptStorageData({
         data: storageValue,
-        saltKey: "killua"
+        saltKey: 'killua'
       });
       if (decryptedSaltKeyValue) {
         saltKeyValue = decryptedSaltKeyValue;

@@ -3,10 +3,10 @@ export default function callSliceEvent<GSlice>(params: {
   event?: (slice: GSlice) => void;
 }): void {
   // storage key name
-  const storageKey = "slices-event-is-called";
+  const storageKey = 'slices-event-is-called';
 
   // check if event is called (for fix multiple event call)
-  const isCalledEvent = JSON.parse(localStorage.getItem(storageKey) || "false");
+  const isCalledEvent = JSON.parse(localStorage.getItem(storageKey) || 'false');
   const isCalledEventHandler = (): void => {
     localStorage.setItem(storageKey, JSON.stringify(true));
     setTimeout((): void => {

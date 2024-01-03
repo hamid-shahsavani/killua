@@ -1,4 +1,6 @@
-export type TSelectors<GSlice> = Record<string, (state: GSlice, payload?: any) => any> | undefined;
+export type TSelectors<GSlice> =
+  | Record<string, (state: GSlice, payload?: any) => any>
+  | undefined;
 
 export type TReducers<GSlice> =
   | Record<string, (state: GSlice, payload?: any) => GSlice>
@@ -18,9 +20,13 @@ export type TConfig<
   encrypt?: boolean;
   expire?: string;
   schema?:
-    | { parse: (val: GSlice) => GSlice }
-    | { validateSync: (val: GSlice) => GSlice | undefined };
+    | {
+        parse: (val: GSlice) => GSlice;
+      }
+    | {
+        validateSync: (val: GSlice) => GSlice | undefined;
+      };
   selectors?: GSelectors;
   reducers?: GReducers;
-  events?: Partial<Record<"onChange" | "onExpire", (value: GSlice) => void>>;
+  events?: Partial<Record<'onChange' | 'onExpire', (value: GSlice) => void>>;
 };

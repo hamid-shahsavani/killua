@@ -1,13 +1,20 @@
-import { TConfig, TDefaultServer, TReducers, TSelectors } from "../../types/config.type";
-import { getSlicesExpireTimeFromStorage } from "./get-slices-expire-time-from-storage.util";
-import { setSliceExpireTimestampToStorage } from "./set-slice-expire-timestamp-to-storage.util";
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors
+} from '../../types/config.type';
+import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
+import { setSliceExpireTimestampToStorage } from './set-slice-expire-timestamp-to-storage.util';
 
 export function getSliceExpireTimestampFromStorage<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>
->(params: { config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers> }): number | null {
+>(params: {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+}): number | null {
   // return value (default: null, updated after get slice expire timestamp from storage)
   let returnValue: null | number = null;
 
@@ -25,7 +32,9 @@ export function getSliceExpireTimestampFromStorage<
     }
   */
   if (!storageValue[params.config.key]) {
-    returnValue = setSliceExpireTimestampToStorage({ config: params.config });
+    returnValue = setSliceExpireTimestampToStorage({
+      config: params.config
+    });
   } else {
     returnValue = storageValue[params.config.key];
   }

@@ -1,4 +1,4 @@
-const docsUrl = "https://killua-docs.vercel.app/config";
+const docsUrl = 'https://killua-docs.vercel.app/config';
 
 export const errorMessages = {
   key: {
@@ -42,6 +42,6 @@ export const errorMessages = {
   },
   other: {
     notDefined: (keys: string[]): string =>
-      `not defined key \`${keys.join(", ")}\` in config! \n${docsUrl}`
+      `not defined key \`${keys.join(', ')}\` in config! \n${docsUrl}`
   }
 };

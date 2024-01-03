@@ -1,9 +1,14 @@
-import { storageKeys } from "../../constants/storage-keys.constant";
-import { TConfig, TDefaultServer, TReducers, TSelectors } from "../../types/config.type";
-import decryptStorageData from "../cryptography/decrypt-storage-data.util";
-import encryptStorageData from "../cryptography/encrypt-storage-data.util";
-import generateSliceConfigChecksum from "./generate-slice-config-checksum.util";
-import { getSaltKeyFromStorage } from "../cryptography/get-salt-key-from-storage.util";
+import { storageKeys } from '../../constants/storage-keys.constant';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors
+} from '../../types/config.type';
+import decryptStorageData from '../cryptography/decrypt-storage-data.util';
+import encryptStorageData from '../cryptography/encrypt-storage-data.util';
+import generateSliceConfigChecksum from './generate-slice-config-checksum.util';
+import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 
 function setSlicesChecksumKeyToStorage<
   GSlice,
@@ -40,7 +45,9 @@ export function getSlicesChecksumFromStorage<
 
   // get slices checksum from storage ((if not exist || is-not valid) && set `storageKeys.slicesChecksum` key to storage)
   try {
-    const storageValue: string | null = localStorage.getItem(storageKeys.slicesChecksum);
+    const storageValue: string | null = localStorage.getItem(
+      storageKeys.slicesChecksum
+    );
     if (storageValue) {
       const decryptedStorageValue: Record<string, string> = decryptStorageData({
         data: storageValue,
@@ -53,7 +60,7 @@ export function getSlicesChecksumFromStorage<
         defaultStorage: returnValue
       });
     }
-  } catch (error) {
+  } catch (error: any) {
     setSlicesChecksumKeyToStorage({
       config: params.config,
       defaultStorage: returnValue

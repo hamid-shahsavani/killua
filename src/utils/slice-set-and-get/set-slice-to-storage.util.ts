@@ -1,18 +1,28 @@
-import { broadcastChannelMessages } from "../../constants/broadcast-channel-messages.constant";
-import { TConfig, TDefaultServer, TReducers, TSelectors } from "../../types/config.type";
-import encryptStorageData from "../cryptography/encrypt-storage-data.util";
-import generateSliceStorageKey from "../other/generate-slice-storage-key.util";
-import { getSaltKeyFromStorage } from "../cryptography/get-salt-key-from-storage.util";
-import schemaValidation from "../slice-schema-validation/schema-validation.util";
+import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors
+} from '../../types/config.type';
+import encryptStorageData from '../cryptography/encrypt-storage-data.util';
+import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
+import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
+import schemaValidation from '../slice-schema-validation/schema-validation.util';
 
 export default function setSliceToStorage<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>
->(params: { config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>; slice: GSlice }): void {
+>(params: {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+  slice: GSlice;
+}): void {
   // slice storage name
-  const sliceStorageKey = generateSliceStorageKey({ key: params.config.key });
+  const sliceStorageKey = generateSliceStorageKey({
+    key: params.config.key
+  });
 
   // validate slice value with schema before set to storageand set to `sliceState`
   schemaValidation({
@@ -32,7 +42,7 @@ export default function setSliceToStorage<
   );
 
   // call broadcast channel with event `broadcastChannelMessages.sliceEventOnChange` for call event `onChange` and set updated slice value to `sliceState`
-  new BroadcastChannel("killua").postMessage({
+  new BroadcastChannel('killua').postMessage({
     type: broadcastChannelMessages.sliceEventOnChange,
     key: params.config.key,
     value: params.slice

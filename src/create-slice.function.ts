@@ -1,6 +1,11 @@
-import { errorMessages } from "./constants/error-messages.constant";
-import { TConfig, TDefaultServer, TReducers, TSelectors } from "./types/config.type";
-import errorTemplate from "./utils/other/error-template.utli";
+import { errorMessages } from './constants/error-messages.constant';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors
+} from './types/config.type';
+import errorTemplate from './utils/other/error-template.utli';
 import {
   isBoolean,
   isEmptyObject,
@@ -9,7 +14,7 @@ import {
   isObject,
   isString,
   isUndefined
-} from "./utils/other/type-guards.util";
+} from './utils/other/type-guards.util';
 
 export default function createSlice<
   GSlice,
@@ -51,12 +56,12 @@ export default function createSlice<
       msg: errorMessages.key.empty,
       key: params.key
     });
-  } else if ((params.key as string).startsWith("slice-")) {
+  } else if ((params.key as string).startsWith('slice-')) {
     errorTemplate({
       msg: errorMessages.key.startWithSlice,
       key: params.key
     });
-  } else if ((params.key as string).startsWith("slices-")) {
+  } else if ((params.key as string).startsWith('slices-')) {
     errorTemplate({
       msg: errorMessages.key.startWithSlices,
       key: params.key
@@ -74,7 +79,9 @@ export default function createSlice<
   // validate `expire`
   if (
     !isUndefined(params.expire) &&
-    !/^\d+d-(?:[0-1]?\d|2[0-3])[hH]-[0-5]?\d[mM]-[0-5]?\d[sS]$/.test(params.expire)
+    !/^\d+d-(?:[0-1]?\d|2[0-3])[hH]-[0-5]?\d[mM]-[0-5]?\d[sS]$/.test(
+      params.expire
+    )
   ) {
     errorTemplate({
       msg: errorMessages.expire.invalidFormat,
@@ -95,7 +102,9 @@ export default function createSlice<
         key: params.key
       });
     } else if (
-      Object.keys(params.reducers).some((key): boolean => !isFunction(params.reducers![key]))
+      Object.keys(params.reducers).some(
+        (key): boolean => !isFunction(params.reducers![key])
+      )
     ) {
       errorTemplate({
         msg: errorMessages.reducers.keysValueIsNotFunction,
@@ -117,7 +126,9 @@ export default function createSlice<
         key: params.key
       });
     } else if (
-      Object.keys(params.selectors).some((key): boolean => !isFunction(params.selectors![key]))
+      Object.keys(params.selectors).some(
+        (key): boolean => !isFunction(params.selectors![key])
+      )
     ) {
       errorTemplate({
         msg: errorMessages.selectors.keysValueIsNotFunction,
@@ -139,7 +150,9 @@ export default function createSlice<
         key: params.key
       });
     } else if (
-      Object.keys(params.events).some((key): boolean => !["onExpire", "onChange"].includes(key))
+      Object.keys(params.events).some(
+        (key): boolean => !['onExpire', 'onChange'].includes(key)
+      )
     ) {
       errorTemplate({
         msg: errorMessages.events.keysIsNotValid,
@@ -147,7 +160,8 @@ export default function createSlice<
       });
     } else if (
       Object.keys(params.events).some(
-        (key): boolean => !isFunction(params.events![key as typeof params.events])
+        (key): boolean =>
+          !isFunction(params.events![key as typeof params.events])
       )
     ) {
       errorTemplate({
@@ -159,7 +173,10 @@ export default function createSlice<
 
   // validate `schema`
   if (!isUndefined(params.schema)) {
-    if (!("parse" in Object(params.schema)) && !("validateSync" in Object(params.schema))) {
+    if (
+      !('parse' in Object(params.schema)) &&
+      !('validateSync' in Object(params.schema))
+    ) {
       errorTemplate({
         msg: errorMessages.schema.invalidType,
         key: params.key
@@ -169,18 +186,20 @@ export default function createSlice<
 
   // validate other keys
   const validKeys = new Set([
-    "defaultClient",
-    "defaultServer",
-    "key",
-    "encrypt",
-    "expire",
-    "schema",
-    "reducers",
-    "selectors",
-    "events"
+    'defaultClient',
+    'defaultServer',
+    'key',
+    'encrypt',
+    'expire',
+    'schema',
+    'reducers',
+    'selectors',
+    'events'
   ]);
 
-  const notDefinedSliceKey = Object.keys(params).filter(key => !validKeys.has(key));
+  const notDefinedSliceKey = Object.keys(params).filter(
+    key => !validKeys.has(key)
+  );
   if (notDefinedSliceKey.length > 0) {
     errorTemplate({
       msg: errorMessages.other.notDefined(notDefinedSliceKey),

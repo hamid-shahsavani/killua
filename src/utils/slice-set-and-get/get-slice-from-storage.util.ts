@@ -1,26 +1,35 @@
-import { broadcastChannelMessages } from "../../constants/broadcast-channel-messages.constant";
-import { storageKeys } from "../../constants/storage-keys.constant";
-import { TConfig, TDefaultServer, TReducers, TSelectors } from "../../types/config.type";
-import decryptStorageData from "../cryptography/decrypt-storage-data.util";
-import defaultSliceValue from "../other/default-slice-value.util";
-import generateSliceStorageKey from "../other/generate-slice-storage-key.util";
-import { getSaltKeyFromStorage } from "../cryptography/get-salt-key-from-storage.util";
-import schemaValidation from "../slice-schema-validation/schema-validation.util";
+import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
+import { storageKeys } from '../../constants/storage-keys.constant';
+import {
+  TConfig,
+  TDefaultServer,
+  TReducers,
+  TSelectors
+} from '../../types/config.type';
+import decryptStorageData from '../cryptography/decrypt-storage-data.util';
+import defaultSliceValue from '../other/default-slice-value.util';
+import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
+import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
+import schemaValidation from '../slice-schema-validation/schema-validation.util';
 
 export default function getSliceFromStorage<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>
->(params: { config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers> }): GSlice {
+>(params: {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+}): GSlice {
   // default slice value client
   const defaultSliceValueClient = defaultSliceValue({
     config: params.config,
-    type: "client"
+    type: 'client'
   });
 
   // storage key
-  const storageKey = generateSliceStorageKey({ key: params.config.key });
+  const storageKey = generateSliceStorageKey({
+    key: params.config.key
+  });
 
   // default is `default-client value` (update after get slice value from storage)
   let returnValue: GSlice = defaultSliceValueClient;
@@ -59,7 +68,7 @@ export default function getSliceFromStorage<
     } catch (error: any) {
       returnValue = defaultSliceValueClient;
       // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `broadcastChannelMessages.storageValueNotValid`
-      new BroadcastChannel("killua").postMessage({
+      new BroadcastChannel('killua').postMessage({
         type: broadcastChannelMessages.storageValueNotValid,
         key: params.config.key
       });
