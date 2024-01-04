@@ -66,17 +66,11 @@ export default function useKillua<
   };
 
   // `is-config-ssr` truthy ===> default `isReady` value is `false` and set to `true` in client-side in return (only for `is-config-ssr`)
-  const [isReady, setIsReady] = useState(
-    isConfigSsr({
-      config: params
-    })
-      ? false
-      : true
-  );
+  const [isReady, setIsReady] = useState<boolean>(false);
 
   // `is-config-ssr` is truthy ===> return `params.defaultServer`
   // `is-config-ssr` is falsy ===> return slice value from storage
-  const [sliceState, setSliceState] = useState((): GSlice => {
+  const [sliceState, setSliceState] = useState<GSlice>((): GSlice => {
     if (
       isConfigSsr({
         config: params
@@ -114,10 +108,36 @@ export default function useKillua<
     }
   }, []);
 
+  // is-config-ssr && !isReady ===> set `isReady` to `true` | get slice from storage and set to `sliceState`
+  useEffect((): void => {
+    if (
+      isConfigSsr({
+        config: params
+      }) &&
+      !isReady
+    ) {
+      setIsReady(true);
+      setSliceState(
+        getSliceFromStorage({
+          config: params
+        })
+      );
+    }
+  }, [sliceState]);
+
+  // broadcast channel events
+  useEffect((): void => {
+    broadcastEvents({
+      config: params,
+      sliceState,
+      setSliceState
+    });
+  }, []);
+
   // params.expire is truthy ===> check slice expire timestamp
   useEffect((): (() => void) => {
-    const broadcastChannel = new BroadcastChannel('killua');
     let intervalId: any = null;
+    const broadcastChannel = new BroadcastChannel('killua');
     if (params.expire) {
       const sliceExpireTimestamp = getSliceExpireTimestampFromStorage({
         config: params
@@ -147,32 +167,6 @@ export default function useKillua<
       clearInterval(intervalId);
     };
   }, [sliceState]);
-
-  // is-config-ssr && !isReady ===> set `isReady` to `true` | get slice from storage and set to `sliceState`
-  useEffect((): void => {
-    if (
-      isConfigSsr({
-        config: params
-      }) &&
-      !isReady
-    ) {
-      setIsReady(true);
-      setSliceState(
-        getSliceFromStorage({
-          config: params
-        })
-      );
-    }
-  }, [sliceState]);
-
-  // broadcast channel events
-  useEffect((): void => {
-    broadcastEvents({
-      config: params,
-      sliceState,
-      setSliceState
-    });
-  }, []);
 
   // params.selectors is truthy ===> assign slice config selectors to selectors object
   const selectors: Record<string, (payload?: any) => any> = {};

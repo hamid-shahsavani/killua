@@ -56,6 +56,7 @@ export default function broadcastEvents<
       event.data.type === broadcastChannelMessages.sliceEventOnChange &&
       event.data.key === params.config.key
     ) {
+      params.setSliceState(event.data.value);
       // `event.data.value` is not equal to `params.sliceState` ===> call event `onChange`
       if (event.data.value !== params.sliceState) {
         callSliceEvent({
@@ -63,7 +64,6 @@ export default function broadcastEvents<
           event: params.config.events?.onChange
         });
       }
-      params.setSliceState(event.data.value);
     }
     // call post message `broadcastChannelMessages.sliceEventOnExpire` after set slice expire timestamp to storage
     // call message `broadcastChannelMessages.sliceEventOnExpire` ===> set `defalutSliceValueClient` | remove slice key from storage| update slice expire time | call event `onExpire`
@@ -71,6 +71,15 @@ export default function broadcastEvents<
       event.data.type === broadcastChannelMessages.sliceEventOnExpire &&
       event.data.key === params.config.key
     ) {
+      params.setSliceState(defalutSliceValueClient);
+      localStorage.removeItem(
+        generateSliceStorageKey({
+          key: params.config.key
+        })
+      );
+      setSliceExpireTimestampToStorage({
+        config: params.config
+      });
       // storage value is not equal to `defalutSliceValueClient` ===> call event `onExpire`
       if (
         getSliceFromStorage({
@@ -82,15 +91,6 @@ export default function broadcastEvents<
           event: params.config.events?.onExpire
         });
       }
-      setSliceExpireTimestampToStorage({
-        config: params.config
-      });
-      params.setSliceState(defalutSliceValueClient);
-      localStorage.removeItem(
-        generateSliceStorageKey({
-          key: params.config.key
-        })
-      );
     }
   };
 }
