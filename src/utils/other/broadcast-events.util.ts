@@ -8,7 +8,6 @@ import {
 import callSliceEvent from '../slice-call-event/call-slice-event.util';
 import defaultSliceValue from '../other/default-slice-value.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
-import getSliceFromStorage from '../slice-set-and-get/get-slice-from-storage.util';
 import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
 import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slice-expire-timestamp-to-storage.util';
 
@@ -61,7 +60,8 @@ export default function broadcastEvents<
       if (event.data.value !== params.sliceState) {
         callSliceEvent({
           slice: event.data.value,
-          event: params.config.events?.onChange
+          type: 'onChange',
+          config: params.config
         });
       }
     }
@@ -77,20 +77,11 @@ export default function broadcastEvents<
           key: params.config.key
         })
       );
-      setSliceExpireTimestampToStorage({
-        config: params.config
+      callSliceEvent({
+        slice: event.data.value,
+        config: params.config,
+        type: 'onExpire'
       });
-      // storage value is not equal to `defalutSliceValueClient` ===> call event `onExpire`
-      if (
-        getSliceFromStorage({
-          config: params.config
-        }) !== defalutSliceValueClient
-      ) {
-        callSliceEvent({
-          slice: event.data.value,
-          event: params.config.events?.onExpire
-        });
-      }
     }
   };
 }

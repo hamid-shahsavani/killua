@@ -17,6 +17,7 @@ import { errorMessages } from './constants/error-messages.constant';
 import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { isConfigSsr } from './utils/other/is-config-ssr.util';
+import { isSliceStorageDefaultClient } from './utils/other/is-slice-storage-default-client.util';
 
 type URemoveStateParam<T> = T extends (
   first: unknown,
@@ -134,11 +135,16 @@ export default function useKillua<
     });
   }, []);
 
-  // params.expire is truthy ===> check slice expire timestamp
+  // params.expire is truthy && (storage slice !== default client slice) ===> check slice expire timestamp
   useEffect((): (() => void) => {
     let intervalId: any = null;
     const broadcastChannel = new BroadcastChannel('killua');
-    if (params.expire) {
+    if (
+      params.expire &&
+      !isSliceStorageDefaultClient({
+        config: params
+      })
+    ) {
       const sliceExpireTimestamp = getSliceExpireTimestampFromStorage({
         config: params
       });
@@ -146,7 +152,9 @@ export default function useKillua<
         broadcastChannel.postMessage({
           type: broadcastChannelMessages.sliceEventOnExpire,
           key: params.key,
-          value: sliceState
+          value: getSliceFromStorage({
+            config: params
+          })
         });
       } else {
         intervalId = setInterval(
@@ -155,7 +163,9 @@ export default function useKillua<
               broadcastChannel.postMessage({
                 type: broadcastChannelMessages.sliceEventOnExpire,
                 key: params.key,
-                value: sliceState
+                value: getSliceFromStorage({
+                  config: params
+                })
               });
             }
           },

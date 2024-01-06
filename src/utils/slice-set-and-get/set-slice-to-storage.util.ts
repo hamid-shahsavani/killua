@@ -9,6 +9,7 @@ import encryptStorageData from '../cryptography/encrypt-storage-data.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import schemaValidation from '../slice-schema-validation/schema-validation.util';
+import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slice-expire-timestamp-to-storage.util';
 
 export default function setSliceToStorage<
   GSlice,
@@ -40,6 +41,11 @@ export default function setSliceToStorage<
         })
       : JSON.stringify(params.slice)
   );
+
+  // set slice expire timestamp to storage
+  setSliceExpireTimestampToStorage({
+    config: params.config
+  });
 
   // call broadcast channel with event `broadcastChannelMessages.sliceEventOnChange` for call event `onChange` and set updated slice value to `sliceState`
   new BroadcastChannel('killua').postMessage({
