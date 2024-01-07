@@ -1,3 +1,3 @@
-export default function isAvailableCsr(): boolean {
+export function isAvailableCsr(): boolean {
   return typeof window !== 'undefined';
 }

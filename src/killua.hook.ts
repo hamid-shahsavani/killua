@@ -9,7 +9,7 @@ import {
 } from './types/config.type';
 import setSliceToStorage from './utils/slice-set-and-get/set-slice-to-storage.util';
 import errorTemplate from './utils/other/error-template.utli';
-import isAvailableCsr from './utils/other/is-available-csr.util';
+import { isAvailableCsr } from './utils/other/is-available-csr.util';
 import { getSliceExpireTimestampFromStorage } from './utils/slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
 import broadcastEvents from './utils/other/broadcast-events.util';
 import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
@@ -70,7 +70,10 @@ export default function useKillua<
   };
 
   // `is-config-ssr` truthy ===> default `isReady` value is `false` and set to `true` in client-side in return (only for `is-config-ssr`)
-  const [isReady, setIsReady] = useState<boolean>(false);
+  // `is-config-ssr` falsy ===> default `isReady` value is true
+  const [isReady, setIsReady] = useState<boolean>(
+    isConfigSsr({ config: params }) ? false : true
+  );
 
   // `is-config-ssr` is truthy ===> return `params.defaultServer`
   // `is-config-ssr` is falsy ===> return slice value from storage
@@ -110,7 +113,7 @@ export default function useKillua<
         key: params.key
       });
     }
-  }, []);
+  }, [isReady]);
 
   // is-config-ssr && !isReady ===> set `isReady` to `true` | get slice from storage and set to `sliceState`
   useEffect((): void => {
@@ -221,11 +224,7 @@ export default function useKillua<
         slice: value instanceof Function ? value(sliceState) : value
       });
     },
-    ...(isConfigSsr({
-      config: params
-    }) && {
-      isReady
-    }),
+    ...(isConfigSsr({ config: params }) && { isReady }),
     reducers,
     selectors
   } as TReturn<GSlice, GDefaultServer, GSelectors, GReducers>;

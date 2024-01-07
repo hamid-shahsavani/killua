@@ -9,7 +9,6 @@ import callSliceEvent from '../slice-call-event/call-slice-event.util';
 import defaultSliceValue from '../other/default-slice-value.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
 import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
-import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slice-expire-timestamp-to-storage.util';
 
 export default function broadcastEvents<
   GSlice,
@@ -34,20 +33,15 @@ export default function broadcastEvents<
       event.data.type === broadcastChannelMessages.storageValueNotValid &&
       event.data.key === params.config.key
     ) {
+      setSliceConfigChecksumToStorage({
+        config: params.config
+      });
       params.setSliceState(defalutSliceValueClient);
       localStorage.removeItem(
         generateSliceStorageKey({
           key: params.config.key
         })
       );
-      setSliceConfigChecksumToStorage({
-        config: params.config
-      });
-      if (params.config.expire) {
-        setSliceExpireTimestampToStorage({
-          config: params.config
-        });
-      }
     }
     // call post message `broadcastChannelMessages.sliceEventOnChange` after set slice value to storage
     // call message `broadcastChannelMessages.sliceEventOnChange` ===> set `event.data.value` to `sliceState` | call event `onChange`
