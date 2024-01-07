@@ -43,9 +43,11 @@ export default function setSliceToStorage<
   );
 
   // set slice expire timestamp to storage
-  setSliceExpireTimestampToStorage({
-    config: params.config
-  });
+  if (params.config.expire) {
+    setSliceExpireTimestampToStorage({
+      config: params.config
+    });
+  }
 
   // call broadcast channel with event `broadcastChannelMessages.sliceEventOnChange` for call event `onChange` and set updated slice value to `sliceState`
   new BroadcastChannel('killua').postMessage({
