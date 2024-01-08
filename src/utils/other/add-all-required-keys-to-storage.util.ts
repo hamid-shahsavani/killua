@@ -17,42 +17,29 @@ function addKeyToStorage(params: {
   saltKey: string;
   defaultStorage: any;
 }): void {
-  const storageValue = localStorage.getItem(params.storageKey);
+  const { storageKey, saltKey, defaultStorage } = params;
+  const storageValue = localStorage.getItem(storageKey);
+  const storageErrorHandler = (): void => {
+    localStorage.setItem(
+      storageKey,
+      encryptStorageData({ data: defaultStorage, saltKey })
+    );
+    removeAllSlicesFromStorage();
+  };
   if (storageValue) {
     try {
       const decryptedStorageValue = decryptStorageData({
         data: storageValue,
-        saltKey: params.saltKey
+        saltKey
       });
       if (!decryptedStorageValue) {
-        localStorage.setItem(
-          params.storageKey,
-          encryptStorageData({
-            data: params.defaultStorage,
-            saltKey: params.saltKey
-          })
-        );
-        removeAllSlicesFromStorage();
+        storageErrorHandler();
       }
     } catch (error) {
-      localStorage.setItem(
-        params.storageKey,
-        encryptStorageData({
-          data: params.defaultStorage,
-          saltKey: params.saltKey
-        })
-      );
-      removeAllSlicesFromStorage();
+      storageErrorHandler();
     }
   } else {
-    localStorage.setItem(
-      params.storageKey,
-      encryptStorageData({
-        data: params.defaultStorage,
-        saltKey: params.saltKey
-      })
-    );
-    removeAllSlicesFromStorage();
+    storageErrorHandler();
   }
 }
 
