@@ -19,9 +19,7 @@ export function getSliceExpireTimestampFromStorage<
   let returnValue: null | number = null;
 
   // get `storageKeys.slicesExpireTime` from storage
-  const storageValue: Record<string, number> = getSlicesExpireTimeFromStorage({
-    config: params.config
-  });
+  const storageValue: Record<string, number> = getSlicesExpireTimeFromStorage();
 
   /*
     if (`storageKeys.slicesExpireTime` is not exist in `storageValue`) {

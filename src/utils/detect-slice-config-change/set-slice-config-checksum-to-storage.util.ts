@@ -24,9 +24,7 @@ export function setSliceConfigChecksumToStorage<
   });
 
   // set `storageKeys.slicesChecksum` with current slice checksum to storage
-  const storageValue: Record<string, string> = getSlicesChecksumFromStorage({
-    config: params.config
-  });
+  const storageValue: Record<string, string> = getSlicesChecksumFromStorage();
   storageValue[params.config.key] = sliceChecksum;
 
   localStorage.setItem(

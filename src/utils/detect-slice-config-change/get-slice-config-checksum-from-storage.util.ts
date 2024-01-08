@@ -19,9 +19,7 @@ export function getSliceConfigChecksumFromStorage<
   let returnValue: null | string = null;
 
   // get `storageKeys.slicesChecksum` from storage
-  const storageValue: Record<string, string> = getSlicesChecksumFromStorage({
-    config: params.config
-  });
+  const storageValue: Record<string, string> = getSlicesChecksumFromStorage();
 
   /*
     if (`storageKeys.slicesChecksum` is not exist in `storageValue`) {

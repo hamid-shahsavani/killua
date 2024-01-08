@@ -28,9 +28,7 @@ export function setSliceExpireTimestampToStorage<
     : null;
 
   // set `storageKeys.slicesExpireTime` with current slice expire timestamp to storage
-  const storageValue: Record<string, number> = getSlicesExpireTimeFromStorage({
-    config: params.config
-  });
+  const storageValue: Record<string, number> = getSlicesExpireTimeFromStorage();
   if (sliceExpireTimestamp) {
     storageValue[params.config.key] = sliceExpireTimestamp;
   }
