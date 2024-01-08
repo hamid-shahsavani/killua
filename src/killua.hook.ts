@@ -18,6 +18,7 @@ import generateSliceConfigChecksum from './utils/detect-slice-config-change/gene
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { isConfigSsr } from './utils/other/is-config-ssr.util';
 import { isSliceStorageDefaultClient } from './utils/other/is-slice-storage-default-client.util';
+import generateSliceStorageKey from './utils/other/generate-slice-storage-key.util';
 
 type URemoveValueFromParam<GSlice, GFn> = GFn extends (
   value: GSlice,
@@ -99,7 +100,7 @@ export default function useKillua<
     }
   });
 
-  // is-changed slice config by developer ===> call broadcast channel event `broadcastChannelMessages.storageValueNotValid`
+  // is-changed slice config by developer ===> set `defaultSliceValueClient` to `returnValue` | remove slice key from storage
   useEffect((): void => {
     const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
       config: params
@@ -108,11 +109,12 @@ export default function useKillua<
       config: params
     });
     if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
-      console.log(`[${params.key}] slice config changed`);
-      new BroadcastChannel('killua').postMessage({
-        type: broadcastChannelMessages.storageValueNotValid,
-        key: params.key
-      });
+      localStorage.removeItem(
+        generateSliceStorageKey({
+          key: params.key
+        })
+      );
+      setSliceState(defaultValueSlice.client);
     }
   }, [isReady]);
 

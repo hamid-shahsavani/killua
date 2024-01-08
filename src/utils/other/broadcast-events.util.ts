@@ -8,7 +8,6 @@ import {
 import callSliceEvent from '../slice-call-event/call-slice-event.util';
 import defaultSliceValue from '../other/default-slice-value.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
-import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
 
 export default function broadcastEvents<
   GSlice,
@@ -28,39 +27,22 @@ export default function broadcastEvents<
 
   // broadcast events
   new BroadcastChannel('killua').onmessage = event => {
-    // call message `broadcastChannelMessages.storageValueNotValid` ===> set `defalutSliceValueClient` to `sliceState` | remove slice value from storage | update slice expire time | update slice checksum
-    if (
-      event.data.type === broadcastChannelMessages.storageValueNotValid &&
-      event.data.key === params.config.key
-    ) {
-      localStorage.removeItem(
-        generateSliceStorageKey({
-          key: params.config.key
-        })
-      );
-      setSliceConfigChecksumToStorage({
-        config: params.config
-      });
-      params.setSliceState(defalutSliceValueClient);
-    }
     // call post message `broadcastChannelMessages.sliceEventOnChange` after set slice value to storage
     // call message `broadcastChannelMessages.sliceEventOnChange` ===> set `event.data.value` to `sliceState` | call event `onChange`
     if (
       event.data.type === broadcastChannelMessages.sliceEventOnChange &&
-      event.data.key === params.config.key
+      event.data.key === params.config.key &&
+      event.data.value !== params.sliceState
     ) {
       params.setSliceState(event.data.value);
-      // `event.data.value` is not equal to `params.sliceState` ===> call event `onChange`
-      if (event.data.value !== params.sliceState) {
-        callSliceEvent({
-          slice: event.data.value,
-          type: 'onChange',
-          config: params.config
-        });
-      }
+      callSliceEvent({
+        slice: event.data.value,
+        type: 'onChange',
+        config: params.config
+      });
     }
     // call post message `broadcastChannelMessages.sliceEventOnExpire` after set slice expire timestamp to storage
-    // call message `broadcastChannelMessages.sliceEventOnExpire` ===> set `defalutSliceValueClient` | remove slice key from storage| update slice expire time | call event `onExpire`
+    // call message `broadcastChannelMessages.sliceEventOnExpire` ===> set `defalutSliceValueClient` to slice state | remove slice key from storage | call event `onExpire`
     if (
       event.data.type === broadcastChannelMessages.sliceEventOnExpire &&
       event.data.key === params.config.key

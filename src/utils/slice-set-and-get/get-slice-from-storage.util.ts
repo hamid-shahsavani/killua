@@ -1,4 +1,3 @@
-import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
 import {
   TConfig,
   TDefaultServer,
@@ -59,12 +58,13 @@ export default function getSliceFromStorage<
         config: params.config
       });
     } catch (error: any) {
+      // schema validation fail || JSON.parse fail || decrypt fail ===> set `defaultSliceValueClient` to `returnValue` | remove slice key from storage
+      localStorage.removeItem(
+        generateSliceStorageKey({
+          key: params.config.key
+        })
+      );
       returnValue = defaultSliceValueClient;
-      // schema validation fail || JSON.parse fail || decrypt fail ===> call broadcast channel event `broadcastChannelMessages.storageValueNotValid`
-      new BroadcastChannel('killua').postMessage({
-        type: broadcastChannelMessages.storageValueNotValid,
-        key: params.config.key
-      });
     }
   }
 
