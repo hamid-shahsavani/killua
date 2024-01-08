@@ -33,15 +33,15 @@ export default function broadcastEvents<
       event.data.type === broadcastChannelMessages.storageValueNotValid &&
       event.data.key === params.config.key
     ) {
-      setSliceConfigChecksumToStorage({
-        config: params.config
-      });
-      params.setSliceState(defalutSliceValueClient);
       localStorage.removeItem(
         generateSliceStorageKey({
           key: params.config.key
         })
       );
+      setSliceConfigChecksumToStorage({
+        config: params.config
+      });
+      params.setSliceState(defalutSliceValueClient);
     }
     // call post message `broadcastChannelMessages.sliceEventOnChange` after set slice value to storage
     // call message `broadcastChannelMessages.sliceEventOnChange` ===> set `event.data.value` to `sliceState` | call event `onChange`

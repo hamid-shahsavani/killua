@@ -1,5 +1,4 @@
 import { broadcastChannelMessages } from '../../constants/broadcast-channel-messages.constant';
-import { storageKeys } from '../../constants/storage-keys.constant';
 import {
   TConfig,
   TDefaultServer,
@@ -11,6 +10,7 @@ import defaultSliceValue from '../other/default-slice-value.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import schemaValidation from '../slice-schema-validation/schema-validation.util';
+import { addAllRequiredKeysToStorage } from '../other/add-all-required-keys-to-storage.util';
 
 export default function getSliceFromStorage<
   GSlice,
@@ -34,6 +34,11 @@ export default function getSliceFromStorage<
   // default is `default-client value` (update after get slice value from storage)
   let returnValue: GSlice = defaultSliceValueClient;
 
+  // add all required keys to storage
+  addAllRequiredKeysToStorage({
+    config: params.config
+  });
+
   // get slice value from storageand update `returnValue`
   const storageValue: string | null = localStorage.getItem(storageKey);
 
@@ -52,18 +57,6 @@ export default function getSliceFromStorage<
       schemaValidation({
         data: returnValue,
         config: params.config
-      });
-      // params.config.expire truthy ===> check `storageKeys.slicesExpireTime` object in localstorage is valid
-      if (params.config.expire) {
-        decryptStorageData({
-          data: localStorage.getItem(storageKeys.slicesExpireTime),
-          saltKey: getSaltKeyFromStorage()
-        });
-      }
-      // check `storageKeys.slicesChecksum` object in localstorage is valid
-      decryptStorageData({
-        data: localStorage.getItem(storageKeys.slicesChecksum),
-        saltKey: getSaltKeyFromStorage()
       });
     } catch (error: any) {
       returnValue = defaultSliceValueClient;

@@ -108,6 +108,7 @@ export default function useKillua<
       config: params
     });
     if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
+      console.log(`[${params.key}] slice config changed`);
       new BroadcastChannel('killua').postMessage({
         type: broadcastChannelMessages.storageValueNotValid,
         key: params.key
