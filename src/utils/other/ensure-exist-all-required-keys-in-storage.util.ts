@@ -17,33 +17,37 @@ function addKeyToStorage(params: {
   saltKey: string;
   defaultStorage: any;
 }): void {
-  const { storageKey, saltKey, defaultStorage } = params;
-  const storageValue = localStorage.getItem(storageKey);
-  const storageErrorHandler = (): void => {
-    localStorage.setItem(
-      storageKey,
-      encryptStorageData({ data: defaultStorage, saltKey })
-    );
-    removeAllSlicesFromStorage();
-  };
+  localStorage.setItem(
+    params.storageKey,
+    encryptStorageData({ data: params.defaultStorage, saltKey: params.saltKey })
+  );
+  removeAllSlicesFromStorage();
+}
+
+function ensureExistKeyInStorage(params: {
+  storageKey: string;
+  saltKey: string;
+  defaultStorage: any;
+}): void {
+  const storageValue = localStorage.getItem(params.storageKey);
   if (storageValue) {
     try {
       const decryptedStorageValue = decryptStorageData({
         data: storageValue,
-        saltKey
+        saltKey: params.saltKey
       });
       if (!decryptedStorageValue) {
-        storageErrorHandler();
+        addKeyToStorage(params);
       }
     } catch (error) {
-      storageErrorHandler();
+      addKeyToStorage(params);
     }
   } else {
-    storageErrorHandler();
+    addKeyToStorage(params);
   }
 }
 
-export function addAllRequiredKeysToStorage<
+export function ensureExistAllRequiredKeysInStorage<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
@@ -51,15 +55,15 @@ export function addAllRequiredKeysToStorage<
 >(params: {
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
 }): void {
-  // add `storageKeys.slicesSaltKey` key to storage
-  addKeyToStorage({
+  // ensure exist `storageKeys.slicesSaltKey` key in storage
+  ensureExistKeyInStorage({
     storageKey: storageKeys.slicesSaltKey,
     saltKey: 'killua',
     defaultStorage: Math.floor(Math.random() * Date.now()).toString(36)
   });
 
-  // add `storageKeys.slicesSaltKey` key to storage
-  addKeyToStorage({
+  // ensure exist `storageKeys.slicesChecksum` key in storage
+  ensureExistKeyInStorage({
     storageKey: storageKeys.slicesChecksum,
     saltKey: getSaltKeyFromStorage(),
     defaultStorage: {
@@ -69,8 +73,8 @@ export function addAllRequiredKeysToStorage<
     }
   });
 
-  // add `storageKeys.slicesExpireTime` key to storage
-  addKeyToStorage({
+  // ensure exist `storageKeys.slicesExpireTime` key in storage
+  ensureExistKeyInStorage({
     storageKey: storageKeys.slicesExpireTime,
     saltKey: getSaltKeyFromStorage(),
     defaultStorage: {

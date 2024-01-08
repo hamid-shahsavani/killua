@@ -10,7 +10,7 @@ import defaultSliceValue from '../other/default-slice-value.util';
 import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import schemaValidation from '../slice-schema-validation/schema-validation.util';
-import { addAllRequiredKeysToStorage } from '../other/add-all-required-keys-to-storage.util';
+import { ensureExistAllRequiredKeysInStorage } from '../other/ensure-exist-all-required-keys-in-storage.util';
 
 export default function getSliceFromStorage<
   GSlice,
@@ -34,8 +34,8 @@ export default function getSliceFromStorage<
   // default is `default-client value` (update after get slice value from storage)
   let returnValue: GSlice = defaultSliceValueClient;
 
-  // add all required keys to storage
-  addAllRequiredKeysToStorage({
+  // ensure exist all required keys in storage
+  ensureExistAllRequiredKeysInStorage({
     config: params.config
   });
 
