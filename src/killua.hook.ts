@@ -19,6 +19,7 @@ import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-c
 import { isConfigSsr } from './utils/other/is-config-ssr.util';
 import { isSliceStorageDefaultClient } from './utils/other/is-slice-storage-default-client.util';
 import generateSliceStorageKey from './utils/other/generate-slice-storage-key.util';
+import { setSliceConfigChecksumToStorage } from './utils/detect-slice-config-change/set-slice-config-checksum-to-storage.util';
 
 type URemoveValueFromParam<GSlice, GFn> = GFn extends (
   value: GSlice,
@@ -102,19 +103,26 @@ export default function useKillua<
 
   // is-changed slice config by developer ===> set `defaultSliceValueClient` to `returnValue` | remove slice key from storage
   useEffect((): void => {
-    const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
-      config: params
-    });
-    const currentSliceConfigChecksum = generateSliceConfigChecksum({
-      config: params
-    });
-    if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
-      localStorage.removeItem(
-        generateSliceStorageKey({
-          key: params.key
-        })
-      );
-      setSliceState(defaultValueSlice.client);
+    if (isReady) {
+      const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
+        config: params
+      });
+      const currentSliceConfigChecksum = generateSliceConfigChecksum({
+        config: params
+      });
+      if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
+        console.log(`[${params.key}]: checksum update
+        `);
+        setSliceConfigChecksumToStorage({
+          config: params
+        });
+        localStorage.removeItem(
+          generateSliceStorageKey({
+            key: params.key
+          })
+        );
+        setSliceState(defaultValueSlice.client);
+      }
     }
   }, [isReady]);
 

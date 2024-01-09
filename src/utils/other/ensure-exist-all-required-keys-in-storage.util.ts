@@ -8,8 +8,8 @@ import {
 import decryptStorageData from '../cryptography/decrypt-storage-data.util';
 import encryptStorageData from '../cryptography/encrypt-storage-data.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
+import generateSliceConfigChecksum from '../detect-slice-config-change/generate-slice-config-checksum.util';
 import timeStringToSeconds from '../slice-expire-timer/time-string-to-second.util';
-import generateSliceStorageKey from './generate-slice-storage-key.util';
 import { removeAllSlicesFromStorage } from './remove-all-slices-from-storage.util';
 
 function addKeyToStorage(params: {
@@ -67,8 +67,8 @@ export function ensureExistAllRequiredKeysInStorage<
     storageKey: storageKeys.slicesChecksum,
     saltKey: getSaltKeyFromStorage(),
     defaultStorage: {
-      [params.config.key]: generateSliceStorageKey({
-        key: params.config.key
+      [params.config.key]: generateSliceConfigChecksum({
+        config: params.config
       })
     }
   });

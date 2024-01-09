@@ -31,8 +31,7 @@ export default function broadcastEvents<
     // call message `broadcastChannelMessages.sliceEventOnChange` ===> set `event.data.value` to `sliceState` | call event `onChange`
     if (
       event.data.type === broadcastChannelMessages.sliceEventOnChange &&
-      event.data.key === params.config.key &&
-      event.data.value !== params.sliceState
+      event.data.key === params.config.key
     ) {
       params.setSliceState(event.data.value);
       callSliceEvent({
