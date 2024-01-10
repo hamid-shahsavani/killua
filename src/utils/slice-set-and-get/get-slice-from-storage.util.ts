@@ -4,14 +4,14 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import decryptStorageData from '../cryptography/decrypt-storage-data.util';
-import defaultSliceValue from '../other/default-slice-value.util';
-import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
+import { decryptStorageData } from '../cryptography/decrypt-storage-data.util';
+import { defaultSliceValue } from '../other/default-slice-value.util';
+import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
-import schemaValidation from '../slice-schema-validation/schema-validation.util';
+import { schemaValidation } from '../slice-schema-validation/schema-validation.util';
 import { ensureExistAllRequiredKeysInStorage } from '../other/ensure-exist-all-required-keys-in-storage.util';
 
-export default function getSliceFromStorage<
+export function getSliceFromStorage<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,

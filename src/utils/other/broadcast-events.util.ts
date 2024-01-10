@@ -5,11 +5,11 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import callSliceEvent from '../slice-call-event/call-slice-event.util';
-import defaultSliceValue from '../other/default-slice-value.util';
-import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
+import { callSliceEvent } from '../slice-call-event/call-slice-event.util';
+import { defaultSliceValue } from '../other/default-slice-value.util';
+import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
 
-export default function broadcastEvents<
+export function broadcastEvents<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,

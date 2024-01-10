@@ -5,10 +5,10 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import encryptStorageData from '../cryptography/encrypt-storage-data.util';
+import { encryptStorageData } from '../cryptography/encrypt-storage-data.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
-import timeStringToSeconds from './time-string-to-second.util';
+import { timeStringToSeconds } from './time-string-to-second.util';
 
 export function setSliceExpireTimestampToStorage<
   GSlice,

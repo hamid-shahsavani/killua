@@ -5,13 +5,13 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import encryptStorageData from '../cryptography/encrypt-storage-data.util';
-import generateSliceStorageKey from '../other/generate-slice-storage-key.util';
+import { encryptStorageData } from '../cryptography/encrypt-storage-data.util';
+import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
-import schemaValidation from '../slice-schema-validation/schema-validation.util';
+import { schemaValidation } from '../slice-schema-validation/schema-validation.util';
 import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slice-expire-timestamp-to-storage.util';
 
-export default function setSliceToStorage<
+export function setSliceToStorage<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,

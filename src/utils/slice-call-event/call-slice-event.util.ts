@@ -5,7 +5,7 @@ import {
   TSelectors
 } from '../../types/config.type';
 
-export default function callSliceEvent<
+export function callSliceEvent<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,

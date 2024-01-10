@@ -5,7 +5,7 @@ import {
   TSelectors
 } from '../../types/config.type';
 
-export default function schemaValidation<
+export function schemaValidation<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,

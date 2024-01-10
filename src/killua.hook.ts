@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react';
-import getSliceFromStorage from './utils/slice-set-and-get/get-slice-from-storage.util';
-import defaultSliceValue from './utils/other/default-slice-value.util';
+import { getSliceFromStorage } from './utils/slice-set-and-get/get-slice-from-storage.util';
+import { defaultSliceValue } from './utils/other/default-slice-value.util';
 import {
   TConfig,
   TDefaultServer,
   TReducers,
   TSelectors
 } from './types/config.type';
-import setSliceToStorage from './utils/slice-set-and-get/set-slice-to-storage.util';
-import errorTemplate from './utils/other/error-template.utli';
+import { setSliceToStorage } from './utils/slice-set-and-get/set-slice-to-storage.util';
+import { errorTemplate } from './utils/other/error-template.utli';
 import { isAvailableCsr } from './utils/other/is-available-csr.util';
 import { getSliceExpireTimestampFromStorage } from './utils/slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
-import broadcastEvents from './utils/other/broadcast-events.util';
+import { broadcastEvents } from './utils/other/broadcast-events.util';
 import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
 import { errorMessages } from './constants/error-messages.constant';
-import generateSliceConfigChecksum from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
+import { generateSliceConfigChecksum } from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { isConfigSsr } from './utils/other/is-config-ssr.util';
 import { isSliceStorageDefaultClient } from './utils/other/is-slice-storage-default-client.util';
-import generateSliceStorageKey from './utils/other/generate-slice-storage-key.util';
+import { generateSliceStorageKey } from './utils/other/generate-slice-storage-key.util';
 import { setSliceConfigChecksumToStorage } from './utils/detect-slice-config-change/set-slice-config-checksum-to-storage.util';
 
 type URemoveValueFromParam<GSlice, GFn> = GFn extends (

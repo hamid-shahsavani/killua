@@ -6,7 +6,7 @@ import {
 } from '../../types/config.type';
 import * as CryptoJS from 'crypto-js';
 
-export default function generateSliceConfigChecksum<
+export function generateSliceConfigChecksum<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,

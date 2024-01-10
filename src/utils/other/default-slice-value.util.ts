@@ -4,10 +4,10 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import schemaValidation from '../slice-schema-validation/schema-validation.util';
+import { schemaValidation } from '../slice-schema-validation/schema-validation.util';
 import { isConfigSsr } from './is-config-ssr.util';
 
-export default function defaultSliceValue<
+export function defaultSliceValue<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,

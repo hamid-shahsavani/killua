@@ -1,6 +1,4 @@
-export default function timeStringToSeconds(params: {
-  timeString: string;
-}): number {
+export function timeStringToSeconds(params: { timeString: string }): number {
   const timeComponents: string[] = params.timeString.split('-');
   let seconds = 0;
   for (const component of timeComponents) {

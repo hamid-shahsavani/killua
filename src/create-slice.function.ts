@@ -5,7 +5,7 @@ import {
   TReducers,
   TSelectors
 } from './types/config.type';
-import errorTemplate from './utils/other/error-template.utli';
+import { errorTemplate } from './utils/other/error-template.utli';
 import {
   isBoolean,
   isEmptyObject,
