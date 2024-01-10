@@ -18,8 +18,6 @@ import { generateSliceConfigChecksum } from './utils/detect-slice-config-change/
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { isConfigSsr } from './utils/other/is-config-ssr.util';
 import { isSliceStorageDefaultClient } from './utils/other/is-slice-storage-default-client.util';
-import { generateSliceStorageKey } from './utils/other/generate-slice-storage-key.util';
-import { setSliceConfigChecksumToStorage } from './utils/detect-slice-config-change/set-slice-config-checksum-to-storage.util';
 
 type URemoveValueFromParam<GSlice, GFn> = GFn extends (
   value: GSlice,
@@ -111,15 +109,11 @@ export default function useKillua<
         config: params.config
       });
       if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
-        setSliceState(defaultValueSlice.client);
-        setSliceConfigChecksumToStorage({
-          config: params.config
+        new BroadcastChannel('killua').postMessage({
+          type: broadcastChannelMessages.sliceConfigChecksumChanged,
+          key: params.config.key,
+          value: sliceState
         });
-        localStorage.removeItem(
-          generateSliceStorageKey({
-            key: params.config.key
-          })
-        );
       }
     }
   }, [isReady]);

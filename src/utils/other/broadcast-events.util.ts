@@ -8,6 +8,7 @@ import {
 import { callSliceEvent } from '../slice-call-event/call-slice-event.util';
 import { defaultSliceValue } from '../other/default-slice-value.util';
 import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
+import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
 
 export function broadcastEvents<
   GSlice,
@@ -28,7 +29,6 @@ export function broadcastEvents<
   // broadcast events
   new BroadcastChannel('killua').onmessage = event => {
     // call post message `broadcastChannelMessages.sliceEventOnChange` after set slice value to storage
-    // call message `broadcastChannelMessages.sliceEventOnChange` ===> set `event.data.value` to `sliceState` | call event `onChange`
     if (
       event.data.type === broadcastChannelMessages.sliceEventOnChange &&
       event.data.key === params.config.key
@@ -41,7 +41,6 @@ export function broadcastEvents<
       });
     }
     // call post message `broadcastChannelMessages.sliceEventOnExpire` after set slice expire timestamp to storage
-    // call message `broadcastChannelMessages.sliceEventOnExpire` ===> set `defalutSliceValueClient` to slice state | remove slice key from storage | call event `onExpire`
     if (
       event.data.type === broadcastChannelMessages.sliceEventOnExpire &&
       event.data.key === params.config.key
@@ -57,6 +56,21 @@ export function broadcastEvents<
         config: params.config,
         type: 'onExpire'
       });
+    }
+    // call post message `broadcastChannelMessages.sliceConfigChecksumChanged` after not equal slice checksum from storage and current slice checksum
+    if (
+      event.data.type === broadcastChannelMessages.sliceConfigChecksumChanged &&
+      event.data.key === params.config.key
+    ) {
+      params.setSliceState(defalutSliceValueClient);
+      setSliceConfigChecksumToStorage({
+        config: params.config
+      });
+      localStorage.removeItem(
+        generateSliceStorageKey({
+          key: params.config.key
+        })
+      );
     }
   };
 }
