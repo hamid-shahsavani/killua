@@ -4,8 +4,8 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import getSliceFromStorage from '../slice-set-and-get/get-slice-from-storage.util';
-import defaultSliceValue from './default-slice-value.util';
+import { getSliceFromStorage } from '../slice-set-and-get/get-slice-from-storage.util';
+import { defaultSliceValue } from './default-slice-value.util';
 
 export function isSliceStorageDefaultClient<
   GSlice,

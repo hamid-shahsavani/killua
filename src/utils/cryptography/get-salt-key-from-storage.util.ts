@@ -1,5 +1,5 @@
 import { storageKeys } from '../../constants/storage-keys.constant';
-import decryptStorageData from './decrypt-storage-data.util';
+import { decryptStorageData } from './decrypt-storage-data.util';
 
 export function getSaltKeyFromStorage(): string {
   return decryptStorageData({

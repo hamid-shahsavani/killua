@@ -5,8 +5,8 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import encryptStorageData from '../cryptography/encrypt-storage-data.util';
-import generateSliceConfigChecksum from './generate-slice-config-checksum.util';
+import { encryptStorageData } from '../cryptography/encrypt-storage-data.util';
+import { generateSliceConfigChecksum } from './generate-slice-config-checksum.util';
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import { getSlicesChecksumFromStorage } from './get-slices-checksum-from-storage.util';
 
