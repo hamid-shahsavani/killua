@@ -15,13 +15,21 @@ import {
   isString,
   isUndefined
 } from './utils/other/type-guards.util';
+import { getSliceFromStorage } from './utils/slice-set-and-get/get-slice-from-storage.util';
+import { setSliceToStorage } from './utils/slice-set-and-get/set-slice-to-storage.util';
 
 export default function createSlice<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>
->(params: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>) {
+>(
+  params: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>
+): {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+  get: () => GSlice;
+  set: (value: GSlice) => void;
+} {
   // validate `defaultClient`
   if (isUndefined(params.defaultClient)) {
     errorTemplate({
@@ -207,5 +215,10 @@ export default function createSlice<
     });
   }
 
-  return params;
+  return {
+    config: params,
+    get: (): GSlice => getSliceFromStorage({ config: params }),
+    set: (value: GSlice): void =>
+      setSliceToStorage({ config: params, slice: value })
+  };
 }

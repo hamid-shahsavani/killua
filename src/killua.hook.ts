@@ -56,17 +56,17 @@ export default function useKillua<
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>
->(
-  params: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>
-): TReturn<GSlice, GDefaultServer, GSelectors, GReducers> {
+>(params: {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+}): TReturn<GSlice, GDefaultServer, GSelectors, GReducers> {
   // default value slice
   const defaultValueSlice: Record<'server' | 'client', GSlice> = {
     server: defaultSliceValue({
-      config: params,
+      config: params.config,
       type: 'server'
     }),
     client: defaultSliceValue({
-      config: params,
+      config: params.config,
       type: 'client'
     })
   };
@@ -74,15 +74,15 @@ export default function useKillua<
   // `is-config-ssr` truthy ===> default `isReady` value is `false` and set to `true` in client-side in return (only for `is-config-ssr`)
   // `is-config-ssr` falsy ===> default `isReady` value is true
   const [isReady, setIsReady] = useState<boolean>(
-    isConfigSsr({ config: params }) ? false : true
+    isConfigSsr({ config: params.config }) ? false : true
   );
 
-  // `is-config-ssr` is truthy ===> return `params.defaultServer`
+  // `is-config-ssr` is truthy ===> return `params.config.defaultServer`
   // `is-config-ssr` is falsy ===> return slice value from storage
   const [sliceState, setSliceState] = useState<GSlice>((): GSlice => {
     if (
       isConfigSsr({
-        config: params
+        config: params.config
       })
     ) {
       return defaultValueSlice.server;
@@ -91,12 +91,12 @@ export default function useKillua<
       if (!isAvailableCsr()) {
         errorTemplate({
           msg: errorMessages.defaultServer.required,
-          key: params.key
+          key: params.config.key
         });
       }
       // `is-config-ssr` is `false` and application is client-side ===> return slice value from storage
       return getSliceFromStorage({
-        config: params
+        config: params.config
       });
     }
   });
@@ -105,23 +105,21 @@ export default function useKillua<
   useEffect((): void => {
     if (isReady) {
       const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
-        config: params
+        config: params.config
       });
       const currentSliceConfigChecksum = generateSliceConfigChecksum({
-        config: params
+        config: params.config
       });
       if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
-        console.log(`[${params.key}]: checksum update
-        `);
+        setSliceState(defaultValueSlice.client);
         setSliceConfigChecksumToStorage({
-          config: params
+          config: params.config
         });
         localStorage.removeItem(
           generateSliceStorageKey({
-            key: params.key
+            key: params.config.key
           })
         );
-        setSliceState(defaultValueSlice.client);
       }
     }
   }, [isReady]);
@@ -130,14 +128,14 @@ export default function useKillua<
   useEffect((): void => {
     if (
       isConfigSsr({
-        config: params
+        config: params.config
       }) &&
       !isReady
     ) {
       setIsReady(true);
       setSliceState(
         getSliceFromStorage({
-          config: params
+          config: params.config
         })
       );
     }
@@ -146,31 +144,31 @@ export default function useKillua<
   // broadcast channel events
   useEffect((): void => {
     broadcastEvents({
-      config: params,
+      config: params.config,
       sliceState,
       setSliceState
     });
   }, []);
 
-  // params.expire is truthy && (storage slice !== default client slice) ===> check slice expire timestamp
+  // params.config.expire is truthy && (storage slice !== default client slice) ===> check slice expire timestamp
   useEffect((): (() => void) => {
     let intervalId: any = null;
     const broadcastChannel = new BroadcastChannel('killua');
     if (
-      params.expire &&
+      params.config.expire &&
       !isSliceStorageDefaultClient({
-        config: params
+        config: params.config
       })
     ) {
       const sliceExpireTimestamp = getSliceExpireTimestampFromStorage({
-        config: params
+        config: params.config
       });
       if (Number(sliceExpireTimestamp) < Date.now()) {
         broadcastChannel.postMessage({
           type: broadcastChannelMessages.sliceEventOnExpire,
-          key: params.key,
+          key: params.config.key,
           value: getSliceFromStorage({
-            config: params
+            config: params.config
           })
         });
       } else {
@@ -179,9 +177,9 @@ export default function useKillua<
             if (Number(sliceExpireTimestamp) < Date.now()) {
               broadcastChannel.postMessage({
                 type: broadcastChannelMessages.sliceEventOnExpire,
-                key: params.key,
+                key: params.config.key,
                 value: getSliceFromStorage({
-                  config: params
+                  config: params.config
                 })
               });
             }
@@ -195,14 +193,17 @@ export default function useKillua<
     };
   }, [sliceState]);
 
-  // params.selectors is truthy ===> assign slice config selectors to selectors object
+  // params.config.selectors is truthy ===> assign slice config selectors to selectors object
   const selectors: Record<string, (payload?: any) => any> = {};
-  if (params.selectors!) {
-    for (const selectorName in params.selectors!) {
+  if (params.config.selectors!) {
+    for (const selectorName in params.config.selectors!) {
       if (
-        Object.prototype.hasOwnProperty.call(params.selectors!, selectorName)
+        Object.prototype.hasOwnProperty.call(
+          params.config.selectors!,
+          selectorName
+        )
       ) {
-        const selectorFunc = params.selectors[selectorName];
+        const selectorFunc = params.config.selectors[selectorName];
         selectors[selectorName] = (payload?: any) => {
           return selectorFunc(sliceState, payload);
         };
@@ -210,15 +211,20 @@ export default function useKillua<
     }
   }
 
-  // params.reducers is truthy ===> assign slice config reducers to reducers object
+  // params.config.reducers is truthy ===> assign slice config reducers to reducers object
   const reducers: Record<string, (payload?: any) => GSlice> = {};
-  if (params.reducers!) {
-    for (const reducerName in params.reducers!) {
-      if (Object.prototype.hasOwnProperty.call(params.reducers!, reducerName)) {
-        const reducerFunc = params.reducers[reducerName];
+  if (params.config.reducers!) {
+    for (const reducerName in params.config.reducers!) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          params.config.reducers!,
+          reducerName
+        )
+      ) {
+        const reducerFunc = params.config.reducers[reducerName];
         reducers[reducerName] = (payload?: any) => {
           setSliceToStorage({
-            config: params,
+            config: params.config,
             slice: reducerFunc(sliceState, payload)
           });
           return reducerFunc(sliceState, payload);
@@ -231,11 +237,11 @@ export default function useKillua<
     get: sliceState,
     set: (value: GSlice | ((value: GSlice) => GSlice)) => {
       setSliceToStorage({
-        config: params,
+        config: params.config,
         slice: value instanceof Function ? value(sliceState) : value
       });
     },
-    ...(isConfigSsr({ config: params }) && { isReady }),
+    ...(isConfigSsr({ config: params.config }) && { isReady }),
     reducers,
     selectors
   } as TReturn<GSlice, GDefaultServer, GSelectors, GReducers>;
