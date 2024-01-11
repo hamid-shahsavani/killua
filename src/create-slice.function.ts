@@ -6,6 +6,8 @@ import {
   TSelectors
 } from './types/config.type';
 import { errorTemplate } from './utils/other/error-template.utli';
+import { sliceConfigReducers } from './utils/other/slice-config-reducers.util';
+import { sliceConfigSelectors } from './utils/other/slice-config-selectors.util';
 import {
   isBoolean,
   isEmptyObject,
@@ -15,8 +17,33 @@ import {
   isString,
   isUndefined
 } from './utils/other/type-guards.util';
+import {
+  URemoveNeverProperties,
+  URemoveValueFromParam
+} from './utils/other/utility-types.util';
 import { getSliceFromStorage } from './utils/slice-set-and-get/get-slice-from-storage.util';
 import { setSliceToStorage } from './utils/slice-set-and-get/set-slice-to-storage.util';
+
+type TReturn<
+  GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>
+> = URemoveNeverProperties<{
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+  get: () => GSlice;
+  set: (value: GSlice) => void;
+  selectors: undefined extends GSelectors
+    ? never
+    : {
+        [K in keyof GSelectors]: URemoveValueFromParam<GSlice, GSelectors[K]>;
+      };
+  reducers: undefined extends GReducers
+    ? never
+    : {
+        [K in keyof GReducers]: URemoveValueFromParam<GSlice, GReducers[K]>;
+      };
+}>;
 
 export default function createSlice<
   GSlice,
@@ -25,11 +52,7 @@ export default function createSlice<
   GReducers extends TReducers<GSlice>
 >(
   params: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>
-): {
-  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
-  get: () => GSlice;
-  set: (value: GSlice) => void;
-} {
+): TReturn<GSlice, GDefaultServer, GSelectors, GReducers> {
   // validate `defaultClient`
   if (isUndefined(params.defaultClient)) {
     errorTemplate({
@@ -220,6 +243,8 @@ export default function createSlice<
     get: (): GSlice => getSliceFromStorage({ config: params }),
     set: (value: GSlice): void => {
       setSliceToStorage({ config: params, slice: value });
-    }
-  };
+    },
+    reducers: sliceConfigReducers({ config: params }),
+    selectors: sliceConfigSelectors({ config: params })
+  } as any;
 }

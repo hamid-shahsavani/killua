@@ -20,34 +20,31 @@ import { isConfigSsr } from './utils/other/is-config-ssr.util';
 import { isSliceStorageDefaultClient } from './utils/other/is-slice-storage-default-client.util';
 import { sliceConfigSelectors } from './utils/other/slice-config-selectors.util';
 import { sliceConfigReducers } from './utils/other/slice-config-reducers.util';
+import {
+  URemoveNeverProperties,
+  URemoveValueFromParam
+} from './utils/other/utility-types.util';
 
-type URemoveValueFromParam<GSlice, GFn> = GFn extends (
-  value: GSlice,
-  ...args: infer Rest
-) => infer R
-  ? (...args: Rest) => R
-  : never;
-
-type URemoveNeverProperties<GReturn> = {
-  [K in keyof GReturn as GReturn[K] extends never ? never : K]: GReturn[K];
-};
-
-type TReturn<GSlice, GDefaultServer, GSelectors, GReducers> =
-  URemoveNeverProperties<{
-    get: GSlice;
-    set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
-    isReady: undefined extends GDefaultServer ? never : GDefaultServer;
-    selectors: undefined extends GSelectors
-      ? never
-      : {
-          [K in keyof GSelectors]: URemoveValueFromParam<GSlice, GSelectors[K]>;
-        };
-    reducers: undefined extends GReducers
-      ? never
-      : {
-          [K in keyof GReducers]: URemoveValueFromParam<GSlice, GReducers[K]>;
-        };
-  }>;
+type TReturn<
+  GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>
+> = URemoveNeverProperties<{
+  get: GSlice;
+  set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
+  isReady: undefined extends GDefaultServer ? never : GDefaultServer;
+  selectors: undefined extends GSelectors
+    ? never
+    : {
+        [K in keyof GSelectors]: URemoveValueFromParam<GSlice, GSelectors[K]>;
+      };
+  reducers: undefined extends GReducers
+    ? never
+    : {
+        [K in keyof GReducers]: URemoveValueFromParam<GSlice, GReducers[K]>;
+      };
+}>;
 
 export default function useKillua<
   GSlice,
