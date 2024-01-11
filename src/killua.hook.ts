@@ -18,6 +18,8 @@ import { generateSliceConfigChecksum } from './utils/detect-slice-config-change/
 import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { isConfigSsr } from './utils/other/is-config-ssr.util';
 import { isSliceStorageDefaultClient } from './utils/other/is-slice-storage-default-client.util';
+import { sliceConfigSelectors } from './utils/other/slice-config-selectors.util';
+import { sliceConfigReducers } from './utils/other/slice-config-reducers.util';
 
 type URemoveValueFromParam<GSlice, GFn> = GFn extends (
   value: GSlice,
@@ -26,10 +28,8 @@ type URemoveValueFromParam<GSlice, GFn> = GFn extends (
   ? (...args: Rest) => R
   : never;
 
-type URemoveNeverProperties<GReturnObj> = {
-  [K in keyof GReturnObj as GReturnObj[K] extends never
-    ? never
-    : K]: GReturnObj[K];
+type URemoveNeverProperties<GReturn> = {
+  [K in keyof GReturn as GReturn[K] extends never ? never : K]: GReturn[K];
 };
 
 type TReturn<GSlice, GDefaultServer, GSelectors, GReducers> =
@@ -187,46 +187,6 @@ export default function useKillua<
     };
   }, [sliceState]);
 
-  // params.config.selectors is truthy ===> assign slice config selectors to selectors object
-  const selectors: Record<string, (payload?: any) => any> = {};
-  if (params.config.selectors!) {
-    for (const selectorName in params.config.selectors!) {
-      if (
-        Object.prototype.hasOwnProperty.call(
-          params.config.selectors!,
-          selectorName
-        )
-      ) {
-        const selectorFunc = params.config.selectors[selectorName];
-        selectors[selectorName] = (payload?: any) => {
-          return selectorFunc(sliceState, payload);
-        };
-      }
-    }
-  }
-
-  // params.config.reducers is truthy ===> assign slice config reducers to reducers object
-  const reducers: Record<string, (payload?: any) => GSlice> = {};
-  if (params.config.reducers!) {
-    for (const reducerName in params.config.reducers!) {
-      if (
-        Object.prototype.hasOwnProperty.call(
-          params.config.reducers!,
-          reducerName
-        )
-      ) {
-        const reducerFunc = params.config.reducers[reducerName];
-        reducers[reducerName] = (payload?: any) => {
-          setSliceToStorage({
-            config: params.config,
-            slice: reducerFunc(sliceState, payload)
-          });
-          return reducerFunc(sliceState, payload);
-        };
-      }
-    }
-  }
-
   return {
     get: sliceState,
     set: (value: GSlice | ((value: GSlice) => GSlice)) => {
@@ -235,8 +195,8 @@ export default function useKillua<
         slice: value instanceof Function ? value(sliceState) : value
       });
     },
-    ...(isConfigSsr({ config: params.config }) && { isReady }),
-    reducers,
-    selectors
+    reducers: sliceConfigReducers({ config: params.config, sliceState }),
+    selectors: sliceConfigSelectors({ config: params.config, sliceState }),
+    ...(isConfigSsr({ config: params.config }) && { isReady })
   } as TReturn<GSlice, GDefaultServer, GSelectors, GReducers>;
 }

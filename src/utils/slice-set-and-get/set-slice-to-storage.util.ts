@@ -25,7 +25,7 @@ export function setSliceToStorage<
     key: params.config.key
   });
 
-  // validate slice value with schema before set to storageand set to `sliceState`
+  // validate slice value with schema before set to storage and set to `sliceState` and set slice expire timestamp to storage
   schemaValidation({
     data: params.slice,
     config: params.config
