@@ -96,25 +96,6 @@ export default function useKillua<
     }
   });
 
-  // is-changed slice config by developer ===> set `defaultSliceValueClient` to `returnValue` | remove slice key from storage
-  useEffect((): void => {
-    if (isReady) {
-      const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
-        config: params.config
-      });
-      const currentSliceConfigChecksum = generateSliceConfigChecksum({
-        config: params.config
-      });
-      if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
-        new BroadcastChannel('killua').postMessage({
-          type: broadcastChannelMessages.sliceConfigChecksumChanged,
-          key: params.config.key,
-          value: sliceState
-        });
-      }
-    }
-  }, [isReady]);
-
   // is-config-ssr && !isReady ===> set `isReady` to `true` | get slice from storage and set to `sliceState`
   useEffect((): void => {
     if (
@@ -183,6 +164,25 @@ export default function useKillua<
       clearInterval(intervalId);
     };
   }, [sliceState]);
+
+  // is-changed slice config by developer ===> set `defaultSliceValueClient` to `returnValue` | remove slice key from storage
+  useEffect((): void => {
+    if (isReady) {
+      const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
+        config: params.config
+      });
+      const currentSliceConfigChecksum = generateSliceConfigChecksum({
+        config: params.config
+      });
+      if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
+        new BroadcastChannel('killua').postMessage({
+          type: broadcastChannelMessages.sliceConfigChecksumChanged,
+          key: params.config.key,
+          value: sliceState
+        });
+      }
+    }
+  }, [isReady]);
 
   return {
     get: sliceState,

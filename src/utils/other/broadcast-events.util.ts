@@ -62,7 +62,6 @@ export function broadcastEvents<
       event.data.type === broadcastChannelMessages.sliceConfigChecksumChanged &&
       event.data.key === params.config.key
     ) {
-      params.setSliceState(defalutSliceValueClient);
       setSliceConfigChecksumToStorage({
         config: params.config
       });
@@ -71,6 +70,7 @@ export function broadcastEvents<
           key: params.config.key
         })
       );
+      params.setSliceState(defalutSliceValueClient);
     }
   };
 }
