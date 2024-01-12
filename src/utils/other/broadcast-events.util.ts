@@ -9,6 +9,7 @@ import { callSliceEvent } from '../slice-call-event/call-slice-event.util';
 import { defaultSliceValue } from '../other/default-slice-value.util';
 import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
 import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
+import { getSliceFromStorage } from '../slice-set-and-get/get-slice-from-storage.util';
 
 export function broadcastEvents<
   GSlice,
@@ -17,7 +18,6 @@ export function broadcastEvents<
   GReducers extends TReducers<GSlice>
 >(params: {
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
-  sliceState: GSlice;
   setSliceState: (value: GSlice) => void;
 }): void {
   // default slice value Client
@@ -33,29 +33,29 @@ export function broadcastEvents<
       event.data.type === broadcastChannelMessages.sliceEventOnChange &&
       event.data.key === params.config.key
     ) {
-      params.setSliceState(event.data.value);
       callSliceEvent({
         slice: event.data.value,
         type: 'onChange',
         config: params.config
       });
+      params.setSliceState(event.data.value);
     }
     // call post message `broadcastChannelMessages.sliceEventOnExpire` after set slice expire timestamp to storage
     if (
       event.data.type === broadcastChannelMessages.sliceEventOnExpire &&
       event.data.key === params.config.key
     ) {
-      params.setSliceState(defalutSliceValueClient);
+      callSliceEvent({
+        slice: getSliceFromStorage({ config: params.config }),
+        config: params.config,
+        type: 'onExpire'
+      });
       localStorage.removeItem(
         generateSliceStorageKey({
           key: params.config.key
         })
       );
-      callSliceEvent({
-        slice: event.data.value,
-        config: params.config,
-        type: 'onExpire'
-      });
+      params.setSliceState(defalutSliceValueClient);
     }
     // call post message `broadcastChannelMessages.sliceConfigChecksumChanged` after not equal slice checksum from storage and current slice checksum
     if (

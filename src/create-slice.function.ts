@@ -32,7 +32,7 @@ type TReturn<
 > = URemoveNeverProperties<{
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
   get: () => GSlice;
-  set: (value: GSlice) => void;
+  set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
   selectors: undefined extends GSelectors
     ? never
     : {
@@ -227,7 +227,6 @@ export default function createSlice<
     'selectors',
     'events'
   ]);
-
   const notDefinedSliceKey = Object.keys(params).filter(
     key => !validKeys.has(key)
   );
@@ -241,8 +240,14 @@ export default function createSlice<
   return {
     config: params,
     get: (): GSlice => getSliceFromStorage({ config: params }),
-    set: (value: GSlice): void => {
-      setSliceToStorage({ config: params, slice: value });
+    set: (value: GSlice | ((value: GSlice) => GSlice)) => {
+      setSliceToStorage({
+        config: params,
+        slice:
+          value instanceof Function
+            ? value(getSliceFromStorage({ config: params }))
+            : value
+      });
     },
     reducers: sliceConfigReducers({ config: params }),
     selectors: sliceConfigSelectors({ config: params })

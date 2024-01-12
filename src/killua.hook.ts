@@ -117,7 +117,6 @@ export default function useKillua<
   useEffect((): void => {
     broadcastEvents({
       config: params.config,
-      sliceState,
       setSliceState
     });
   }, []);
@@ -138,10 +137,7 @@ export default function useKillua<
       if (Number(sliceExpireTimestamp) < Date.now()) {
         broadcastChannel.postMessage({
           type: broadcastChannelMessages.sliceEventOnExpire,
-          key: params.config.key,
-          value: getSliceFromStorage({
-            config: params.config
-          })
+          key: params.config.key
         });
       } else {
         intervalId = setInterval(
@@ -149,10 +145,7 @@ export default function useKillua<
             if (Number(sliceExpireTimestamp) < Date.now()) {
               broadcastChannel.postMessage({
                 type: broadcastChannelMessages.sliceEventOnExpire,
-                key: params.config.key,
-                value: getSliceFromStorage({
-                  config: params.config
-                })
+                key: params.config.key
               });
             }
           },
@@ -177,8 +170,7 @@ export default function useKillua<
       if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
         new BroadcastChannel('killua').postMessage({
           type: broadcastChannelMessages.sliceConfigChecksumChanged,
-          key: params.config.key,
-          value: sliceState
+          key: params.config.key
         });
       }
     }
