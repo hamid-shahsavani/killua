@@ -239,7 +239,7 @@ export default function createSlice<
 
   return {
     config: params,
-    get: (): GSlice => getSliceFromStorage({ config: params }),
+    get: getSliceFromStorage({ config: params }),
     set: (value: GSlice | ((value: GSlice) => GSlice)) => {
       setSliceToStorage({
         config: params,
