@@ -50,7 +50,8 @@ export function setSliceToStorage<
   }
 
   // call broadcast channel with event `broadcastChannelMessages.sliceEventOnChange` for call event `onChange` and set updated slice value to `sliceState`
-  new BroadcastChannel('killua').postMessage({
+  const broadcastChannel = new BroadcastChannel('killua');
+  broadcastChannel.postMessage({
     type: broadcastChannelMessages.sliceEventOnChange,
     key: params.config.key,
     value: params.slice

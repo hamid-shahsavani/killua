@@ -11,7 +11,6 @@ import { setSliceToStorage } from './utils/slice-set-and-get/set-slice-to-storag
 import { errorTemplate } from './utils/other/error-template.utli';
 import { isAvailableCsr } from './utils/other/is-available-csr.util';
 import { getSliceExpireTimestampFromStorage } from './utils/slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
-import { broadcastEvents } from './utils/other/broadcast-events.util';
 import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
 import { errorMessages } from './constants/error-messages.constant';
 import { generateSliceConfigChecksum } from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
@@ -24,6 +23,7 @@ import {
   URemoveNeverProperties,
   URemoveValueFromParam
 } from './utils/other/utility-types.util';
+import { broadcastEvents } from './utils/other/broadcast-events.util';
 
 type TReturn<
   GSlice,
@@ -113,6 +113,9 @@ export default function useKillua<
     }
   }, [sliceState]);
 
+  // broadcast channel
+  const broadcastChannel = new BroadcastChannel('killua');
+
   // broadcast channel events
   useEffect((): void => {
     broadcastEvents({
@@ -124,7 +127,6 @@ export default function useKillua<
   // params.config.expire is truthy && (storage slice !== default client slice) ===> check slice expire timestamp
   useEffect((): (() => void) => {
     let intervalId: any = null;
-    const broadcastChannel = new BroadcastChannel('killua');
     if (
       params.config.expire &&
       !isSliceStorageDefaultClient({
@@ -168,7 +170,7 @@ export default function useKillua<
         config: params.config
       });
       if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
-        new BroadcastChannel('killua').postMessage({
+        broadcastChannel.postMessage({
           type: broadcastChannelMessages.sliceConfigChecksumChanged,
           key: params.config.key
         });
@@ -179,9 +181,11 @@ export default function useKillua<
   return {
     get: sliceState,
     set: (value: GSlice | ((value: GSlice) => GSlice)) => {
+      const newSliceValue =
+        value instanceof Function ? value(sliceState) : value;
       setSliceToStorage({
         config: params.config,
-        slice: value instanceof Function ? value(sliceState) : value
+        slice: newSliceValue
       });
     },
     reducers: sliceConfigReducers({ config: params.config }),
