@@ -34,12 +34,6 @@ export const errorMessages = {
     empty: `\`selectors\` keys are an empty object! \n${docsUrl}#selectors`,
     keysValueIsNotFunction: `\`selectors\` keys value is not a function! \n${docsUrl}#selectors`
   },
-  events: {
-    invalidType: `\`events\` is not an object! \n${docsUrl}#events`,
-    empty: `\`events\` keys are an empty object! \n${docsUrl}#events`,
-    keysValueIsNotFunction: `\`events\` keys value is not a function! \n${docsUrl}#events`,
-    keysIsNotValid: `\`events\` keys are not \`onChange\` or \`onExpire\`! \n${docsUrl}#events`
-  },
   other: {
     notDefined: (keys: string[]): string =>
       `not defined key \`${keys.join(', ')}\` in config! \n${docsUrl}`

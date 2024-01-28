@@ -19,11 +19,11 @@ import { isConfigSsr } from './utils/other/is-config-ssr.util';
 import { isSliceStorageDefaultClient } from './utils/other/is-slice-storage-default-client.util';
 import { sliceConfigSelectors } from './utils/other/slice-config-selectors.util';
 import { sliceConfigReducers } from './utils/other/slice-config-reducers.util';
+import { broadcastEvents } from './utils/other/broadcast-events.util';
 import {
   URemoveNeverProperties,
   URemoveValueFromParam
 } from './utils/other/utility-types.util';
-import { broadcastEvents } from './utils/other/broadcast-events.util';
 
 type TReturn<
   GSlice,

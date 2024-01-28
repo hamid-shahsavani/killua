@@ -5,11 +5,9 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { callSliceEvent } from '../slice-call-event/call-slice-event.util';
 import { defaultSliceValue } from '../other/default-slice-value.util';
 import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
 import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
-import { getSliceFromStorage } from '../slice-set-and-get/get-slice-from-storage.util';
 
 export function broadcastEvents<
   GSlice,
@@ -33,11 +31,6 @@ export function broadcastEvents<
       event.data.type === broadcastChannelMessages.sliceEventOnChange &&
       event.data.key === params.config.key
     ) {
-      callSliceEvent({
-        slice: event.data.value,
-        type: 'onChange',
-        config: params.config
-      });
       params.setSliceState(event.data.value);
     }
     // call post message `broadcastChannelMessages.sliceEventOnExpire` after set slice expire timestamp to storage
@@ -45,11 +38,6 @@ export function broadcastEvents<
       event.data.type === broadcastChannelMessages.sliceEventOnExpire &&
       event.data.key === params.config.key
     ) {
-      callSliceEvent({
-        slice: getSliceFromStorage({ config: params.config }),
-        config: params.config,
-        type: 'onExpire'
-      });
       localStorage.removeItem(
         generateSliceStorageKey({
           key: params.config.key

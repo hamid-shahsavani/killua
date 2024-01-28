@@ -209,52 +209,6 @@ describe('create-slice.function.ts', (): void => {
       ).toThrow(errorMessages.selectors.keysValueIsNotFunction);
     });
   });
-  describe('validate `events`', (): void => {
-    const sliceConfig: any = {
-      key: 'test',
-      default: 1,
-    };
-    it('should throw an error if `events` is not an object', (): void => {
-      expect(() =>
-        createSlice<number>({
-          ...sliceConfig,
-          events: 'test',
-        }),
-      ).toThrow(errorMessages.events.invalidType);
-    });
-    it('should throw an error if `events` keys are empty', (): void => {
-      expect(() =>
-        createSlice<number>({
-          ...sliceConfig,
-          events: {},
-        }),
-      ).toThrow(errorMessages.events.empty);
-    });
-    it('should throw an error if `events` keys are not `onChange` or `onExpire`', (): void => {
-      expect(() =>
-        createSlice<number>({
-          ...sliceConfig,
-          events: { test: (): void => {} },
-        }),
-      ).toThrow(errorMessages.events.keysIsNotValid);
-    });
-    it('should throw an error if `events` key `onChange` value is not a function', (): void => {
-      expect(() =>
-        createSlice<number>({
-          ...sliceConfig,
-          events: { onChange: 'test' },
-        }),
-      ).toThrow(errorMessages.events.keysValueIsNotFunction);
-    });
-    it('should throw an error if `events` key `onExpire` value is not a function', (): void => {
-      expect(() =>
-        createSlice<number>({
-          ...sliceConfig,
-          events: { onExpire: 'test' },
-        }),
-      ).toThrow(errorMessages.events.keysValueIsNotFunction);
-    });
-  });
   describe('validate `schema`', (): void => {
     const sliceConfig: any = {
       key: 'test',
@@ -278,11 +232,6 @@ describe('create-slice.function.ts', (): void => {
       expect(() =>
         createSlice<number>({
           ...sliceConfig,
-          default: 1,
-          events: {
-            onChange: (): void => {},
-            onExpire: (): void => {},
-          },
         }),
       ).not.toThrow();
     });

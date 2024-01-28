@@ -28,5 +28,4 @@ export type TConfig<
       };
   selectors?: GSelectors;
   reducers?: GReducers;
-  events?: Partial<Record<'onChange' | 'onExpire', (value: GSlice) => void>>;
 };

@@ -168,40 +168,6 @@ export default function createSlice<
     }
   }
 
-  // validate `events`
-  if (!isUndefined(params.events)) {
-    if (!isObject(params.events)) {
-      errorTemplate({
-        msg: errorMessages.events.invalidType,
-        key: params.key
-      });
-    } else if (isEmptyObject(params.events)) {
-      errorTemplate({
-        msg: errorMessages.events.empty,
-        key: params.key
-      });
-    } else if (
-      Object.keys(params.events).some(
-        (key): boolean => !['onExpire', 'onChange'].includes(key)
-      )
-    ) {
-      errorTemplate({
-        msg: errorMessages.events.keysIsNotValid,
-        key: params.key
-      });
-    } else if (
-      Object.keys(params.events).some(
-        (key): boolean =>
-          !isFunction(params.events![key as typeof params.events])
-      )
-    ) {
-      errorTemplate({
-        msg: errorMessages.events.keysValueIsNotFunction,
-        key: params.key
-      });
-    }
-  }
-
   // validate `schema`
   if (!isUndefined(params.schema)) {
     if (
@@ -224,8 +190,7 @@ export default function createSlice<
     'expire',
     'schema',
     'reducers',
-    'selectors',
-    'events'
+    'selectors'
   ]);
   const notDefinedSliceKey = Object.keys(params).filter(
     key => !validKeys.has(key)
