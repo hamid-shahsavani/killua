@@ -4,7 +4,7 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { getSliceFromStorage } from '../slice-set-and-get/get-slice-from-storage.util';
+import { getSliceValue } from '../slice-set-and-get/get-slice-value.util';
 
 export function sliceConfigSelectors<
   GSlice,
@@ -27,7 +27,7 @@ export function sliceConfigSelectors<
         const selectorFunc = params.config.selectors[selectorName];
         selectors[selectorName] = (payload?: any) => {
           return selectorFunc(
-            getSliceFromStorage({ config: params.config }),
+            getSliceValue({ config: params.config }),
             payload
           );
         };

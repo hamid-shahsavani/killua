@@ -14,17 +14,20 @@ export function defaultSliceValue<
   GReducers extends TReducers<GSlice>
 >(params: {
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
-  type: 'client' | 'server';
-}) {
-  const data: GSlice = isConfigSsr({
-    config: params.config
-  })
-    ? params.type === 'client'
-      ? params.config.defaultClient
-      : params.config.defaultServer!
-    : params.config.defaultClient;
-  return schemaValidation({
-    data,
-    config: params.config
-  });
+}): {
+  client: GSlice;
+  server?: GSlice;
+} {
+  return {
+    client: schemaValidation({
+      data: params.config.defaultClient,
+      config: params.config
+    }),
+    ...(isConfigSsr({ config: params.config }) && {
+      server: schemaValidation({
+        data: params.config.defaultServer!,
+        config: params.config
+      })
+    })
+  };
 }

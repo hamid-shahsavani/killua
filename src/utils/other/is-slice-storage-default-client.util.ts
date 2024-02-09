@@ -16,12 +16,9 @@ export function isSliceStorageDefaultClient<
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
 }): boolean {
   return (
-    getSliceFromStorage({
-      config: params.config
-    }) ===
+    getSliceFromStorage({ config: params.config }) ===
     defaultSliceValue({
-      config: params.config,
-      type: 'client'
-    })
+      config: params.config
+    }).client
   );
 }

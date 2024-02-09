@@ -5,9 +5,9 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { defaultSliceValue } from '../other/default-slice-value.util';
 import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
 import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
+import { defaultSliceValue } from './default-slice-value.util';
 
 export function broadcastEvents<
   GSlice,
@@ -18,12 +18,6 @@ export function broadcastEvents<
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
   setSliceState: (value: GSlice) => void;
 }): void {
-  // default slice value Client
-  const defalutSliceValueClient: GSlice = defaultSliceValue({
-    config: params.config,
-    type: 'client'
-  });
-
   // broadcast events
   new BroadcastChannel('killua').onmessage = event => {
     // call post message `broadcastChannelMessages.sliceEventOnChange` after set slice value to storage
@@ -43,7 +37,11 @@ export function broadcastEvents<
           key: params.config.key
         })
       );
-      params.setSliceState(defalutSliceValueClient);
+      params.setSliceState(
+        defaultSliceValue({
+          config: params.config
+        }).client
+      );
     }
     // call post message `broadcastChannelMessages.sliceConfigChecksumChanged` after not equal slice checksum from storage and current slice checksum
     if (
@@ -58,7 +56,11 @@ export function broadcastEvents<
           key: params.config.key
         })
       );
-      params.setSliceState(defalutSliceValueClient);
+      params.setSliceState(
+        defaultSliceValue({
+          config: params.config
+        }).client
+      );
     }
   };
 }

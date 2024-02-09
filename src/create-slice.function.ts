@@ -22,6 +22,7 @@ import {
   URemoveValueFromParam
 } from './utils/other/utility-types.util';
 import { getSliceFromStorage } from './utils/slice-set-and-get/get-slice-from-storage.util';
+import { getSliceValue } from './utils/slice-set-and-get/get-slice-value.util';
 import { setSliceToStorage } from './utils/slice-set-and-get/set-slice-to-storage.util';
 
 type TReturn<
@@ -204,7 +205,7 @@ export default function createSlice<
 
   return {
     config: params,
-    get: getSliceFromStorage({ config: params }),
+    get: getSliceValue({ config: params }),
     set: (value: GSlice | ((value: GSlice) => GSlice)) => {
       setSliceToStorage({
         config: params,
