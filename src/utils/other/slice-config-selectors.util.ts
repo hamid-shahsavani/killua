@@ -4,7 +4,24 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { getSliceValue } from '../slice-set-and-get/get-slice-value.util';
+import { getSliceFromStorage } from '../slice-set-and-get/get-slice-from-storage.util';
+import { defaultSliceValue } from './default-slice-value.util';
+import { isAvailableCsr } from './is-available-csr.util';
+
+export function getSliceValue<
+  GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>
+>(params: {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+}): GSlice {
+  if (isAvailableCsr()) {
+    return getSliceFromStorage({ config: params.config });
+  } else {
+    return defaultSliceValue({ config: params.config }).server as GSlice;
+  }
+}
 
 export function sliceConfigSelectors<
   GSlice,

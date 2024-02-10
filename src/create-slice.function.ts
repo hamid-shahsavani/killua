@@ -5,7 +5,9 @@ import {
   TReducers,
   TSelectors
 } from './types/config.type';
+import { defaultSliceValue } from './utils/other/default-slice-value.util';
 import { errorTemplate } from './utils/other/error-template.utli';
+import { isAvailableCsr } from './utils/other/is-available-csr.util';
 import { sliceConfigReducers } from './utils/other/slice-config-reducers.util';
 import { sliceConfigSelectors } from './utils/other/slice-config-selectors.util';
 import {
@@ -22,7 +24,6 @@ import {
   URemoveValueFromParam
 } from './utils/other/utility-types.util';
 import { getSliceFromStorage } from './utils/slice-set-and-get/get-slice-from-storage.util';
-import { getSliceValue } from './utils/slice-set-and-get/get-slice-value.util';
 import { setSliceToStorage } from './utils/slice-set-and-get/set-slice-to-storage.util';
 
 type TReturn<
@@ -45,6 +46,21 @@ type TReturn<
         [K in keyof GReducers]: URemoveValueFromParam<GSlice, GReducers[K]>;
       };
 }>;
+
+export function getSliceValue<
+  GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>
+>(params: {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+}): GSlice {
+  if (isAvailableCsr()) {
+    return getSliceFromStorage({ config: params.config });
+  } else {
+    return defaultSliceValue({ config: params.config }).server as GSlice;
+  }
+}
 
 export default function createSlice<
   GSlice,
@@ -205,13 +221,13 @@ export default function createSlice<
 
   return {
     config: params,
-    get: getSliceValue({ config: params }),
+    get: () => getSliceValue({ config: params }),
     set: (value: GSlice | ((value: GSlice) => GSlice)) => {
       setSliceToStorage({
         config: params,
         slice:
           value instanceof Function
-            ? value(getSliceFromStorage({ config: params }))
+            ? value(getSliceValue({ config: params }))
             : value
       });
     },

@@ -19,8 +19,11 @@ import {
   URemoveNeverProperties,
   URemoveValueFromParam
 } from './utils/other/utility-types.util';
-import { getSliceValue } from './utils/slice-set-and-get/get-slice-value.util';
 import { getSliceFromStorage } from './utils/slice-set-and-get/get-slice-from-storage.util';
+import { defaultSliceValue } from './utils/other/default-slice-value.util';
+import { isAvailableCsr } from './utils/other/is-available-csr.util';
+import { errorTemplate } from './utils/other/error-template.utli';
+import { errorMessages } from './constants/error-messages.constant';
 
 type TReturn<
   GSlice,
@@ -57,9 +60,28 @@ export default function useKillua<
     isConfigSsr({ config: params.config }) ? false : true
   );
 
-  const [sliceState, setSliceState] = useState<GSlice>(
-    getSliceValue({ config: params.config })
-  );
+  const [sliceState, setSliceState] = useState<GSlice>(() => {
+    if (
+      isConfigSsr({
+        config: params.config
+      })
+    ) {
+      return defaultSliceValue({ config: params.config }).server!;
+    } else {
+      // `is-config-ssr` is `false` and application is server-side ===> throw error
+      if (!isAvailableCsr()) {
+        errorTemplate({
+          msg: errorMessages.defaultServer.required,
+          key: params.config.key
+        });
+      } else {
+        // `is-config-ssr` is `false` and application is client-side ===> return slice value from storage
+        return getSliceFromStorage({
+          config: params.config
+        });
+      }
+    }
+  });
 
   // is-config-ssr && !isReady ===> set `isReady` to `true` | get slice from storage and set to `sliceState`
   useEffect((): void => {
