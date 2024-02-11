@@ -8,8 +8,6 @@ import {
 import { setSliceToStorage } from './utils/slice-set-and-get/set-slice-to-storage.util';
 import { getSliceExpireTimestampFromStorage } from './utils/slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
 import { broadcastChannelMessages } from './constants/broadcast-channel-messages.constant';
-import { generateSliceConfigChecksum } from './utils/detect-slice-config-change/generate-slice-config-checksum.util';
-import { getSliceConfigChecksumFromStorage } from './utils/detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { isConfigSsr } from './utils/other/is-config-ssr.util';
 import { isSliceStorageDefaultClient } from './utils/other/is-slice-storage-default-client.util';
 import { sliceConfigSelectors } from './utils/other/slice-config-selectors.util';
@@ -31,7 +29,7 @@ type TReturn<
   GSelectors extends TSelectors<GSlice>,
   GReducers extends TReducers<GSlice>
 > = URemoveNeverProperties<{
-  get: GSlice;
+  get: () => GSlice;
   set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
   isReady: undefined extends GDefaultServer ? never : GDefaultServer;
   selectors: undefined extends GSelectors
@@ -60,6 +58,7 @@ export default function useKillua<
     isConfigSsr({ config: params.config }) ? false : true
   );
 
+  // slice state for return
   const [sliceState, setSliceState] = useState<GSlice>(() => {
     if (
       isConfigSsr({
@@ -143,26 +142,8 @@ export default function useKillua<
     };
   }, [sliceState]);
 
-  // is-changed slice config by developer ===> set `defaultSliceValueClient` to `returnValue` | remove slice key from storage
-  useEffect((): void => {
-    if (isReady) {
-      const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
-        config: params.config
-      });
-      const currentSliceConfigChecksum = generateSliceConfigChecksum({
-        config: params.config
-      });
-      if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
-        broadcastChannel.postMessage({
-          type: broadcastChannelMessages.sliceConfigChecksumChanged,
-          key: params.config.key
-        });
-      }
-    }
-  }, [isReady]);
-
   return {
-    get: sliceState,
+    get: (() => sliceState) as GSlice,
     set: (value: GSlice | ((value: GSlice) => GSlice)) => {
       const newSliceValue =
         value instanceof Function ? value(sliceState) : value;

@@ -12,6 +12,9 @@ import { schemaValidation } from '../slice-schema-validation/schema-validation.u
 import { ensureExistAllRequiredKeysInStorage } from '../other/ensure-exist-all-required-keys-in-storage.util';
 import { isAvailableCsr } from '../other/is-available-csr.util';
 import { isConfigSsr } from '../other/is-config-ssr.util';
+import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
+import { generateSliceConfigChecksum } from '../detect-slice-config-change/generate-slice-config-checksum.util';
+import { getSliceConfigChecksumFromStorage } from '../detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 
 export function getSliceFromStorage<
   GSlice,
@@ -47,6 +50,24 @@ export function getSliceFromStorage<
     ensureExistAllRequiredKeysInStorage({
       config: params.config
     });
+  }
+
+  // detect is-changed slice config by developer
+  const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
+    config: params.config
+  });
+  const currentSliceConfigChecksum = generateSliceConfigChecksum({
+    config: params.config
+  });
+  if (sliceConfigChecksumFromStorage !== currentSliceConfigChecksum) {
+    setSliceConfigChecksumToStorage({
+      config: params.config
+    });
+    localStorage.removeItem(
+      generateSliceStorageKey({
+        key: params.config.key
+      })
+    );
   }
 
   // get value from storage
