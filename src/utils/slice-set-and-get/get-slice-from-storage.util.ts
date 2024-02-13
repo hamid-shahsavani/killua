@@ -10,7 +10,6 @@ import { generateSliceStorageKey } from '../other/generate-slice-storage-key.uti
 import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import { schemaValidation } from '../slice-schema-validation/schema-validation.util';
 import { ensureExistAllRequiredKeysInStorage } from '../other/ensure-exist-all-required-keys-in-storage.util';
-import { isAvailableCsr } from '../other/is-available-csr.util';
 import { isConfigSsr } from '../other/is-config-ssr.util';
 import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
 import { generateSliceConfigChecksum } from '../detect-slice-config-change/generate-slice-config-checksum.util';
@@ -46,11 +45,9 @@ export function getSliceFromStorage<
   });
 
   // check all required keys is in storage
-  if (isAvailableCsr()) {
-    ensureExistAllRequiredKeysInStorage({
-      config: params.config
-    });
-  }
+  ensureExistAllRequiredKeysInStorage({
+    config: params.config
+  });
 
   // detect is-changed slice config by developer
   const sliceConfigChecksumFromStorage = getSliceConfigChecksumFromStorage({
