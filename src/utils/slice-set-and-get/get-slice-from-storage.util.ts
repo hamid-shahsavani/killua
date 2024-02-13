@@ -14,6 +14,7 @@ import { isConfigSsr } from '../other/is-config-ssr.util';
 import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/set-slice-config-checksum-to-storage.util';
 import { generateSliceConfigChecksum } from '../detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from '../detect-slice-config-change/get-slice-config-checksum-from-storage.util';
+import { getSliceExpireTimestampFromStorage } from '../slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
 
 export function getSliceFromStorage<
   GSlice,
@@ -23,12 +24,7 @@ export function getSliceFromStorage<
 >(params: {
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
 }): GSlice {
-  // storage key
-  const storageKey = generateSliceStorageKey({
-    key: params.config.key
-  });
-
-  // check schema validation
+  // check schema validation (schema validation fail ===> throw error)
   if (isConfigSsr({ config: params.config })) {
     schemaValidation({
       data: defaultSliceValue({
@@ -69,7 +65,9 @@ export function getSliceFromStorage<
 
   // get value from storage
   const getFromStorage = (): GSlice => {
-    const storageValue: string | null = localStorage.getItem(storageKey);
+    const storageValue: string | null = localStorage.getItem(
+      generateSliceStorageKey({ key: params.config.key })
+    );
     let returnValue: GSlice = defaultSliceValue({
       config: params.config
     }).client;
@@ -90,12 +88,22 @@ export function getSliceFromStorage<
           data: returnValue,
           config: params.config
         });
+        // check is-expire slice
+        if (
+          params.config.expire &&
+          defaultSliceValue({ config: params.config }).client !== returnValue
+        ) {
+          const sliceExpireTimestamp = getSliceExpireTimestampFromStorage({
+            config: params.config
+          });
+          if (Number(sliceExpireTimestamp) < Date.now()) {
+            throw new Error('slice is expired'); // for catch block
+          }
+        }
       } catch (error: any) {
         // schema validation fail || JSON.parse fail || decrypt fail ===> set `defaultSliceValue.client` to `returnValue` | remove slice key from storage
         localStorage.removeItem(
-          generateSliceStorageKey({
-            key: params.config.key
-          })
+          generateSliceStorageKey({ key: params.config.key })
         );
         return defaultSliceValue({
           config: params.config

@@ -106,7 +106,7 @@ export default function useKillua<
     });
   }, []);
 
-  // params.config.expire is truthy && (storage slice !== default client slice) ===> check slice expire timestamp
+  // ((params.config.expire is truthy) && (storage slice !== default client slice)) ===> check slice expire timestamp
   useEffect((): (() => void) => {
     let intervalId: any = null;
     if (
@@ -118,15 +118,11 @@ export default function useKillua<
       const sliceExpireTimestamp = getSliceExpireTimestampFromStorage({
         config: params.config
       });
-      if (Number(sliceExpireTimestamp) < Date.now()) {
-        broadcastChannel.postMessage({
-          type: broadcastChannelMessages.sliceEventOnExpire,
-          key: params.config.key
-        });
-      } else {
+      if (Number(sliceExpireTimestamp) > Date.now()) {
         intervalId = setInterval(
           (): void => {
             if (Number(sliceExpireTimestamp) < Date.now()) {
+              console.log('expire with interval');
               broadcastChannel.postMessage({
                 type: broadcastChannelMessages.sliceEventOnExpire,
                 key: params.config.key
