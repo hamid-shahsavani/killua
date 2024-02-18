@@ -8,6 +8,7 @@ import {
 import { defaultSliceValue } from './utils/other/default-slice-value.util';
 import { errorTemplate } from './utils/other/error-template.utli';
 import { isAvailableCsr } from './utils/other/is-available-csr.util';
+import { isConfigSsr } from './utils/other/is-config-ssr.util';
 import { sliceConfigReducers } from './utils/other/slice-config-reducers.util';
 import { sliceConfigSelectors } from './utils/other/slice-config-selectors.util';
 import {
@@ -35,6 +36,7 @@ type TReturn<
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
   get: () => GSlice;
   set: (value: GSlice | ((value: GSlice) => GSlice)) => void;
+  isReady: undefined extends GDefaultServer ? never : GDefaultServer;
   selectors: undefined extends GSelectors
     ? never
     : {
@@ -232,6 +234,7 @@ export default function slice<
       });
     },
     reducers: sliceConfigReducers({ config: params }),
-    selectors: sliceConfigSelectors({ config: params })
+    selectors: sliceConfigSelectors({ config: params }),
+    ...(isConfigSsr({ config: params }) && { isReady: isAvailableCsr() })
   } as any;
 }
