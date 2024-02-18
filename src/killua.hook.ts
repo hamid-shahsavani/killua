@@ -139,7 +139,7 @@ export default function useKillua<
   }, [sliceState]);
 
   return {
-    get: (() => sliceState) as GSlice,
+    get: (() => sliceState) as any,
     set: (value: GSlice | ((value: GSlice) => GSlice)) => {
       const newSliceValue =
         value instanceof Function ? value(sliceState) : value;
@@ -148,8 +148,11 @@ export default function useKillua<
         slice: newSliceValue
       });
     },
-    reducers: sliceConfigReducers({ config: params.config }),
-    selectors: sliceConfigSelectors({ config: params.config }),
+    reducers: sliceConfigReducers({ config: params.config, slice: sliceState }),
+    selectors: sliceConfigSelectors({
+      config: params.config,
+      slice: sliceState
+    }),
     ...(isConfigSsr({ config: params.config }) && { isReady })
   } as TReturn<GSlice, GDefaultServer, GSelectors, GReducers>;
 }
