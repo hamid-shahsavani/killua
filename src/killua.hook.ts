@@ -148,10 +148,13 @@ export default function useKillua<
         slice: newSliceValue
       });
     },
-    reducers: sliceConfigReducers({ config: params.config, slice: sliceState }),
+    reducers: sliceConfigReducers({
+      config: params.config,
+      sliceState: sliceState
+    }),
     selectors: sliceConfigSelectors({
       config: params.config,
-      slice: sliceState
+      sliceState: sliceState
     }),
     ...(isConfigSsr({ config: params.config }) && { isReady })
   } as TReturn<GSlice, GDefaultServer, GSelectors, GReducers>;

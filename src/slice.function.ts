@@ -231,13 +231,7 @@ export default function slice<
             : value
       });
     },
-    reducers: sliceConfigReducers({
-      config: params,
-      slice: getSliceValue({ config: params })
-    }),
-    selectors: sliceConfigSelectors({
-      config: params,
-      slice: getSliceValue({ config: params })
-    })
+    reducers: sliceConfigReducers({ config: params }),
+    selectors: sliceConfigSelectors({ config: params })
   } as any;
 }

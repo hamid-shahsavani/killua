@@ -4,7 +4,25 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
+import { getSliceFromStorage } from '../slice-set-and-get/get-slice-from-storage.util';
 import { setSliceToStorage } from '../slice-set-and-get/set-slice-to-storage.util';
+import { defaultSliceValue } from './default-slice-value.util';
+import { isAvailableCsr } from './is-available-csr.util';
+
+export function getSliceValue<
+  GSlice,
+  GDefaultServer extends TDefaultServer<GSlice>,
+  GSelectors extends TSelectors<GSlice>,
+  GReducers extends TReducers<GSlice>
+>(params: {
+  config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
+}): GSlice {
+  if (isAvailableCsr()) {
+    return getSliceFromStorage({ config: params.config });
+  } else {
+    return defaultSliceValue({ config: params.config }).server as GSlice;
+  }
+}
 
 export function sliceConfigReducers<
   GSlice,
@@ -13,7 +31,7 @@ export function sliceConfigReducers<
   GReducers extends TReducers<GSlice>
 >(params: {
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
-  slice: GSlice;
+  sliceState?: GSlice;
 }): Record<string, (payload?: any) => GSlice> {
   // params.config.reducers is truthy ===> assign slice config reducers to reducers object
   const reducers: Record<string, (payload?: any) => GSlice> = {};
@@ -29,9 +47,16 @@ export function sliceConfigReducers<
         reducers[reducerName] = (payload?: any) => {
           setSliceToStorage({
             config: params.config,
-            slice: reducerFunc(params.slice, payload)
+            slice: reducerFunc(
+              params.sliceState ||
+                getSliceFromStorage({ config: params.config }),
+              payload
+            )
           });
-          return reducerFunc(params.slice, payload);
+          return reducerFunc(
+            params.sliceState || getSliceFromStorage({ config: params.config }),
+            payload
+          );
         };
       }
     }
