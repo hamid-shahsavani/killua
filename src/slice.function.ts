@@ -62,7 +62,7 @@ export function getSliceValue<
   }
 }
 
-export default function createSlice<
+export default function slice<
   GSlice,
   GDefaultServer extends TDefaultServer<GSlice>,
   GSelectors extends TSelectors<GSlice>,
