@@ -6,6 +6,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* border gradient */
+.border-gradient {
+  @apply rounded-lg bg-gradient-to-r from-[#D931F7]/80 via-[#D931F7]/80 to-[#F3F731]/80 p-[1px];
+}
 
 /* btn animation */
 .btn-animation {

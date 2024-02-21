@@ -1,4 +1,4 @@
-export interface TTodo {
+export type TTodo = {
   id: number;
   title: string;
   description: string;
