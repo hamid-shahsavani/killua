@@ -45,18 +45,15 @@ export function sliceConfigReducers<
       ) {
         const reducerFunc = params.config.reducers[reducerName];
         reducers[reducerName] = (payload?: any) => {
-          setSliceToStorage({
-            config: params.config,
-            slice: reducerFunc(
-              params.sliceState ||
-                getSliceFromStorage({ config: params.config }),
-              payload
-            )
-          });
-          return reducerFunc(
+          const reducerFuncReturn = reducerFunc(
             params.sliceState || getSliceFromStorage({ config: params.config }),
             payload
           );
+          setSliceToStorage({
+            config: params.config,
+            slice: reducerFuncReturn
+          });
+          return reducerFuncReturn;
         };
       }
     }

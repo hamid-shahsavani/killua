@@ -122,7 +122,6 @@ export default function useKillua<
         intervalId = setInterval(
           (): void => {
             if (Number(sliceExpireTimestamp) < Date.now()) {
-              console.log('expire with interval');
               broadcastChannel.postMessage({
                 type: broadcastChannelMessages.sliceEventOnExpire,
                 key: params.config.key
