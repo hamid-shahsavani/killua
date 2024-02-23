@@ -1,6 +1,6 @@
 {
   "name": "killua-beta",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "killua is a local-storage management library for React applications.",
   "repository": "https://github.com/sys113/killua.git",
   "homepage": "https://killua-landing.vercel.app",
@@ -72,5 +72,5 @@
   },
   "main": "./lib/index.js",
   "module": "./lib/index.mjs",
-  "types": "./index.d.ts"
+  "types": "./lib/index.d.ts"
 }
