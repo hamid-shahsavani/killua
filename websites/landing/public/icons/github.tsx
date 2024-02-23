@@ -1,4 +1,4 @@
-export default function Icon() {
+export default function IconGithub() {
   return (
     <svg
       width="20"

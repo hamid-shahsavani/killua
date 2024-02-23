@@ -1,5 +1,4 @@
-import { IconGithub } from '@/constants/icons';
-import { imageLogo } from '@/constants/images';
+import IconGithub from '@/public/icons/github';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -9,7 +8,7 @@ export default function Header(): JSX.Element {
       <div className="container flex items-center justify-between my-4 lg:my-5">
         <Link href={'/'} className="flex items-center gap-2">
           {/* logo */}
-          <Image src={imageLogo} width={120} height={30} alt="logo" />
+          <Image src={'/images/logo.png'} width={120} height={30} alt="logo" />
         </Link>
         <div className="flex items-center gap-5">
           {/* docs */}

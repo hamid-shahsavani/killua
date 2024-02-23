@@ -1,8 +1,8 @@
 'use client';
 
-import { IconArrowRight, IconChevron } from '@/constants/icons';
-import { imageJs, imageSsr, imageTs } from '@/constants/images';
-import Image, { StaticImageData } from 'next/image';
+import { IconArrowRight } from '@/public/icons/arrow-right';
+import IconChevron from '@/public/icons/chevron';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import 'swiper/css';
@@ -11,7 +11,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 function Card(props: {
   title: string;
   description: string;
-  image: StaticImageData;
+  image: string;
   url: string;
 }) {
   return (
@@ -28,9 +28,9 @@ function Card(props: {
               <IconArrowRight />
             </div>
           </div>
-          <Image src={props.image} width={60} alt={props.title} />
+          <Image src={props.image} width={60} height={60} alt={props.title} />
           <p className="py-2 font-bold text-[17px]">{props.title}</p>
-          <p className="font-light text-center text-[15px] text-[#eee] max-w-[350px]">
+          <p className="font-normal text-center text-[15px] text-[#eee] max-w-[350px]">
             {props.description}
           </p>
         </div>
@@ -43,35 +43,35 @@ export default function GuideUsage(): JSX.Element {
   const cardsData = [
     {
       url: 'https://killua-docs.vercel.app/usage/react.js/javascript',
-      image: imageJs,
+      image: '/images/js.png',
       title: 'JavaScript',
       description:
-        'Effortlessly handle and optimize local storage operations to enhance the performance and user experience of your JavaScript projects.',
+        'Effortlessly handle and optimize local storage operations to enhance the performance and user experience of your JavaScript projects.'
     },
     {
       url: 'https://killua-docs.vercel.app/usage/react.js/typescript',
-      image: imageTs,
+      image: '/images/ts.png',
       title: 'TypeScript',
       description:
-        'Leverage the type safety and enhanced tooling provided by TypeScript to seamlessly manage local storage in your applications, ensuring a robust and error-free development experience.',
+        'Leverage the type safety and enhanced tooling provided by TypeScript to seamlessly manage local storage in your applications, ensuring a robust and error-free development experience.'
     },
     {
       url: 'https://killua-docs.vercel.app/usage/next.js/javascript',
-      image: imageSsr,
+      image: '/images/ssr.png',
       title: 'Nextjs',
       description:
-        'you can easy seamlessly integrate the "killua" package with Next.js in both the app directory and the page directory.',
-    },
+        'you can easy seamlessly integrate the "killua" package with Next.js in both the app directory and the page directory.'
+    }
   ];
 
   // mobile card slider
   const mobileCardSliderRef = useRef<any>(null);
   const [
     mobileCardSliderPrevAndNextIsAvilable,
-    setMobileCardSliderPrevAndNextIsAvilable,
+    setMobileCardSliderPrevAndNextIsAvilable
   ] = useState({
     prev: false,
-    next: false,
+    next: false
   });
   const mobileCardSliderNavigationHandler = (type: 'next' | 'prev') => {
     if (!mobileCardSliderRef.current) return;
@@ -121,24 +121,24 @@ export default function GuideUsage(): JSX.Element {
               breakpoints={{
                 550: {
                   slidesPerView: 2,
-                  spaceBetween: 20,
-                },
+                  spaceBetween: 20
+                }
               }}
-              onInit={(e) => {
+              onInit={e => {
                 setMobileCardSliderPrevAndNextIsAvilable({
                   prev: !e.isBeginning,
-                  next: !e.isEnd,
+                  next: !e.isEnd
                 });
               }}
-              onSlideChange={(e) =>
+              onSlideChange={e =>
                 setMobileCardSliderPrevAndNextIsAvilable({
                   prev: !e.isBeginning,
-                  next: !e.isEnd,
+                  next: !e.isEnd
                 })
               }
               className="flex justify-center overflow-hidden"
             >
-              {cardsData.map((item) => {
+              {cardsData.map(item => {
                 return (
                   <SwiperSlide key={item.title} className="h-full">
                     <Card {...item} />
@@ -149,7 +149,7 @@ export default function GuideUsage(): JSX.Element {
           </div>
           {/* desktop */}
           <div className="hidden grid-cols-3 gap-5 lg:grid">
-            {cardsData.map((item) => {
+            {cardsData.map(item => {
               return <Card key={item.title} {...item} />;
             })}
           </div>

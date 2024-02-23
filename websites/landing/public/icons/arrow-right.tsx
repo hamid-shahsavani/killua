@@ -1,4 +1,4 @@
-export default function Icon() {
+export function IconArrowRight() {
   return (
     <svg
       width="24"

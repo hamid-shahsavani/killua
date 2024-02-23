@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-// tailwind apply classes
+/* tailwind apply classes */ 
 .border-c-gradient {
   @apply bg-gradient-to-r from-[#D931F7] via-[#D931F7] to-[#F3F731] p-[1px];
 }
@@ -10,35 +10,33 @@
   @apply transform transition-all duration-300 active:scale-90;
 }
 
-// disable background blue after click
+/* disable background blue after click */
 * {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-// scroll smoosh
+/* scroll smoosh */
 html {
   scroll-padding-top: 10rem;
   scroll-behavior: smooth !important;
 }
 
-// minimal scrollbar
-.minimal-scrollbar {
+/* customize body scrollbar */
+body {
   overflow-y: auto;
   overflow-x: hidden;
-  scrollbar-width: thin;
-
   &::-webkit-scrollbar {
     width: 7px;
     height: 8px;
   }
   &::-webkit-scrollbar-track {
-    background: #b6b6b6;
+    background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: #444;
+    background-color: #666;
     border-radius: 10px;
   }
   &::-webkit-scrollbar-thumb:hover {
-    background: #333;
+    background: #777;
   }
 }

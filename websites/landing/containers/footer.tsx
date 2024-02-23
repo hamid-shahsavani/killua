@@ -1,10 +1,9 @@
-import { imageLogo } from '@/constants/images';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Footer(): JSX.Element {
   return (
-    <footer className="py-8 mt-10 bg-[url('../assets/images/footer-bg.png')] bg-cover">
+    <footer className="py-8 mt-10 bg-[url('/images/footer-bg.png')] bg-cover">
       <div
         className={`container flex flex-col gap-6 sm:gap-8 sm:flex-row lg:gap-10`}
       >
@@ -12,15 +11,20 @@ export default function Footer(): JSX.Element {
           <div className="flex flex-col gap-2">
             <Link href={'/'} className="flex items-center gap-2">
               {/* logo */}
-              <Image src={imageLogo} width={120} height={30} alt="logo" />
+              <Image
+                src={'/images/logo.png'}
+                width={120}
+                height={30}
+                alt="logo"
+              />
             </Link>
             {/* description */}
-            <p className="font-light text-[#b5b5b5] w-[240px]">
+            <p className="font-normal text-[#b5b5b5] w-[240px]">
               a local-storage management library for react applications.
             </p>
           </div>
           {/* links */}
-          <ul className="[&>li]:lg:text-[17px] [&>li]:font-light [&>li]:text-[#dedede] [&>li]:transition-all [&>li]:duration-300 hover:[&>li]:text-white">
+          <ul className="[&>li]:lg:text-[17px] [&>li]:font-normal [&>li]:text-[#dedede] [&>li]:transition-all [&>li]:duration-300 hover:[&>li]:text-white">
             <li>
               <Link
                 href={'https://github.com/sys113/killua/blob/main/CHANGELOG.md'}
@@ -48,7 +52,7 @@ export default function Footer(): JSX.Element {
           {/* title */}
           <p className="text-lg font-semibold lg:font-bold">Usage</p>
           {/* links */}
-          <ul className="[&>li]:lg:text-[17px] [&>li]:font-light [&>li]:text-[#dedede] [&>li]:transition-all [&>li]:duration-300 hover:[&>li]:text-white">
+          <ul className="[&>li]:lg:text-[17px] [&>li]:font-normal [&>li]:text-[#dedede] [&>li]:transition-all [&>li]:duration-300 hover:[&>li]:text-white">
             <li>
               <Link
                 target="_blank"
@@ -91,7 +95,7 @@ export default function Footer(): JSX.Element {
           {/* title */}
           <p className="text-lg font-semibold lg:font-bold">AVAILABLE ON</p>
           {/* links */}
-          <ul className="[&>li]:lg:text-[17px] [&>li]:font-light [&>li]:text-[#dedede] [&>li]:transition-all [&>li]:duration-300 hover:[&>li]:text-white">
+          <ul className="[&>li]:lg:text-[17px] [&>li]:font-normal [&>li]:text-[#dedede] [&>li]:transition-all [&>li]:duration-300 hover:[&>li]:text-white">
             <li>
               <Link href={'https://github.com/sys113/killua'}>Github</Link>
             </li>

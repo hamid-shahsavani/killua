@@ -9,12 +9,11 @@
   },
   "dependencies": {
     "highlight.js": "^11.8.0",
-    "killua": "^0.3.3",
+    "killua": "file:killua-0.0.1.tgz",
     "next": "^13.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-highlight": "^0.15.0",
-    "sass": "^1.68.0",
     "sharp": "^0.32.6",
     "swiper": "^10.3.1",
     "tailwind-merge": "^1.14.0"
@@ -23,11 +22,13 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "@types/react-highlight": "^0.12.6",
+    "@types/react-highlight": "^0.12.8",
+    "@types/swiper": "^6.0.0",
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "^13.5.4",
     "postcss": "latest",
+    "postcss-nesting": "^12.0.3",
     "tailwindcss": "latest",
     "typescript": "latest"
   }

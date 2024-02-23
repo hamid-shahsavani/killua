@@ -3,58 +3,58 @@ export default function Features(): JSX.Element {
     {
       title: 'Retrieve data from local storage',
       description:
-        "Effortlessly access previously stored information from the browser's local storage. Retrieve and utilize data seamlessly for your application's needs.",
+        "Effortlessly access previously stored information from the browser's local storage. Retrieve and utilize data seamlessly for your application's needs."
     },
     {
       title: 'Store data to local storage',
       description:
-        'Easily store and preserve important information without any challenges, ensuring convenient future access and utilization.',
+        'Easily store and preserve important information without any challenges, ensuring convenient future access and utilization.'
     },
     {
       title: 'Nextjs friendly',
       description:
-        'you can easy seamlessly integrate the "killua" package with Next.js in both the app directory and the page directory.',
+        'you can easy seamlessly integrate the "killua" package with Next.js in both the app directory and the page directory.'
     },
     {
       title: 'TypeScript friendly',
       description:
-        'Designed to work seamlessly with TypeScript, providing type safety and improved development experience.',
+        'Designed to work seamlessly with TypeScript, providing type safety and improved development experience.'
     },
     {
       title: 'Auto update in other tabs',
       description:
-        'Automatically update stored data in other open browser tabs or windows when changes occur.',
+        'Automatically update stored data in other open browser tabs or windows when changes occur.'
     },
     {
       title: 'Auto update in other components',
       description:
-        'Automatically update data in other components of the application when changes occur in local storage.',
+        'Automatically update data in other components of the application when changes occur in local storage.'
     },
     {
       title: 'Set expiration timer',
       description:
-        'Implement an expiration timer for stored data to automatically remove outdated information.',
+        'Implement an expiration timer for stored data to automatically remove outdated information.'
     },
     {
       title: 'Encrypt local storage data',
       description:
-        'Securely encrypt data stored in local storage to protect sensitive information.',
+        'Securely encrypt data stored in local storage to protect sensitive information.'
     },
     {
       title: 'Config file for configuration management',
       description:
-        'Utilize a configuration file to manage various settings and options in the application.',
+        'Utilize a configuration file to manage various settings and options in the application.'
     },
     {
       title: 'Reducer for state management',
       description:
-        'Implement a reducer for effective state management, allowing for structured data updates.',
+        'Implement a reducer for effective state management, allowing for structured data updates.'
     },
     {
       title: 'Selector for data access',
       description:
-        'Use a selector to efficiently access and retrieve data stored in local storage.',
-    },
+        'Use a selector to efficiently access and retrieve data stored in local storage.'
+    }
   ];
   return (
     <section>
@@ -106,7 +106,9 @@ export default function Features(): JSX.Element {
                       <p className="font-bold text-[18px]">{item.title}</p>
                     </div>
                     {/* description */}
-                    <p className="text-[15px] font-light">{item.description}</p>
+                    <p className="text-[15px] font-normal">
+                      {item.description}
+                    </p>
                   </div>
                 </div>
               );

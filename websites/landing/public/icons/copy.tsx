@@ -4,7 +4,7 @@ interface Props {
   className?: string;
 }
 
-export default function Icon(props: Props) {
+export default function IconCopy(props: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
