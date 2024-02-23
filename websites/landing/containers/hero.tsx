@@ -57,7 +57,7 @@ export const counterSlice = slice({
   expire: '0d-0h-0m-10s',
   obfuscate: true,
   schema: z.number().min(0).max(10),
-  reducer: {
+  reducers: {
     increment: (value) => value + 1,
     decrement: (value) => value - 1
   },
@@ -87,7 +87,7 @@ export default function Component() {
 
   return (
     <section
-      className={`lg:bg-[url('/images/hero-bg.png')] bg-center bg-cover bg-no-repeat items-center flex lg:my-16`}
+      className={`lg:bg-[url('/images/hero-bg.png')] bg-center bg-cover bg-no-repeat items-center flex lg:mt-16 lg:mb-4`}
     >
       <div className="container flex flex-col items-center lg:flex-row lg:gap-4 lg:items-center space-y-14 lg:space-y-0">
         {/* left */}
@@ -139,7 +139,7 @@ export default function Component() {
               <div className="flex justify-end gap-2 px-3 pb-3">
                 <button
                   onClick={codeCopyToClipboardHandler}
-                  className="p-1.5 btn-animation rounded-lg border"
+                  className="p-1.5 h-9 btn-animation rounded-lg border"
                 >
                   {sourceCodeCopyToClipboardSuccessfully ? (
                     <IconTick />

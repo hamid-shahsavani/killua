@@ -15,7 +15,6 @@
     "react-dom": "^18.2.0",
     "react-highlight": "^0.15.0",
     "sharp": "^0.32.6",
-    "swiper": "^10.3.1",
     "tailwind-merge": "^1.14.0",
     "zod": "^3.22.4"
   },
@@ -24,7 +23,6 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@types/react-highlight": "^0.12.8",
-    "@types/swiper": "^6.0.0",
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "^14.1.0",

@@ -4,6 +4,7 @@ import { slice } from 'killua-beta';
 export const cartSlice = slice({
   key: 'cart',
   defaultClient: [] as TProduct[],
+  obfuscate: true,
   selectors: {
     cartIsEmpty: value => Boolean(!value.length),
     isItemInCart: (value, payload: number) =>
