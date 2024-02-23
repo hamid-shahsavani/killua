@@ -13,8 +13,6 @@ import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/s
 import { generateSliceConfigChecksum } from '../detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from '../detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { getSliceExpireTimestampFromStorage } from '../slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
-import { decryptStorageData } from '../obfuscation/decrypt-storage-data.util';
-import { getSaltKeyFromStorage } from '../obfuscation/get-salt-key-from-storage.util';
 
 export function getSliceFromStorage<
   GSlice,
@@ -76,10 +74,7 @@ export function getSliceFromStorage<
       try {
         // set storage value to `returnValue`
         if (params.config.obfuscate) {
-          returnValue = decryptStorageData({
-            data: storageValue,
-            saltKey: getSaltKeyFromStorage()
-          });
+          returnValue = JSON.parse(atob(storageValue));
         } else {
           returnValue = JSON.parse(storageValue);
         }

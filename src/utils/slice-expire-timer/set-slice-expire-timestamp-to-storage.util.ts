@@ -5,8 +5,6 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { encryptStorageData } from '../obfuscation/encrypt-storage-data.util';
-import { getSaltKeyFromStorage } from '../obfuscation/get-salt-key-from-storage.util';
 import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
 import { timeStringToSeconds } from './time-string-to-second.util';
 
@@ -34,10 +32,7 @@ export function setSliceExpireTimestampToStorage<
   }
   localStorage.setItem(
     storageKeys.slicesExpireTime,
-    encryptStorageData({
-      data: storageValue,
-      saltKey: getSaltKeyFromStorage()
-    })
+    btoa(JSON.stringify(storageValue))
   );
 
   return sliceExpireTimestamp;

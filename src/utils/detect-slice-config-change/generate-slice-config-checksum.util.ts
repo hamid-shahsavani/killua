@@ -4,7 +4,6 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import * as CryptoJS from 'crypto-js';
 
 export function generateSliceConfigChecksum<
   GSlice,
@@ -14,14 +13,13 @@ export function generateSliceConfigChecksum<
 >(params: {
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
 }): string {
-  // generate md5 checksum with slice config (exclude `key`, `selectors`, `reducers`, `schema`)
-  const sliceConfigChecksum: string = CryptoJS.MD5(
+  // generate checksum with slice config (include defaultServer, defaultClient, expire, obfuscate)
+  const sliceConfigChecksum: string = btoa(
     JSON.stringify({
-      ...params.config,
-      key: undefined,
-      selectors: undefined,
-      reducers: undefined,
-      schema: undefined
+      defaultServer: params.config.defaultServer,
+      defaultClient: params.config.defaultClient,
+      expire: params.config.expire,
+      obfuscate: params.config.obfuscate
     })
   ).toString();
 

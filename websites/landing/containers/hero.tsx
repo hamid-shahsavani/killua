@@ -6,7 +6,7 @@ import IconCopy from '@/public/icons/copy';
 import IconTick from '@/public/icons/tick';
 import { sliceCounter } from '@/slices/counter';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
-import { useKillua } from 'killua';
+import { useKillua } from 'killua-beta';
 import Link from 'next/link';
 import { useState } from 'react';
 import Highlight from 'react-highlight';
@@ -29,7 +29,7 @@ export default function Hero(): JSX.Element {
   const localstorageCounter = useKillua(sliceCounter);
 
   // change file tab
-  const [activedFileTab, setActivedFileTab] = useState<'counter' | 'Component'>(
+  const [activedFileTab, setActivedFileTab] = useState<'counter' | 'component'>(
     'counter'
   );
 
@@ -55,7 +55,7 @@ export const counterSlice = slice({
   // optional ...
   defaultServer: 3,
   expire: '0d-0h-0m-10s',
-  encrypt: true,
+  obfuscate: true,
   schema: z.number().min(0).max(10),
   reducer: {
     increment: (value) => value + 1,
@@ -161,13 +161,13 @@ export default function Component() {
                 counter.ts
               </button>
               <button
-                onClick={(): void => setActivedFileTab('Component')}
+                onClick={(): void => setActivedFileTab('component')}
                 className={`text-white -ml-8 font-normal px-9 h-8 bg-cover ${
-                  activedFileTab === 'Component' &&
+                  activedFileTab === 'component' &&
                   "!font-bold bg-[url('/images/active-file-bg.png')]"
                 }`}
               >
-                Component.tsx
+                component.tsx
               </button>
             </div>
           </div>
