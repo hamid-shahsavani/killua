@@ -67,7 +67,7 @@
   },
   "exports": {
     ".": {
-      "types": "./index.d.ts",
+      "types": "./lib/index.d.ts",
       "require": "./lib/index.js",
       "import": "./lib/index.mjs"
     },
