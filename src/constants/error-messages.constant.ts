@@ -15,8 +15,8 @@ export const errorMessages = {
     required: `your application is server-side, so \`defaultServer\` is required! \n${docsUrl}#defaultServer`,
     invalidType: `\`defaultServer\` is not the same type as \`defaultClient\`! \n${docsUrl}#defaultServer`
   },
-  encrypt: {
-    invalidType: `\`encrypt\` is not a boolean! \n${docsUrl}#encrypt`
+  obfuscate: {
+    invalidType: `\`obfuscate\` is not a boolean! \n${docsUrl}#obfuscate`
   },
   expire: {
     invalidFormat: `\`expire\` is not a valid format! \n${docsUrl}#expire`

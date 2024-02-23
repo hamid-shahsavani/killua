@@ -5,11 +5,11 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { encryptStorageData } from '../cryptography/encrypt-storage-data.util';
 import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
-import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import { schemaValidation } from '../slice-schema-validation/schema-validation.util';
 import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slice-expire-timestamp-to-storage.util';
+import { encryptStorageData } from '../obfuscation/encrypt-storage-data.util';
+import { getSaltKeyFromStorage } from '../obfuscation/get-salt-key-from-storage.util';
 
 export function setSliceToStorage<
   GSlice,
@@ -34,7 +34,7 @@ export function setSliceToStorage<
   // set slice value to storage
   localStorage.setItem(
     sliceStorageKey,
-    params.config.encrypt
+    params.config.obfuscate
       ? encryptStorageData({
           data: params.slice,
           saltKey: getSaltKeyFromStorage()

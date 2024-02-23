@@ -17,7 +17,7 @@ export type TConfig<
   key: string;
   defaultClient: GSlice;
   defaultServer?: GDefaultServer;
-  encrypt?: boolean;
+  obfuscate?: boolean;
   expire?: string;
   schema?:
     | {

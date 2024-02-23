@@ -62,8 +62,8 @@
     "clean": "rm -rf lib/* ",
     "dev": "rollup --config ./configs/rollup.config.mjs --watch",
     "build": "yarn run clean && npm run build:cjs && npm run build:esm",
-    "build:esm": "rollup --cotsc -p ./configs/tsconfig.cjs.jsonnfig ./configs/rollup.config.mjs",
-    "build:cjs": ""
+    "build:esm": "rollup --config ./configs/rollup.config.mjs",
+    "build:cjs": "tsc -p ./configs/tsconfig.cjs.json"
   },
   "exports": {
     ".": {

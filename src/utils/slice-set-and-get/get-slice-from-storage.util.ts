@@ -4,10 +4,8 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { decryptStorageData } from '../cryptography/decrypt-storage-data.util';
 import { defaultSliceValue } from '../other/default-slice-value.util';
 import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
-import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import { schemaValidation } from '../slice-schema-validation/schema-validation.util';
 import { ensureExistAllRequiredKeysInStorage } from '../other/ensure-exist-all-required-keys-in-storage.util';
 import { isConfigSsr } from '../other/is-config-ssr.util';
@@ -15,6 +13,8 @@ import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/s
 import { generateSliceConfigChecksum } from '../detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from '../detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { getSliceExpireTimestampFromStorage } from '../slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
+import { decryptStorageData } from '../obfuscation/decrypt-storage-data.util';
+import { getSaltKeyFromStorage } from '../obfuscation/get-salt-key-from-storage.util';
 
 export function getSliceFromStorage<
   GSlice,
@@ -75,7 +75,7 @@ export function getSliceFromStorage<
     if (storageValue) {
       try {
         // set storage value to `returnValue`
-        if (params.config.encrypt) {
+        if (params.config.obfuscate) {
           returnValue = decryptStorageData({
             data: storageValue,
             saltKey: getSaltKeyFromStorage()

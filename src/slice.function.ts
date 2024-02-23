@@ -118,10 +118,10 @@ export default function slice<
     });
   }
 
-  // validate `encrypt`
-  if (!isUndefined(params.encrypt) && !isBoolean(params.encrypt)) {
+  // validate `obfuscate`
+  if (!isUndefined(params.obfuscate) && !isBoolean(params.obfuscate)) {
     errorTemplate({
-      msg: errorMessages.encrypt.invalidType,
+      msg: errorMessages.obfuscate.invalidType,
       key: params.key
     });
   }
@@ -205,7 +205,7 @@ export default function slice<
     'defaultClient',
     'defaultServer',
     'key',
-    'encrypt',
+    'obfuscate',
     'expire',
     'schema',
     'reducers',

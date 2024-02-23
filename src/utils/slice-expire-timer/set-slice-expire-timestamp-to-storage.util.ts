@@ -5,8 +5,8 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { encryptStorageData } from '../cryptography/encrypt-storage-data.util';
-import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
+import { encryptStorageData } from '../obfuscation/encrypt-storage-data.util';
+import { getSaltKeyFromStorage } from '../obfuscation/get-salt-key-from-storage.util';
 import { getSlicesExpireTimeFromStorage } from './get-slices-expire-time-from-storage.util';
 import { timeStringToSeconds } from './time-string-to-second.util';
 

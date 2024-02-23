@@ -5,10 +5,10 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { decryptStorageData } from '../cryptography/decrypt-storage-data.util';
-import { encryptStorageData } from '../cryptography/encrypt-storage-data.util';
-import { getSaltKeyFromStorage } from '../cryptography/get-salt-key-from-storage.util';
 import { generateSliceConfigChecksum } from '../detect-slice-config-change/generate-slice-config-checksum.util';
+import { decryptStorageData } from '../obfuscation/decrypt-storage-data.util';
+import { encryptStorageData } from '../obfuscation/encrypt-storage-data.util';
+import { getSaltKeyFromStorage } from '../obfuscation/get-salt-key-from-storage.util';
 import { timeStringToSeconds } from '../slice-expire-timer/time-string-to-second.util';
 import { removeAllSlicesFromStorage } from './remove-all-slices-from-storage.util';
 
