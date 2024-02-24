@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "lib": ["es5", "es6", "es7", "esnext", "dom"],
-    "target": "es2018",
+    "module": "commonjs",
+    "target": "es6",
     "jsx": "react",
+    "lib": ["es5", "es6", "es7", "esnext", "dom"],
     "removeComments": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -15,7 +16,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "outDir": "../lib"
   },
-  "include": ["../src/**/*.ts", "../src/providers/ssr.tsx", "../.eslintrc.js"]
+  "include": ["../src/**/*.ts", "../.eslintrc.js"],
 }

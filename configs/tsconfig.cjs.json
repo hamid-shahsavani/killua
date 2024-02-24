@@ -8,5 +8,4 @@
     "sourceMap": false,
     "removeComments": true
   },
-  "exclude": ["../src/**/__tests__"]
 }

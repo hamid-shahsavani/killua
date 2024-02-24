@@ -1,14 +1,12 @@
 'use client';
 
-import {
-  IconArrowRight,
-  IconChevron,
-  IconCopy,
-  IconTick,
-} from '@/constants/icons';
-import { thunderCounter } from '@/thunders/counter';
+import { IconArrowRight } from '@/public/icons/arrow-right';
+import IconChevron from '@/public/icons/chevron';
+import IconCopy from '@/public/icons/copy';
+import IconTick from '@/public/icons/tick';
+import { sliceCounter } from '@/slices/counter';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
-import { useKillua } from 'killua';
+import { useKillua } from 'killua-beta';
 import Link from 'next/link';
 import { useState } from 'react';
 import Highlight from 'react-highlight';
@@ -17,7 +15,7 @@ export default function Hero(): JSX.Element {
   // install command copy to clipboard
   const [
     installCommandCopyToClipboardSuccessfully,
-    setInstallCommandCopyToClipboardSuccessfully,
+    setInstallCommandCopyToClipboardSuccessfully
   ] = useState(false);
   const installCommandCopyToClipboardHandler = (): void => {
     navigator.clipboard.writeText(`npm i killua`);
@@ -27,22 +25,17 @@ export default function Hero(): JSX.Element {
     }, 2000);
   };
 
-  // thunder counter source code
-  const {
-    thunder: thunderCounterState,
-    reducers: thunderCounterReducers,
-    isReadyInSsr: thunderCounterIsReadyInSsr,
-  } = useKillua(thunderCounter);
-  const [activedFileTab, setActivedFileTab] = useState<'counter' | 'Component'>(
-    'counter',
-  );
-  const [activedLanguageType, setActivedLanguageType] = useState<'js' | 'ts'>(
-    'ts',
+  // killua counter
+  const localStorageCounter = useKillua(sliceCounter);
+
+  // change file tab
+  const [activedFileTab, setActivedFileTab] = useState<'counter' | 'component'>(
+    'counter'
   );
 
   const [
     sourceCodeCopyToClipboardSuccessfully,
-    setSourceCodeCopyToClipboardSuccessfully,
+    setSourceCodeCopyToClipboardSuccessfully
   ] = useState(false);
   const codeCopyToClipboardHandler = (): void => {
     navigator.clipboard.writeText(activedSourceCode);
@@ -53,60 +46,57 @@ export default function Hero(): JSX.Element {
   };
   const activedSourceCode =
     activedFileTab === 'counter'
-      ? `// thunders/counter.${activedLanguageType}
-import { thunder } from "killua";
+      ? `// slices/counter.ts
+import { slice } from "killua";
 
-const thunderCounter = thunder({
+export const counterSlice = slice({
   key: "counter",
-  encrypt: true,
-  default: 1${activedLanguageType === 'ts' ? ' as number' : ''},
-  expire: null,
+  defaultClient: 1,
+  // optional ...
+  defaultServer: 3,
+  expire: '0d-0h-0m-10s',
+  obfuscate: true,
+  schema: z.number().min(0).max(10),
   reducers: {
-    increment: (thunder${
-      activedLanguageType === 'ts' ? ': number' : ''
-    }) => thunder + 1,
-    decrement: (thunder${
-      activedLanguageType === 'ts' ? ': number' : ''
-    }) => thunder - 1,
+    increment: (value) => value + 1,
+    decrement: (value) => value - 1
   },
-});
-
-export { thunderCounter };`
-      : `// components/component.${activedLanguageType}x
+  selectors: {
+    isMax: (value) => value === 10,
+    isMin: (value) => value === 0
+  }
+});`
+      : `// components/component.tsx
 import { useKillua } from "killua";
-import { thunderCounter } from "@/thunders/counter";
+import { counterSlice } from "@/slices/counter";
 
 export default function Component() {
-  const {
-    thunder: thunderCounterState,
-    reducers: thunderCounterReducers
-  } = useKillua(thunderCounter);
+  const localStorageCounter = useKillua(counterSlice);
   return (
-    <>
-      <button
-        onClick={thunderCounterReducers.increment}
-      >+</button>
-      <p>{thunderCounterState}</p>
-      <button
-        onClick={thunderCounterReducers.decrement}
-      >-</button>
-    <>
+    <div>
+      <button onClick={
+        () => localStorageCounter.set(prev => prev + 1)
+      }>+</button>
+      <p>{counterSlice.get()}</p>
+      <button onClick={
+        () => localStorageCounter.set(prev => prev - 1)
+      }>-</button>
+    </div>
   )
 };`;
 
   return (
     <section
-      className={`lg:bg-[url('../assets/images/hero-bg.png')] lg:h-[500px] bg-center bg-cover bg-no-repeat lg:-mb-10 items-center flex ${
-        activedFileTab === 'Component' && 'lg:mt-14 lg:mb-4'
-      }`}
+      className={`lg:bg-[url('/images/hero-bg.png')] bg-center bg-cover bg-no-repeat items-center flex lg:mt-16 lg:mb-4`}
     >
-      <div className="container flex flex-col items-center lg:flex-row lg:gap-4 lg:items-start space-y-14 lg:space-y-0">
+      <div className="container flex flex-col items-center lg:flex-row lg:gap-4 lg:items-center space-y-14 lg:space-y-0">
+        {/* left */}
         <div className="sm:w-[500px] gap-3 lg:gap-4 sm:text-center lg:text-start flex flex-col sm:flex-col sm:justify-center sm:items-center lg:items-start lg:w-1/2">
           {/* install command */}
           <div className="relative mb-2 group w-fit">
             <button
               onClick={installCommandCopyToClipboardHandler}
-              className="btn-animation font-light bg-[#222] w-fit px-2 py-1 rounded-lg"
+              className="btn-animation font-normal bg-[#222] w-fit px-2 py-1 rounded-lg"
             >
               $ npm i killua
             </button>
@@ -119,12 +109,12 @@ export default function Component() {
               <span className="relative z-20 text-black">Killua</span>
               <div className="w-full h-full rounded-full bg-gradient-to-r from-[#A020F0] to-[#F3F731] absolute top-0 left-0 z-0"></div>
             </span>{' '}
-            is a local-storage management library for React applications.
+            is a localStorage management library for React applications.
           </h1>
-          <h2 className="font-light max-w-[550px]">
-            Simplify local storage management in your React applications using
+          <h2 className="font-normal max-w-[550px]">
+            Simplify localStorage management in your React applications using
             Killua, a robust library specifically designed for efficient
-            handling of local storage operations.
+            handling of localStorage operations.
           </h2>
           <Link
             target="_blank"
@@ -135,6 +125,7 @@ export default function Component() {
             <IconArrowRight />
           </Link>
         </div>
+        {/* right */}
         <div className="flex flex-col items-center justify-center w-full gap-3 lg:w-1/2 lg:flex-row lg:justify-end">
           <div className="relative w-full mx-2 sm:mx-0 max-w-[400px] sm:max-w-[450px] p-[1px] bg-gradient-to-tl rounded-xl from-c-purple from-40% via-c-yellow via-50% to-transparent to-60%">
             <div className="h-full w-full minimal-scrollbar bg-[#151515] rounded-xl">
@@ -144,24 +135,11 @@ export default function Component() {
                   {activedSourceCode}
                 </Highlight>
               </div>
-              {/* copy-to-clipboard, switchjs-and-ts */}
+              {/* copy-to-clipboard */}
               <div className="flex justify-end gap-2 px-3 pb-3">
                 <button
-                  onClick={(): void =>
-                    setActivedLanguageType((prev) =>
-                      prev === 'js' ? 'ts' : 'js',
-                    )
-                  }
-                  className="border btn-animation py-[7px] px-3 rounded-full flex justify-center items-center text-white font-light"
-                >
-                  <span className="text-sm font-light">
-                    {activedLanguageType === 'js' ? 'JavaScript' : 'TypeScript'}
-                  </span>
-                  <IconChevron className="w-[18px] mt-0.5 h-[18px] stroke-white -rotate-90 ml-1" />
-                </button>
-                <button
                   onClick={codeCopyToClipboardHandler}
-                  className="p-1.5 btn-animation rounded-lg border"
+                  className="p-1.5 h-9 btn-animation rounded-lg border"
                 >
                   {sourceCodeCopyToClipboardSuccessfully ? (
                     <IconTick />
@@ -175,49 +153,49 @@ export default function Component() {
             <div className="absolute -top-[30px] left-2 lg:left-4 text-sm lg:text-md">
               <button
                 onClick={(): void => setActivedFileTab('counter')}
-                className={`text-white font-light px-8 h-8 bg-cover ${
+                className={`text-white font-normal px-9 h-8 bg-contain bg-no-repeat ${
                   activedFileTab === 'counter' &&
-                  "!font-bold bg-[url('../assets/images/active-file-bg.png')]"
+                  "!font-bold bg-[url('/images/active-file-bg.png')]"
                 }`}
               >
-                counter.{activedLanguageType}
+                counter.ts
               </button>
               <button
-                onClick={(): void => setActivedFileTab('Component')}
-                className={`text-white -ml-8 font-light px-9 h-8 bg-cover ${
-                  activedFileTab === 'Component' &&
-                  "!font-bold bg-[url('../assets/images/active-file-bg.png')]"
+                onClick={(): void => setActivedFileTab('component')}
+                className={`text-white -ml-8 font-normal px-9 h-8 bg-cover ${
+                  activedFileTab === 'component' &&
+                  "!font-bold bg-[url('/images/active-file-bg.png')]"
                 }`}
               >
-                Component.{activedLanguageType}x
+                component.tsx
               </button>
             </div>
           </div>
           {/* counter */}
           <div
             className={`border-c-gradient rounded-full relative transition-all duration-300 ${
-              thunderCounterIsReadyInSsr
+              localStorageCounter.isReady
                 ? 'opacity-100 visible'
                 : 'opacity-0 invisible'
             }`}
           >
             <div className="w-full h-full flex lg:flex-col-reverse items-center justify-center gap-6 lg:gap-4 bg-[#222] rounded-full px-3 py-2.5">
               <button
-                disabled={thunderCounterState === 1}
-                onClick={thunderCounterReducers.decrement}
+                disabled={localStorageCounter.get() === 1}
+                onClick={() => localStorageCounter.set(prev => prev - 1)}
               >
                 <IconChevron
                   className={`lg:-rotate-90 w-[26px] h-[26px] btn-animation ${
-                    thunderCounterState === 1
+                    localStorageCounter.get() === 1
                       ? 'stroke-gray-400'
                       : 'stroke-c-yellow'
                   }`}
                 />
               </button>
               <p className="flex items-center justify-center w-5 h-5">
-                {thunderCounterState}
+                {localStorageCounter.get()}
               </p>
-              <button onClick={thunderCounterReducers.increment}>
+              <button onClick={() => localStorageCounter.set(prev => prev + 1)}>
                 <IconChevron
                   className={`stroke-[10px] btn-animation stroke-c-yellow rotate-180 lg:rotate-90 w-[26px] h-[26px]`}
                 />

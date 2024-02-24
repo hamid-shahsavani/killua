@@ -1,4 +1,3 @@
-// rollup.config.js
 import typescript from "@rollup/plugin-typescript";
 
 export default [
@@ -7,6 +6,7 @@ export default [
     output: [
       {
         file: "lib/index.mjs",
+        name: "killua",
         format: "es",
         sourcemap: false,
         exports: "named",
