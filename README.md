@@ -46,6 +46,12 @@ yarn add killua
 - Auto update in other components
 - Config file for configuration management
 
+## examples
+
+- shopping cart : [live demo](https://killua-shopping-cart.vercel.app/) - [source code](https://github.com/sys113/killua/tree/main/websites/examples/shopping%20cart)
+- todo list : [live demo](https://killua-todo-list.vercel.app/) - [source code](https://github.com/sys113/killua/tree/main/websites/examples/todo%20list)
+- switch theme : [live demo](https://killua-switch-theme.vercel.app/) - [source code](https://github.com/sys113/killua/tree/main/websites/examples/switch%20theme)
+
 ## Usage
 
 ### Create slice configuration file
