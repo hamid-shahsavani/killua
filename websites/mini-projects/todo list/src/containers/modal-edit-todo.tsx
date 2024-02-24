@@ -14,7 +14,7 @@ interface IProps {
 }
 
 export default function ModalEditTodo(props: IProps): JSX.Element {
-  // add todo to to localstorage / get todos length
+  // add todo to to localStorage / get todos length
   const localStorageTodos = useKillua(todosSlice);
 
   // formik
@@ -78,7 +78,7 @@ export default function ModalEditTodo(props: IProps): JSX.Element {
       })
     ),
     onSubmit: async values => {
-      // edit todo from localstorage
+      // edit todo from localStorage
       localStorageTodos.reducers.edit({
         id: props.todo.id,
         title: values.title,

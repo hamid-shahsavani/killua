@@ -11,7 +11,7 @@ interface IProps {
 }
 
 export default function ModalAddTodo(props: IProps): JSX.Element {
-  // add todo to to localstorage / get todos length
+  // add todo to localStorage / get todos length
   const localStorageTodos = useKillua(todosSlice);
 
   // formik
@@ -69,7 +69,7 @@ export default function ModalAddTodo(props: IProps): JSX.Element {
       })
     ),
     onSubmit: async values => {
-      // add todo to localstorage
+      // add todo to localStorage
       localStorageTodos.reducers.add({
         id: generateUniqueId(),
         title: values.title,

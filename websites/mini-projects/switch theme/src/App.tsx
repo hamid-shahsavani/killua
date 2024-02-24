@@ -15,8 +15,9 @@ function App() {
   // change theme
   const changeThemeHandler = (theme: TTheme) => {
     themeSlice.set(theme);
-    document.documentElement.dataset['theme'] = theme === 'system' ? 'dark' : theme;
-  }
+    document.documentElement.dataset['theme'] =
+      theme === 'system' ? 'dark' : theme;
+  };
 
   return (
     <section className="h-screen w-screen overflow-hidden flex justify-center items-center">

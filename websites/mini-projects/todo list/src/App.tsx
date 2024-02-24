@@ -10,7 +10,7 @@ function App() {
   // show/hide modal add todo
   const [isOpenModalAddTodo, setIsOpenModalAddTodo] = useState<boolean>(false);
 
-  // get todos from localstorage / check todo list is empty
+  // get todos from localStorage / check todo list is empty
   const localStorageTodos = useKillua(todosSlice);
 
   return (
@@ -36,7 +36,9 @@ function App() {
           <div className="bg-black px-3.5 py-4 rounded-lg">
             {/* head */}
             <div className="flex items-center justify-between font-medium">
-              <p>Todo List ({localStorageTodos.selectors.itemsCount()} items)</p>
+              <p>
+                Todo List ({localStorageTodos.selectors.itemsCount()} items)
+              </p>
               <button
                 onClick={(): void => setIsOpenModalAddTodo(true)}
                 className="btn-animation rounded-md bg-purple-700 px-7 py-2 text-white transition-all duration-300"
@@ -46,7 +48,7 @@ function App() {
             </div>
             {/* body */}
             <section className="minimal-scrollbar md:max-h-[437px] bg-black mt-4">
-              {/* is todo in local storage ? render with map : show todo list is mepty */}
+              {/* is todo in localStorage ? render with map : show todo list is mepty */}
               {!localStorageTodos.selectors.isEmpty() ? (
                 <>
                   {localStorageTodos.get().map((item, index) => (

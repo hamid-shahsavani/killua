@@ -1,8 +1,8 @@
-import { useKillua } from "killua-beta";
-import { useState } from "react";
-import ModalEditTodo from "@/containers/modal-edit-todo";
-import type { TTodo } from "@/types/todo";
-import { todosSlice } from "@/slices/todos";
+import { useKillua } from 'killua-beta';
+import { useState } from 'react';
+import ModalEditTodo from '@/containers/modal-edit-todo';
+import type { TTodo } from '@/types/todo';
+import { todosSlice } from '@/slices/todos';
 
 interface IProps {
   todo: TTodo;
@@ -10,7 +10,7 @@ interface IProps {
 }
 
 export default function TodoItem(props: IProps): JSX.Element {
-  // remove todo from localstorage
+  // remove todo from localStorage
   const localStorageTodos = useKillua(todosSlice);
 
   // show/hide modal edit todo
@@ -50,18 +50,18 @@ export default function TodoItem(props: IProps): JSX.Element {
           <div>
             {[
               {
-                title: "title",
-                text: props.todo.title,
+                title: 'title',
+                text: props.todo.title
               },
               {
-                title: "description",
-                text: props.todo.description,
+                title: 'description',
+                text: props.todo.description
               },
               {
-                title: "status",
-                text: props.todo.status,
-              },
-            ].map((item) => (
+                title: 'status',
+                text: props.todo.status
+              }
+            ].map(item => (
               <div
                 key={item.text}
                 className="relative border-t border-gray-600 p-3.5"

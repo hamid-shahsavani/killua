@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "killua-beta": "^0.0.5",
     "normalize.css": "^8.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

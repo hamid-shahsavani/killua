@@ -1,14 +1,14 @@
 export default function Features(): JSX.Element {
   const featuresData = [
     {
-      title: 'Get data from local storage',
+      title: 'Get data from localStorage',
       description:
-        'Easily retrieve and access stored data from local storage without any hassle, ensuring convenient data management and utilization.'
+        'Easily retrieve and access stored data from localStorage without any hassle, ensuring convenient data management and utilization.'
     },
     {
-      title: 'Set data to local storage',
+      title: 'Set data to localStorage',
       description:
-        'Effortlessly store and manage data in local storage, allowing for easy access and retrieval when needed.'
+        'Effortlessly store and manage data in localStorage, allowing for easy access and retrieval when needed.'
     },
     {
       title: 'Reducer for state management',
@@ -18,7 +18,7 @@ export default function Features(): JSX.Element {
     {
       title: 'Selector for data access',
       description:
-        'Use a selector to efficiently access and retrieve data stored in local storage.'
+        'Use a selector to efficiently access and retrieve data stored in localStorage.'
     },
     {
       title: 'Expiration timer',
@@ -31,8 +31,8 @@ export default function Features(): JSX.Element {
         'Utilize schema validation to ensure the accuracy and integrity of stored data.'
     },
     {
-      title: 'Obfuscate data in local storage',
-      description: 'obfuscate data in local storage to obscure information.'
+      title: 'Obfuscate data in localStorage',
+      description: 'obfuscate data in localStorage to obscure information.'
     },
     {
       title: 'Server-Side Compatibility',
@@ -52,7 +52,7 @@ export default function Features(): JSX.Element {
     {
       title: 'Auto update in other components',
       description:
-        'Automatically update data in other components of the application when changes occur in local storage.'
+        'Automatically update data in other components of the application when changes occur in localStorage.'
     },
     {
       title: 'Config file for configuration management',

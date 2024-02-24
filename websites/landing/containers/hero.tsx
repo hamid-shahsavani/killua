@@ -26,7 +26,7 @@ export default function Hero(): JSX.Element {
   };
 
   // killua counter
-  const localstorageCounter = useKillua(sliceCounter);
+  const localStorageCounter = useKillua(sliceCounter);
 
   // change file tab
   const [activedFileTab, setActivedFileTab] = useState<'counter' | 'component'>(
@@ -71,15 +71,15 @@ import { useKillua } from "killua";
 import { counterSlice } from "@/slices/counter";
 
 export default function Component() {
-  const localstorageCounter = useKillua(counterSlice);
+  const localStorageCounter = useKillua(counterSlice);
   return (
     <div>
       <button onClick={
-        () => localstorageCounter.set(prev => prev + 1)
+        () => localStorageCounter.set(prev => prev + 1)
       }>+</button>
       <p>{counterSlice.get()}</p>
       <button onClick={
-        () => localstorageCounter.set(prev => prev - 1)
+        () => localStorageCounter.set(prev => prev - 1)
       }>-</button>
     </div>
   )
@@ -109,12 +109,12 @@ export default function Component() {
               <span className="relative z-20 text-black">Killua</span>
               <div className="w-full h-full rounded-full bg-gradient-to-r from-[#A020F0] to-[#F3F731] absolute top-0 left-0 z-0"></div>
             </span>{' '}
-            is a localstorage management library for React applications.
+            is a localStorage management library for React applications.
           </h1>
           <h2 className="font-normal max-w-[550px]">
-            Simplify local storage management in your React applications using
+            Simplify localStorage management in your React applications using
             Killua, a robust library specifically designed for efficient
-            handling of local storage operations.
+            handling of localStorage operations.
           </h2>
           <Link
             target="_blank"
@@ -174,28 +174,28 @@ export default function Component() {
           {/* counter */}
           <div
             className={`border-c-gradient rounded-full relative transition-all duration-300 ${
-              localstorageCounter.isReady
+              localStorageCounter.isReady
                 ? 'opacity-100 visible'
                 : 'opacity-0 invisible'
             }`}
           >
             <div className="w-full h-full flex lg:flex-col-reverse items-center justify-center gap-6 lg:gap-4 bg-[#222] rounded-full px-3 py-2.5">
               <button
-                disabled={localstorageCounter.get() === 1}
-                onClick={() => localstorageCounter.set(prev => prev - 1)}
+                disabled={localStorageCounter.get() === 1}
+                onClick={() => localStorageCounter.set(prev => prev - 1)}
               >
                 <IconChevron
                   className={`lg:-rotate-90 w-[26px] h-[26px] btn-animation ${
-                    localstorageCounter.get() === 1
+                    localStorageCounter.get() === 1
                       ? 'stroke-gray-400'
                       : 'stroke-c-yellow'
                   }`}
                 />
               </button>
               <p className="flex items-center justify-center w-5 h-5">
-                {localstorageCounter.get()}
+                {localStorageCounter.get()}
               </p>
-              <button onClick={() => localstorageCounter.set(prev => prev + 1)}>
+              <button onClick={() => localStorageCounter.set(prev => prev + 1)}>
                 <IconChevron
                   className={`stroke-[10px] btn-animation stroke-c-yellow rotate-180 lg:rotate-90 w-[26px] h-[26px]`}
                 />
