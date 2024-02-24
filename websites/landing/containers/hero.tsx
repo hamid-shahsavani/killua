@@ -27,7 +27,7 @@ export default function Hero(): JSX.Element {
 
   // killua counter
   const localStorageCounter = useKillua(sliceCounter);
-
+  
   // change file tab
   const [activedFileTab, setActivedFileTab] = useState<'counter' | 'component'>(
     'counter'
@@ -58,12 +58,12 @@ export const counterSlice = slice({
   obfuscate: true,
   schema: z.number().min(0).max(10),
   reducers: {
-    increment: (value) => value + 1,
-    decrement: (value) => value - 1
+    increment: value => value + 1,
+    incrementWithPayload: (value, payload: number) => value + payload
   },
   selectors: {
-    isMax: (value) => value === 10,
-    isMin: (value) => value === 0
+    getPlusOne: value => value + 1,
+    getPlusWithPayload: (value, payload: number) => value + payload
   }
 });`
       : `// components/component.tsx
@@ -127,7 +127,7 @@ export default function Component() {
         </div>
         {/* right */}
         <div className="flex flex-col items-center justify-center w-full gap-3 lg:w-1/2 lg:flex-row lg:justify-end">
-          <div className="relative w-full mx-2 sm:mx-0 max-w-[400px] sm:max-w-[450px] p-[1px] bg-gradient-to-tl rounded-xl from-c-purple from-40% via-c-yellow via-50% to-transparent to-60%">
+          <div className="relative overflow-hidden w-full mx-2 sm:mx-0 max-w-[400px] sm:max-w-[530px] p-[1px] bg-gradient-to-tl rounded-xl from-c-purple from-40% via-c-yellow via-50% to-transparent to-60%">
             <div className="h-full w-full minimal-scrollbar bg-[#151515] rounded-xl">
               {/* source code */}
               <div>
