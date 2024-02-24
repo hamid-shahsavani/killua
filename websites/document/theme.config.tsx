@@ -18,7 +18,7 @@ const config: DocsThemeConfig = {
   logo: (
     <img
       width={130}
-      src="https://raw.githubusercontent.com/sys113/killua/main/websites/landing/assets/images/logo.png"
+      src="/logo.png"
     />
   ),
   project: {
