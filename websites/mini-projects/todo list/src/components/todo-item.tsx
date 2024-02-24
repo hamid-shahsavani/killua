@@ -1,4 +1,4 @@
-import { useKillua } from 'killua-beta';
+import { useKillua } from 'killua';
 import { useState } from 'react';
 import ModalEditTodo from '@/containers/modal-edit-todo';
 import type { TTodo } from '@/types/todo';

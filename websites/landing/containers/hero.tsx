@@ -6,7 +6,7 @@ import IconCopy from '@/public/icons/copy';
 import IconTick from '@/public/icons/tick';
 import { sliceCounter } from '@/slices/counter';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
-import { useKillua } from 'killua-beta';
+import { useKillua } from 'killua';
 import Link from 'next/link';
 import { useState } from 'react';
 import Highlight from 'react-highlight';

@@ -1,5 +1,5 @@
 import { cartSlice } from '@/slices/cart';
-import { useKillua } from 'killua-beta';
+import { useKillua } from 'killua';
 import { useState } from 'react';
 import ModalYourCart from './modal-your-cart';
 

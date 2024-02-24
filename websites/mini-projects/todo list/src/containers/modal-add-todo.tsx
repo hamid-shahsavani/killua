@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import { useKillua } from 'killua-beta';
+import { useKillua } from 'killua';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { todosSlice } from '@/slices/todos';

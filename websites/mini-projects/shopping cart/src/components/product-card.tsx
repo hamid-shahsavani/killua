@@ -1,5 +1,5 @@
 import { TProduct } from '@/types/product';
-import { useKillua } from 'killua-beta';
+import { useKillua } from 'killua';
 import { cartSlice } from '@/slices/cart';
 
 export default function ProductCard(props: TProduct): JSX.Element {

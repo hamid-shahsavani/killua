@@ -1,7 +1,7 @@
 import { todosSlice } from '@/slices/todos';
 import { TTodo } from '@/types/todo';
 import { useFormik } from 'formik';
-import { useKillua } from 'killua-beta';
+import { useKillua } from 'killua';
 import { useEffect } from 'react';
 import Select from 'react-select';
 import { z } from 'zod';

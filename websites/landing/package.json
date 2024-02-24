@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "highlight.js": "^11.8.0",
+    "killua": "^0.4.0",
     "killua-beta": "^0.0.2",
     "next": "^14.1.0",
     "react": "^18.2.0",

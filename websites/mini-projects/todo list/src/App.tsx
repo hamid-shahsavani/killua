@@ -2,7 +2,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import ModalAddTodo from './containers/modal-add-todo';
-import { useKillua } from 'killua-beta';
+import { useKillua } from 'killua';
 import { todosSlice } from './slices/todos';
 import TodoItem from './components/todo-item';
 

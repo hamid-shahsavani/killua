@@ -1,5 +1,5 @@
-import { cartSlice } from "@/slices/cart";
-import { useKillua } from "killua-beta";
+import { cartSlice } from '@/slices/cart';
+import { useKillua } from 'killua';
 
 interface IProps {
   isOpen: boolean;
@@ -15,10 +15,7 @@ export default function ModalYourCart(props: IProps): JSX.Element {
         props.isOpen ? 'visible bg-black/20' : 'invisible opacity-0'
       }`}
     >
-      <div
-        className="fixed inset-0"
-        onClick={(): void => props.onClose()}
-      />
+      <div className="fixed inset-0" onClick={(): void => props.onClose()} />
       <div
         className={`flex w-fit items-center justify-center transition-all duration-300 ${
           props.isOpen
@@ -46,7 +43,11 @@ export default function ModalYourCart(props: IProps): JSX.Element {
             <div>
               {localStorageCart.selectors.cartIsEmpty() ? (
                 <div className="flex flex-col items-center gap-4 pb-4 pt-8">
-                  <img src={'/images/cart-is-empty.png'} width={180} alt="cart is empty" />
+                  <img
+                    src={'/images/cart-is-empty.png'}
+                    width={180}
+                    alt="cart is empty"
+                  />
                   <p className="text-xl font-medium">cart is empty!</p>
                 </div>
               ) : (
@@ -75,7 +76,11 @@ export default function ModalYourCart(props: IProps): JSX.Element {
                             localStorageCart.reducers.removeFromCart(item.id)
                           }
                         >
-                          <img src={'/icons/trash.svg'} alt="trash icon" width={23} />
+                          <img
+                            src={'/icons/trash.svg'}
+                            alt="trash icon"
+                            width={23}
+                          />
                         </button>
                       </li>
                     ))}
@@ -83,10 +88,12 @@ export default function ModalYourCart(props: IProps): JSX.Element {
                   <div className="pb-2 pt-4 flex gap-4 border-t">
                     <div className="w-fit">
                       <p className="text-md whitespace-nowrap">
-                        Total price: ${localStorageCart.selectors.totalCartPrice()}
+                        Total price: $
+                        {localStorageCart.selectors.totalCartPrice()}
                       </p>
                       <p className="text-md whitespace-nowrap">
-                        Total items: {localStorageCart.selectors.totalCartCount()}
+                        Total items:{' '}
+                        {localStorageCart.selectors.totalCartCount()}
                       </p>
                     </div>
                     <button

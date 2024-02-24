@@ -1,5 +1,5 @@
 import { themeSlice } from './slices/theme';
-import { useKillua } from 'killua-beta';
+import { useKillua } from 'killua';
 import { TTheme } from './types/theme.type';
 import { useEffect } from 'react';
 
