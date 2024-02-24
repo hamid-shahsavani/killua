@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "description": "killua is a local-storage management library for React applications.",
   "repository": "https://github.com/sys113/killua.git",
-  "homepage": "https://killua-landing.vercel.app",
+  "homepage": "https://killua-react.dev",
   "keywords": [
     "react",
     "react-localstorage",
