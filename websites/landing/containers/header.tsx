@@ -14,7 +14,7 @@ export default function Header(): JSX.Element {
           {/* docs */}
           <Link
             target="_blank"
-            href={'https://killua-docs.vercel.app/'}
+            href={'https://docs.killua-react.dev/'}
             className="text-[17px]"
           >
             Docs

@@ -56,8 +56,7 @@ export function getCounter() {
 ## Set data
 
 <Callout type="info">
-  Whatever the `useKillua` hook returns, the `slice` function also returns.{' '}
-  <br /> Use the useKillua hook within the React framework, and as long as you
+  Whatever the `useKillua` hook returns, the `slice` function also returns.{' '}<br /> Use the useKillua hook within the React framework, and as long as you
   don't have access to it, use the slice function.
 </Callout>
 
@@ -197,11 +196,9 @@ export function incrementCounterWithPayload() {
 </Callout>
 <Callout type="info">
   As long as `defaultServer` exists in the config, both the `useKillua` hook and
-  the `slice` function will return a property named `isReady`.
-  <br />
+  the `slice` function will return a property named `isReady`.<br />
   If this value is `false`, it means that it is server-side and localStorage is
-  not accessible, and the returned value is `defaultServer`.
-  <br />
+  not accessible, and the returned value is `defaultServer`.<br />
   If this value is true, it means that it is client-side and localStorage is
   accessible, and the fetched value is from localStorage.
 </Callout>

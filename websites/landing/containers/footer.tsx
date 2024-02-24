@@ -50,49 +50,6 @@ export default function Footer(): JSX.Element {
         </div>
         <div className="space-y-1">
           {/* title */}
-          <p className="text-lg font-semibold lg:font-bold">Usage</p>
-          {/* links */}
-          <ul className="[&>li]:lg:text-[17px] [&>li]:font-normal [&>li]:text-[#dedede] [&>li]:transition-all [&>li]:duration-300 hover:[&>li]:text-white">
-            <li>
-              <Link
-                target="_blank"
-                href={
-                  'https://killua-docs.vercel.app/usage/react.js/javascript'
-                }
-              >
-                react.js with javascript
-              </Link>
-            </li>
-            <li>
-              <Link
-                target="_blank"
-                href={
-                  'https://killua-docs.vercel.app/usage/react.js/typescript'
-                }
-              >
-                react.js with typescript
-              </Link>
-            </li>
-            <li>
-              <Link
-                target="_blank"
-                href={'https://killua-docs.vercel.app/usage/next.js/javascript'}
-              >
-                next.js with javascript
-              </Link>
-            </li>
-            <li>
-              <Link
-                target="_blank"
-                href={'https://killua-docs.vercel.app/usage/next.js/typescript'}
-              >
-                next.js with typescript
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div className="space-y-1">
-          {/* title */}
           <p className="text-lg font-semibold lg:font-bold">AVAILABLE ON</p>
           {/* links */}
           <ul className="[&>li]:lg:text-[17px] [&>li]:font-normal [&>li]:text-[#dedede] [&>li]:transition-all [&>li]:duration-300 hover:[&>li]:text-white">
