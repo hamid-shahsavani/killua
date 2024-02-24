@@ -8,6 +8,7 @@
 
 - [Installation](#installation)
 - [Features](#features)
+- [Examples](examples)
 - [Usage](#usage)
   - [Create slice configuration file](#create-slice-configuration-file)
   - [Get data](#get-data)
@@ -33,6 +34,7 @@ yarn add killua
 ```
 
 ## Features
+
 - Get data from localStorage
 - Set data to localStorage
 - Reducer for state management
