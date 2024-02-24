@@ -30,8 +30,8 @@ export const counterSlice = slice({
 - Within a React component, utilize the `useKillua` hook :
 
 ```tsx showLineNumbers {8} filename="components/components.tsx" copy
-import { useKillua } from "killua";
-import { counterSlice } from "@/slices/counter";
+import { useKillua } from 'killua';
+import { counterSlice } from '@/slices/counter';
 
 export default function Component() {
   const localstorageCounter = useKillua(counterSlice);
@@ -39,8 +39,8 @@ export default function Component() {
     <div>
       <p>{counterSlice.get()}</p>
     </div>
-  )
-};
+  );
+}
 ```
 
 - Outside of a React component, employ the `slice` function :
@@ -56,15 +56,16 @@ export function getCounter() {
 ## Set data
 
 <Callout type="info">
-  Whatever the `useKillua` hook returns, the `slice` function also returns.{' '}<br /> Use the useKillua hook within the React framework, and as long as you
+  Whatever the `useKillua` hook returns, the `slice` function also returns.{' '}
+  <br /> Use the useKillua hook within the React framework, and as long as you
   don't have access to it, use the slice function.
 </Callout>
 
 - Within a React component, utilize the `useKillua` hook :
 
 ```tsx showLineNumbers {9,11} filename="components/components.tsx" copy
-import { useKillua } from "killua";
-import { counterSlice } from "@/slices/counter";
+import { useKillua } from 'killua';
+import { counterSlice } from '@/slices/counter';
 
 export default function Component() {
   const localstorageCounter = useKillua(counterSlice);
@@ -73,10 +74,12 @@ export default function Component() {
       {/* without callback */}
       <button onClick={() => counterSlice.set(0)}>Set counter to zero</button>
       {/* with callback */}
-      <button onClick={() => counterSlice.set((prev) => prev + 1)}>Increment counter</button>
+      <button onClick={() => counterSlice.set(prev => prev + 1)}>
+        Increment counter
+      </button>
     </div>
-  )
-};
+  );
+}
 ```
 
 - Outside of a React component, employ the `slice` function :
@@ -95,9 +98,10 @@ export function incrementCounter() {
 }
 ```
 
-## Use selectors 
+## Use selectors
 
 - To use a selector, simply add it to the slice config :
+
 ```ts showLineNumbers {6-9} filename="slices/counter.ts" copy
 import { slice } from 'killua';
 
@@ -105,15 +109,16 @@ export const counterSlice = slice({
   key: 'counter',
   defaultClient: 1 as number,
   selectors: {
-    getPlusOne: (value) => value + 1,
+    getPlusOne: value => value + 1,
     getPlusWithPayload: (value, payload: number) => value + payload
   }
 });
 ```
+
 - Within a React component, utilize the `useKillua` hook :
 
 ```tsx showLineNumbers {7,8} filename="components/components.tsx" copy
-import { useKillua } from "killua";
+import { useKillua } from 'killua';
 
 export default function Component() {
   const localstorageCounter = useKillua(counterSlice);
@@ -122,9 +127,10 @@ export default function Component() {
       <p>{localstorageCounter.getPlusOne()}</p> {/* without payload */}
       <p>{localstorageCounter.getPlusWithPayload(5)}</p> {/* with payload */}
     </div>
-  )
-};
+  );
+}
 ```
+
 - Outside of a React component, employ the `slice` function :
 
 ```ts showLineNumbers {5,10} filename="utils/get-counter.ts" copy
@@ -141,9 +147,10 @@ export function getCounterWithPlusWithPayload() {
 }
 ```
 
-## Using reducers
+## Use reducers
 
 - To use a reducer, simply add it to the slice config :
+
 ```ts showLineNumbers {6-9} filename="slices/counter.ts" copy
 import { slice } from 'killua';
 
@@ -151,26 +158,33 @@ export const counterSlice = slice({
   key: 'counter',
   defaultClient: 1 as number,
   reducers: {
-    increment: (value) => value + 1,
+    increment: value => value + 1,
     incrementWithPayload: (value, payload: number) => value + payload
   }
 });
 ```
+
 - Within a React component, utilize the `useKillua` hook :
 
 ```tsx showLineNumbers {7,8} filename="components/components.tsx" copy
-import { useKillua } from "killua";
+import { useKillua } from 'killua';
 
 export default function Component() {
   const localstorageCounter = useKillua(counterSlice);
   return (
     <div>
-      <button onClick={() => localstorageCounter.increment()}>Increment counter</button> {/* without payload */}
-      <button onClick={() => localstorageCounter.incrementWithPayload(5)}>Increment counter with payload</button> {/* with payload */}
+      <button onClick={() => localstorageCounter.increment()}>
+        Increment counter
+      </button>{' '}
+      {/* without payload */}
+      <button onClick={() => localstorageCounter.incrementWithPayload(5)}>
+        Increment counter with payload
+      </button> {/* with payload */}
     </div>
-  )
-};
+  );
+}
 ```
+
 - Outside of a React component, employ the `slice` function :
 
 ```ts showLineNumbers {5,10} filename="utils/increment-counter.ts" copy
@@ -196,9 +210,11 @@ export function incrementCounterWithPayload() {
 </Callout>
 <Callout type="info">
   As long as `defaultServer` exists in the config, both the `useKillua` hook and
-  the `slice` function will return a property named `isReady`.<br />
+  the `slice` function will return a property named `isReady`.
+  <br />
   If this value is `false`, it means that it is server-side and localStorage is
-  not accessible, and the returned value is `defaultServer`.<br />
+  not accessible, and the returned value is `defaultServer`.
+  <br />
   If this value is true, it means that it is client-side and localStorage is
   accessible, and the fetched value is from localStorage.
 </Callout>
@@ -220,16 +236,20 @@ export const counterSlice = slice({
 ```tsx showLineNumbers {4,7} filename="components/components.tsx" copy
 'use client';
 
-import { useKillua } from "killua";
+import { useKillua } from 'killua';
 
 export default function Component() {
   const localstorageCounter = useKillua(counterSlice);
   return (
     <div>
-      {localstorageCounter.isReady ? <p>{localstorageCounter.get()}</p> : <p>Loading...</p>}
+      {localstorageCounter.isReady ? (
+        <p>{localstorageCounter.get()}</p>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
-  )
-};
+  );
+}
 ```
 
 - Outside of a React component, employ the `slice` function :
@@ -243,7 +263,7 @@ export function getCounter() {
 }
 ```
 
-## Obsfucate data
+## Obfuscate data
 
 <Callout type="info">
   As long as obsfacte is present in the slice config, your data is not protected
@@ -263,7 +283,7 @@ export const counterSlice = slice({
 });
 ```
 
-## Expire Timer
+## Expire timer
 
 <Callout type="info">
   If the localStorage data expires at the moment when a user is on the website
@@ -294,13 +314,14 @@ export const counterSlice = slice({
 
 <Callout type="info">
   If `schema` exists in the configuration, when the localStorage is updated
-  using `set` or `reducers`, the data will be validated against that `schema`. If it
-  is not valid, it will not be set on the localStorage.
+  using `set` or `reducers`, the data will be validated against that `schema`.
+  If it is not valid, it will not be set on the localStorage.
 </Callout>
 <Callout type="info">
   If `schema` is exists in the configuration, when the localStorage data is
-  retrieved using `selectors` or `get`, and if it is validated against the `schema`
-  and found to be invalid, the `defaultClient` value will be returned instead.
+  retrieved using `selectors` or `get`, and if it is validated against the
+  `schema` and found to be invalid, the `defaultClient` value will be returned
+  instead.
 </Callout>
 
 - To set a schema for localStorage data, simply add it to the slice config :
