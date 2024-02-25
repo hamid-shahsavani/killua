@@ -12,6 +12,7 @@ import { setSliceConfigChecksumToStorage } from '../detect-slice-config-change/s
 import { generateSliceConfigChecksum } from '../detect-slice-config-change/generate-slice-config-checksum.util';
 import { getSliceConfigChecksumFromStorage } from '../detect-slice-config-change/get-slice-config-checksum-from-storage.util';
 import { getSliceExpireTimestampFromStorage } from '../slice-expire-timer/get-slice-expire-timestamp-from-storage.util';
+import { generateSliceStorageKey } from '../other/generate-slices-storage-key.util';
 
 export function getSliceFromStorage<
   GSlice,
@@ -53,12 +54,16 @@ export function getSliceFromStorage<
     setSliceConfigChecksumToStorage({
       config: params.config
     });
-    localStorage.removeItem(params.config.key);
+    localStorage.removeItem(
+      generateSliceStorageKey({ key: params.config.key })
+    );
   }
 
   // get value from storage
   const getFromStorage = (): GSlice => {
-    const storageValue: string | null = localStorage.getItem(params.config.key);
+    const storageValue: string | null = localStorage.getItem(
+      generateSliceStorageKey({ key: params.config.key })
+    );
     let returnValue: GSlice = defaultSliceValue({
       config: params.config
     }).client;
@@ -90,7 +95,9 @@ export function getSliceFromStorage<
         }
       } catch (error: any) {
         // schema validation fail || JSON.parse fail || decrypt fail ===> set `defaultSliceValue.client` to `returnValue` | remove slice key from storage
-        localStorage.removeItem(params.config.key);
+        localStorage.removeItem(
+          generateSliceStorageKey({ key: params.config.key })
+        );
         return defaultSliceValue({
           config: params.config
         }).client;

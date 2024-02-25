@@ -7,6 +7,7 @@ import {
 } from '../../types/config.type';
 import { schemaValidation } from '../slice-schema-validation/schema-validation.util';
 import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slice-expire-timestamp-to-storage.util';
+import { generateSliceStorageKey } from '../other/generate-slices-storage-key.util';
 
 export function setSliceToStorage<
   GSlice,
@@ -25,7 +26,7 @@ export function setSliceToStorage<
 
   // set slice value to storage
   localStorage.setItem(
-    params.config.key,
+    generateSliceStorageKey({ key: params.config.key }),
     params.config.obfuscate
       ? btoa(JSON.stringify(params.slice))
       : JSON.stringify(params.slice)

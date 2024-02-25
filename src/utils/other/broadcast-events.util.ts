@@ -6,6 +6,7 @@ import {
   TSelectors
 } from '../../types/config.type';
 import { defaultSliceValue } from './default-slice-value.util';
+import { generateSliceStorageKey } from './generate-slices-storage-key.util';
 
 export function broadcastEvents<
   GSlice,
@@ -30,7 +31,9 @@ export function broadcastEvents<
       event.data.type === broadcastChannelMessages.sliceEventOnExpire &&
       event.data.key === params.config.key
     ) {
-      localStorage.removeItem(params.config.key);
+      localStorage.removeItem(
+        generateSliceStorageKey({ key: params.config.key })
+      );
       params.setSliceState(
         defaultSliceValue({
           config: params.config

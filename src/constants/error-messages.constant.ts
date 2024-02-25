@@ -3,7 +3,7 @@ export const errorMessages = {
     required: `\`key\` is required!`,
     invalidType: `\`key\` is not a string!`,
     empty: `\`key\` is an empty string!`,
-    reservedWord: `\`key\` is a reserved word!`
+    startWithKilluaPrefix: `\`key\` starts with 'killua-' prefix!`
   },
   defaultClient: {
     required: `\`defaultClient\` is required!`
