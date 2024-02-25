@@ -8,7 +8,7 @@
 
 - [Installation](#installation)
 - [Features](#features)
-- [Examples](examples)
+- [Examples](#examples)
 - [Usage](#usage)
   - [Create slice configuration file](#create-slice-configuration-file)
   - [Get data](#get-data)
