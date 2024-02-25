@@ -25,13 +25,13 @@ export function setSliceExpireTimestampToStorage<
         1000
     : null;
 
-  // set `storageKeys.slicesExpireTime` with current slice expire timestamp to storage
+  // set `killuaExpire` with current slice expire timestamp to storage
   const storageValue: Record<string, number> = getSlicesExpireTimeFromStorage();
   if (sliceExpireTimestamp) {
     storageValue[params.config.key] = sliceExpireTimestamp;
   }
   localStorage.setItem(
-    storageKeys.slicesExpireTime,
+    storageKeys.killuaExpire,
     btoa(JSON.stringify(storageValue))
   );
 

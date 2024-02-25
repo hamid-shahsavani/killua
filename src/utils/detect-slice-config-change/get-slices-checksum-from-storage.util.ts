@@ -2,7 +2,7 @@ import { storageKeys } from '../../constants/storage-keys.constant';
 
 export function getSlicesChecksumFromStorage(): Record<string, string> {
   const storageValue: string | null = localStorage.getItem(
-    storageKeys.slicesChecksum
+    storageKeys.killuaChecksum
   );
   if (storageValue === null) {
     return {};

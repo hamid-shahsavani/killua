@@ -21,12 +21,12 @@ export function setSliceConfigChecksumToStorage<
     config: params.config
   });
 
-  // set `storageKeys.slicesChecksum` with current slice checksum to storage
+  // set `killuaChecksum` with current slice checksum to storage
   const storageValue: Record<string, string> = getSlicesChecksumFromStorage();
   storageValue[params.config.key] = sliceChecksum;
 
   localStorage.setItem(
-    storageKeys.slicesChecksum,
+    storageKeys.killuaChecksum,
     btoa(JSON.stringify(storageValue))
   );
 

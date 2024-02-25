@@ -5,7 +5,6 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
 import { schemaValidation } from '../slice-schema-validation/schema-validation.util';
 import { setSliceExpireTimestampToStorage } from '../slice-expire-timer/set-slice-expire-timestamp-to-storage.util';
 
@@ -18,11 +17,6 @@ export function setSliceToStorage<
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
   slice: GSlice;
 }): void {
-  // slice storage name
-  const sliceStorageKey = generateSliceStorageKey({
-    key: params.config.key
-  });
-
   // validate slice value with schema before set to storage and set to `sliceState` and set slice expire timestamp to storage
   schemaValidation({
     data: params.slice,
@@ -31,7 +25,7 @@ export function setSliceToStorage<
 
   // set slice value to storage
   localStorage.setItem(
-    sliceStorageKey,
+    params.config.key,
     params.config.obfuscate
       ? btoa(JSON.stringify(params.slice))
       : JSON.stringify(params.slice)

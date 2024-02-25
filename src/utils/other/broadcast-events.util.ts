@@ -5,7 +5,6 @@ import {
   TReducers,
   TSelectors
 } from '../../types/config.type';
-import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
 import { defaultSliceValue } from './default-slice-value.util';
 
 export function broadcastEvents<
@@ -31,11 +30,7 @@ export function broadcastEvents<
       event.data.type === broadcastChannelMessages.sliceEventOnExpire &&
       event.data.key === params.config.key
     ) {
-      localStorage.removeItem(
-        generateSliceStorageKey({
-          key: params.config.key
-        })
-      );
+      localStorage.removeItem(params.config.key);
       params.setSliceState(
         defaultSliceValue({
           config: params.config

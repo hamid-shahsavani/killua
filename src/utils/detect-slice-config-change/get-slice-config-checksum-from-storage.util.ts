@@ -18,11 +18,11 @@ export function getSliceConfigChecksumFromStorage<
   // return value (default: null, updated after get slice checksum from storage)
   let returnValue: null | string = null;
 
-  // get `storageKeys.slicesChecksum` from storage
+  // get `killuaChecksum` from storage
   const storageValue: Record<string, string> = getSlicesChecksumFromStorage();
 
   /*
-    if (`storageKeys.slicesChecksum` is not exist in `storageValue`) {
+    if (`killuaChecksum` is not exist in `storageValue`) {
       add slice checksum to `storageValue` and set `storageValue` to storage
       set checksum to `returnValue`
     } else {

@@ -106,14 +106,12 @@ export default function slice<
       msg: errorMessages.key.empty,
       key: params.key
     });
-  } else if ((params.key as string).startsWith('slice-')) {
+  } else if (
+    (params.key as string) === 'killua-expire' ||
+    (params.key as string) === 'killua-checksum'
+  ) {
     errorTemplate({
-      msg: errorMessages.key.startWithSlice,
-      key: params.key
-    });
-  } else if ((params.key as string).startsWith('slices-')) {
-    errorTemplate({
-      msg: errorMessages.key.startWithSlices,
+      msg: errorMessages.key.reservedWord,
       key: params.key
     });
   }

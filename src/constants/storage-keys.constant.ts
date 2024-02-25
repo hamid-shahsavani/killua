@@ -1,4 +1,4 @@
 export const storageKeys = {
-  slicesExpireTime: 'slices-expire-time',
-  slicesChecksum: 'slices-checksum'
+  killuaExpire: 'killua-expire',
+  killuaChecksum: 'killua-checksum'
 };

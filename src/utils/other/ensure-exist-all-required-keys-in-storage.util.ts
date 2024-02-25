@@ -47,9 +47,9 @@ export function ensureExistAllRequiredKeysInStorage<
 >(params: {
   config: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>;
 }): void {
-  // ensure exist `storageKeys.slicesChecksum` key in storage
+  // ensure exist `killuaChecksum` key in storage
   ensureExistKeyInStorage({
-    storageKey: storageKeys.slicesChecksum,
+    storageKey: storageKeys.killuaChecksum,
     defaultStorage: {
       [params.config.key]: generateSliceConfigChecksum({
         config: params.config
@@ -57,9 +57,9 @@ export function ensureExistAllRequiredKeysInStorage<
     }
   });
 
-  // ensure exist `storageKeys.slicesExpireTime` key in storage
+  // ensure exist `killuaExpire` key in storage
   ensureExistKeyInStorage({
-    storageKey: storageKeys.slicesExpireTime,
+    storageKey: storageKeys.killuaExpire,
     defaultStorage: {
       ...(params.config.expire && {
         [params.config.key]:

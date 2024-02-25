@@ -1,41 +1,38 @@
-const docsUrl = 'https://killua-docs.vercel.app/config';
-
 export const errorMessages = {
   key: {
-    required: `\`key\` is required! \n${docsUrl}#key`,
-    invalidType: `\`key\` is not a string! \n${docsUrl}#key`,
-    empty: `\`key\` is an empty string! \n${docsUrl}#key`,
-    startWithSlice: `\`key\` cannot start with \`slice-\`! \n${docsUrl}#key`,
-    startWithSlices: `\`key\` cannot start with \`slices-\`! \n${docsUrl}#key`
+    required: `\`key\` is required!`,
+    invalidType: `\`key\` is not a string!`,
+    empty: `\`key\` is an empty string!`,
+    reservedWord: `\`key\` is a reserved word!`
   },
   defaultClient: {
-    required: `\`defaultClient\` is required! \n${docsUrl}#defaultClient`
+    required: `\`defaultClient\` is required!`
   },
   defaultServer: {
-    required: `your application is server-side, so \`defaultServer\` is required! \n${docsUrl}#defaultServer`,
-    invalidType: `\`defaultServer\` is not the same type as \`defaultClient\`! \n${docsUrl}#defaultServer`
+    required: `your application is server-side, so \`defaultServer\` is required!`,
+    invalidType: `\`defaultServer\` is not the same type as \`defaultClient\`!`
   },
   obfuscate: {
-    invalidType: `\`obfuscate\` is not a boolean! \n${docsUrl}#obfuscate`
+    invalidType: `\`obfuscate\` is not a boolean!`
   },
   expire: {
-    invalidFormat: `\`expire\` is not a valid format! \n${docsUrl}#expire`
+    invalidFormat: `\`expire\` is not a valid format!`
   },
   schema: {
-    invalidType: `\`schema\` is not zod or yup! \n${docsUrl}#schema`
+    invalidType: `\`schema\` is not zod or yup!`
   },
   reducers: {
-    invalidType: `\`reducers\` is not an object! \n${docsUrl}#reducers`,
-    empty: `\`reducers\` keys are an empty object! \n${docsUrl}#reducers`,
-    keysValueIsNotFunction: `\`reducers\` keys value is not a function! \n${docsUrl}#reducers`
+    invalidType: `\`reducers\` is not an object!`,
+    empty: `\`reducers\` keys are an empty object!`,
+    keysValueIsNotFunction: `\`reducers\` keys value is not a function!`
   },
   selectors: {
-    invalidType: `\`selectors\` is not an object! \n${docsUrl}#selectors`,
-    empty: `\`selectors\` keys are an empty object! \n${docsUrl}#selectors`,
-    keysValueIsNotFunction: `\`selectors\` keys value is not a function! \n${docsUrl}#selectors`
+    invalidType: `\`selectors\` is not an object!`,
+    empty: `\`selectors\` keys are an empty object!`,
+    keysValueIsNotFunction: `\`selectors\` keys value is not a function!`
   },
   other: {
     notDefined: (keys: string[]): string =>
-      `not defined key \`${keys.join(', ')}\` in config! \n${docsUrl}`
+      `not defined key \`${keys.join(', ')}\` in config! `
   }
 };

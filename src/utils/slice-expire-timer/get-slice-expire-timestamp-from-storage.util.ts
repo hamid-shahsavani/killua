@@ -18,11 +18,11 @@ export function getSliceExpireTimestampFromStorage<
   // return value (default: null, updated after get slice expire timestamp from storage)
   let returnValue: null | number = null;
 
-  // get `storageKeys.slicesExpireTime` from storage
+  // get `killuaExpire` from storage
   const storageValue: Record<string, number> = getSlicesExpireTimeFromStorage();
 
   /*
-    if (`storageKeys.slicesExpireTime` is not exist in `storageValue`) {
+    if (`killuaExpire` is not exist in `storageValue`) {
       add slice expire timestamp to `storageValue` and set `storageValue` to storage
       set expire timestamp to `returnValue`
     } else {

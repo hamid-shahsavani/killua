@@ -5,7 +5,6 @@ import {
   TSelectors
 } from '../../types/config.type';
 import { defaultSliceValue } from '../other/default-slice-value.util';
-import { generateSliceStorageKey } from '../other/generate-slice-storage-key.util';
 import { schemaValidation } from '../slice-schema-validation/schema-validation.util';
 import { ensureExistAllRequiredKeysInStorage } from '../other/ensure-exist-all-required-keys-in-storage.util';
 import { isConfigSsr } from '../other/is-config-ssr.util';
@@ -54,18 +53,12 @@ export function getSliceFromStorage<
     setSliceConfigChecksumToStorage({
       config: params.config
     });
-    localStorage.removeItem(
-      generateSliceStorageKey({
-        key: params.config.key
-      })
-    );
+    localStorage.removeItem(params.config.key);
   }
 
   // get value from storage
   const getFromStorage = (): GSlice => {
-    const storageValue: string | null = localStorage.getItem(
-      generateSliceStorageKey({ key: params.config.key })
-    );
+    const storageValue: string | null = localStorage.getItem(params.config.key);
     let returnValue: GSlice = defaultSliceValue({
       config: params.config
     }).client;
@@ -97,9 +90,7 @@ export function getSliceFromStorage<
         }
       } catch (error: any) {
         // schema validation fail || JSON.parse fail || decrypt fail ===> set `defaultSliceValue.client` to `returnValue` | remove slice key from storage
-        localStorage.removeItem(
-          generateSliceStorageKey({ key: params.config.key })
-        );
+        localStorage.removeItem(params.config.key);
         return defaultSliceValue({
           config: params.config
         }).client;
