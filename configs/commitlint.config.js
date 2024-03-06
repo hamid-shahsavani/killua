@@ -15,7 +15,7 @@ module.exports = {
         'test',
         'clean',
         'rollback',
-        'version',
+        'release',
         'refactor',
         'style',
         'landing',
