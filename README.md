@@ -58,7 +58,12 @@ yarn add killua
 
 ### Create slice configuration file
 
+> [!IMPORTANT]
+> Whatever the `useKillua` hook returns, the `slice` function also returns.<br /> Use the useKillua hook within the React framework, and as long as you don't have access to it, use the slice function.
+
+> [!NOTE]
 > that `slice` refers to a key within localStorage.
+
 1. Create a `slices` directory for the thunder configuration.
 2. Create the slice configuration file, for example: `counter.ts`.
 3. Set up the slice configuration:
@@ -72,10 +77,6 @@ export const counterSlice = slice({
 ```
 
 ### Get data
-
-> Whatever the `useKillua` hook returns, the `slice` function also returns.
-  <br /> Use the useKillua hook within the React framework, and as long as you
-  don't have access to it, use the slice function.
 
 - Within a React component, utilize the `useKillua` hook :
 
@@ -104,8 +105,6 @@ export function getCounter() {
 ```
 
 ### Set data
-
-> Whatever the `useKillua` hook returns, the `slice` function also returns.<br /> Use the useKillua hook within the React framework, and as long as you don't have access to it, use the slice function.
 
 - Within a React component, utilize the `useKillua` hook :
 
@@ -233,8 +232,11 @@ export function incrementCounter() {
 
 ### Using in SSR application
 
+> [!NOTE]
 > As long as the initial server-side rendering occurs and there is no access to localStorage, `defaultServer` will be returned. Later, when the client-side rendering takes place, data will be fetched from localStorage and returned.
-> As long as `defaultServer` exists in the config, both the `useKillua` hook and the `slice` function will return a property named `isReady`.<br /> If this value is `false`, it means that it is server-side and localStorage is not accessible, and the returned value is `defaultServer`.<br />If this value is true, it means that it is client-side and localStorage isaccessible, and the fetched value is from localStorage.
+
+> [!NOTE]
+>  As long as `defaultServer` exists in the config, both the `useKillua` hook and the `slice` function will return a property named `isReady`.<br /> If this value is `false`, it means that it is server-side and localStorage is not accessible, and the returned value is `defaultServer`.<br />If this value is true, it means that it is client-side and localStorage isaccessible, and the fetched value is from localStorage.
 
 - add `defaultServer` to the slice configuration :
 
@@ -283,7 +285,10 @@ export function incrementCounterWithPayload() {
 
 ### Obfuscate data
 
+> [!NOTE]
 > As long as obsfacte is present in the slice config, your data is not protected but merely obfuscated.
+
+> [!WARNING]
 > Avoid placing sensitive data on localStorage.
 
 - To obfuscate localStorage data, simply add it to the slice config:
@@ -300,8 +305,10 @@ export const counterSlice = slice({
 
 ### Expire timer
 
+> [!NOTE]
 > If the localStorage data expires at the moment when a user is on the website and the `useKillua` hook is in use, the data will be immediately removed from localStorage. Subsequently, the `useKillua` hook will update and return the `defaultClient` value.
 
+> [!NOTE]
 > If the user enters the site and the data has already expired, the `defaultClient` value will be returned.
 
 - To set an expiration time for localStorage data, simply add it to the slice config :
@@ -318,7 +325,10 @@ export const counterSlice = slice({
 
 ### Schema validation
 
+> [!NOTE]
 > If `schema` exists in the configuration, when the localStorage is updated using `set` or `reducers`, the data will be validated against that `schema`. If it is not valid, it will not be set on the localStorage.
+
+> [!NOTE]
 > If `schema` is exists in the configuration, when the localStorage data is retrieved using `selectors` or `get`, and if it is validated against the `schema` and found to be invalid, the `defaultClient` value will be returned instead.
 
 - To set a schema for localStorage data, simply add it to the slice config :
