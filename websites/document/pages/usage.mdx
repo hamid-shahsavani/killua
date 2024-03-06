@@ -166,7 +166,7 @@ export const counterSlice = slice({
 
 - Within a React component, utilize the `useKillua` hook :
 
-```tsx showLineNumbers {7,8} filename="components/components.tsx" copy
+```tsx showLineNumbers {7,11} filename="components/components.tsx" copy
 import { useKillua } from 'killua';
 
 export default function Component() {
@@ -175,11 +175,12 @@ export default function Component() {
     <div>
       <button onClick={() => localstorageCounter.increment()}>
         Increment counter
-      </button>{' '}
+      </button>
       {/* without payload */}
       <button onClick={() => localstorageCounter.incrementWithPayload(5)}>
         Increment counter with payload
-      </button> {/* with payload */}
+      </button>{' '}
+      {/* with payload */}
     </div>
   );
 }
@@ -211,8 +212,10 @@ export function incrementCounterWithPayload() {
 <Callout type="info">
   As long as `defaultServer` exists in the config, both the `useKillua` hook and
   the `slice` function will return a property named `isReady`.
-  <br />If this value is `false`, it means that it is server-side and localStorage is
-  not accessible, and the returned value is `defaultServer`.<br />
+  <br />
+  If this value is `false`, it means that it is server-side and localStorage is
+  not accessible, and the returned value is `defaultServer`.
+  <br />
   If this value is true, it means that it is client-side and localStorage is
   accessible, and the fetched value is from localStorage.
 </Callout>
@@ -231,7 +234,7 @@ export const counterSlice = slice({
 
 - Within a React component, utilize the `useKillua` hook :
 
-```tsx showLineNumbers {4,7} filename="components/components.tsx" copy
+```tsx showLineNumbers {9-13} filename="components/components.tsx" copy
 'use client';
 
 import { useKillua } from 'killua';
