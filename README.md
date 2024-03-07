@@ -24,13 +24,13 @@
 To install the latest stable version, run the following command:
 ```shell
 # npm
-npm install killua
+npm install killua@latest
 
 # pnpm
-pnpm install killua
+pnpm install killua@latest
 
 # yarn
-yarn add killua
+yarn add killua@latest
 ```
 
 ## Features
