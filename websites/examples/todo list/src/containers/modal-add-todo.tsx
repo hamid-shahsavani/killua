@@ -1,9 +1,10 @@
-import { useFormik } from 'formik';
 import { useKillua } from 'killua';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { todosSlice } from '@/slices/todos';
 import { generateUniqueId } from '@/utils/generate-unique-id';
+import Select from 'react-select';
+import { useFormik } from 'formik';
 
 interface IProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export default function ModalAddTodo(props: IProps): JSX.Element {
   interface IFormik {
     title: string;
     description: string;
+    status: 'blocked' | 'done' | 'inProgress' | 'inQA' | 'todo';
   }
   const formikConstant = {
     fields: {
@@ -39,6 +41,10 @@ export default function ModalAddTodo(props: IProps): JSX.Element {
             'Description must be at least 8 characters!',
           canBeUpTo300Characters: 'Description can be up to 300 characters!'
         }
+      },
+      status: {
+        label: 'Status',
+        options: ['todo', 'inProgress', 'inQA', 'blocked', 'done']
       }
     },
     title: 'Add Todo',
@@ -47,7 +53,8 @@ export default function ModalAddTodo(props: IProps): JSX.Element {
   const formik = useFormik<IFormik>({
     initialValues: {
       title: '',
-      description: ''
+      description: '',
+      status: 'todo'
     },
     validationSchema: toFormikValidationSchema(
       z.object({
@@ -68,13 +75,15 @@ export default function ModalAddTodo(props: IProps): JSX.Element {
           )
       })
     ),
-    onSubmit: async values => {
+    onSubmit: async (
+      values: Record<'title' | 'description' | 'status', any>
+    ) => {
       // add todo to localStorage
       localStorageTodos.reducers.add({
         id: generateUniqueId(),
         title: values.title,
         description: values.description,
-        status: 'todo'
+        status: values.status
       });
       // close modal / reset form
       props.onClose();
@@ -186,6 +195,46 @@ export default function ModalAddTodo(props: IProps): JSX.Element {
                   {formik.errors.description && formik.touched.description ? (
                     <span className="ml-1.5 pt-0.5 text-sm text-red-500">
                       {formik.errors.description}
+                    </span>
+                  ) : null}
+                </div>
+                {/* status */}
+                <div>
+                  <div
+                    className={`field !p-1 ${
+                      formik.errors.status && formik.touched.status
+                        ? '!border-red-500'
+                        : '!border-gray-600'
+                    }`}
+                  >
+                    <label
+                      className={
+                        formik.errors.status && formik.touched.status
+                          ? 'text-red-500'
+                          : 'text-white'
+                      }
+                    >
+                      {formikConstant.fields.status.label}
+                    </label>
+                    <Select
+                      {...formik.getFieldProps('status')}
+                      value={{
+                        value: formik.values.status,
+                        label: formik.values.status
+                      }}
+                      options={formikConstant.fields.status.options.map(t => ({
+                        value: t,
+                        label: t
+                      }))}
+                      className="dropdown-select-status"
+                      onChange={(value: any) =>
+                        formik.setFieldValue('status', value.value)
+                      }
+                    />
+                  </div>
+                  {formik.errors.status && formik.touched.status ? (
+                    <span className="ml-1.5 pt-0.5 text-sm text-red-500">
+                      {formik.errors.status}
                     </span>
                   ) : null}
                 </div>
