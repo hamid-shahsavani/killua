@@ -6,6 +6,12 @@ import { Callout } from 'nextra-theme-docs';
 
 <Callout type="info">that `slice` refers to a key within localStorage.</Callout>
 
+<Callout type="info">
+  Whatever the `useKillua` hook returns, the `slice` function also returns.{' '}
+  <br /> Use the useKillua hook within the React framework, and as long as you
+  don't have access to it, use the slice function.
+</Callout>
+
 1. Create a `slices` directory for the thunder configuration.
 2. Create the slice configuration file, for example: `counter.ts`.
 3. Set up the slice configuration:
@@ -20,12 +26,6 @@ export const counterSlice = slice({
 ```
 
 ## Get data
-
-<Callout type="info">
-  Whatever the `useKillua` hook returns, the `slice` function also returns.{' '}
-  <br /> Use the useKillua hook within the React framework, and as long as you
-  don't have access to it, use the slice function.
-</Callout>
 
 - Within a React component, utilize the `useKillua` hook :
 
@@ -54,12 +54,6 @@ export function getCounter() {
 ```
 
 ## Set data
-
-<Callout type="info">
-  Whatever the `useKillua` hook returns, the `slice` function also returns.{' '}
-  <br /> Use the useKillua hook within the React framework, and as long as you
-  don't have access to it, use the slice function.
-</Callout>
 
 - Within a React component, utilize the `useKillua` hook :
 

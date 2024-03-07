@@ -58,9 +58,9 @@ yarn add killua@latest
 
 ### Create slice configuration file
 
-> Whatever the `useKillua` hook returns, the `slice` function also returns.<br /> Use the useKillua hook within the React framework, and as long as you don't have access to it, use the slice function.
-
 > that `slice` refers to a key within localStorage.
+
+> Whatever the `useKillua` hook returns, the `slice` function also returns.<br /> Use the useKillua hook within the React framework, and as long as you don't have access to it, use the slice function.
 
 1. Create a `slices` directory for the thunder configuration.
 2. Create the slice configuration file, for example: `counter.ts`.
