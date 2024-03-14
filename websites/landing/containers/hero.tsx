@@ -77,7 +77,7 @@ export default function Component() {
       <button onClick={
         () => localStorageCounter.set(prev => prev + 1)
       }>+</button>
-      <p>{counterSlice.get()}</p>
+      <p>{localStorageCounter.get()}</p>
       <button onClick={
         () => localStorageCounter.set(prev => prev - 1)
       }>-</button>

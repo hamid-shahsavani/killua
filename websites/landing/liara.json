@@ -1,4 +1,7 @@
 {
   "platform": "next",
-  "app": "killua-landing"
+  "app": "killua-landing",
+  "next": {
+    "modifyConfig": false
+  }
 }
