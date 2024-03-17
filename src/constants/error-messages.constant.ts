@@ -19,7 +19,7 @@ export const errorMessages = {
     invalidFormat: `\`expire\` is not a valid format!`
   },
   schema: {
-    invalidType: `\`schema\` is not zod or yup!`
+    invalidType: `\`schema\` is not valid!`
   },
   reducers: {
     invalidType: `\`reducers\` is not an object!`,

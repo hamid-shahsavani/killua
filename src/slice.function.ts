@@ -72,24 +72,6 @@ export default function slice<
 >(
   params: TConfig<GSlice, GDefaultServer, GSelectors, GReducers>
 ): TReturn<GSlice, GDefaultServer, GSelectors, GReducers> {
-  // validate `defaultClient`
-  if (isUndefined(params.defaultClient)) {
-    errorTemplate({
-      msg: errorMessages.defaultClient.required,
-      key: params.key
-    });
-  }
-
-  // validate `defaultServer`
-  if (!isUndefined(params.defaultServer)) {
-    if (typeof params.defaultClient !== typeof params.defaultServer) {
-      errorTemplate({
-        msg: errorMessages.defaultServer.invalidType,
-        key: params.key
-      });
-    }
-  }
-
   // validate `key`
   if (isUndefined(params.key)) {
     errorTemplate({
@@ -111,6 +93,24 @@ export default function slice<
       msg: errorMessages.key.startWithKilluaPrefix,
       key: params.key
     });
+  }
+
+  // validate `defaultClient`
+  if (isUndefined(params.defaultClient)) {
+    errorTemplate({
+      msg: errorMessages.defaultClient.required,
+      key: params.key
+    });
+  }
+
+  // validate `defaultServer`
+  if (!isUndefined(params.defaultServer)) {
+    if (typeof params.defaultClient !== typeof params.defaultServer) {
+      errorTemplate({
+        msg: errorMessages.defaultServer.invalidType,
+        key: params.key
+      });
+    }
   }
 
   // validate `obfuscate`
